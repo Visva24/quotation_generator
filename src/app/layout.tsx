@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import './globals.css';
 import { PrimeReactProvider } from 'primereact/api';
+import 'primeicons/primeicons.css';
+import './globals.css';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex flex-col bg-gray-100  overflow-hidden">
+      <body className="flex flex-col bg-[#fff] m-0 p-0 overflow-hidden ">
         <PrimeReactProvider>
           <header className="h-[90px] bg-[#222222] flex items-center">
             <div className="flex items-center gap-4">
@@ -25,7 +26,7 @@ export default function RootLayout({
               </h1>
             </div>
           </header>
-          <main className="">{children}</main>
+          <main className="h-[calc(100vh_-_90px)] bg-[#fff] overflow-auto no-scrollbar">{children}</main>
         </PrimeReactProvider>
       </body>
     </html>

@@ -107,24 +107,7 @@ const page = () => {
         <Custombutton name='Back' color='blue' onclick={() => { router.push('/') }} />
       </div>
       {/* table */}
-      <div>
-        <table className='w-full border'>
-          <tbody>
-            <tr className='border'>
-              <th className='border'>S.no</th>
-              <th className='border'>Items No.</th>
-              <th className='border'>Description</th>
-              <th className='border'>Quantity</th>
-              <th className='border'>Unit</th>
-              <th className='border'>Price</th>
-              <th className='border'>Dis %</th>
-              <th className='border'>Tax %</th>
-              <th className='border'>Total</th>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
+     
     </>
   )
 }

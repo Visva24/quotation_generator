@@ -1,12 +1,10 @@
 'use client'
-import HomePage from "./Home/Home";
+import HomePage from "./home/page";
 
 export default function Home() {
   return (
     <>
-     <div className="!h-[100vh]">
      <HomePage/>
-     </div>
     </>
   );
 }
