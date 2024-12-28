@@ -14,10 +14,14 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ breadcrumb }) => {
   return (
     <>
       {breadcrumb.map((item, index) => (
-        <div key={index} className="h-[30px] text-[14px] flex items-center  gap-[2px]">
-          <div className='ml-1'><Link href={item?.route}>{item?.label}</Link></div> <i className="pi pi-angle-right pt-[3px] text-[14px]"></i>
+        <div key={index} className="h-[30px] text-[14px] inline-flex items-center gap-[2px]">
+          <div className='ml-1'>
+            <Link href={item?.route} className={`${index===breadcrumb.length-1 ? "text-[#F4AA08]":""}`}>{item?.label}</Link>
+          </div>
+          {index < breadcrumb.length - 1 && <i className="pi pi-angle-right pt-[3px] text-[14px]"></i>}
         </div>
       ))}
+
     </>
   );
 };

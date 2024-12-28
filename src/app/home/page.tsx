@@ -24,8 +24,7 @@ const HomePage = () => {
   return (
     <>
      <LayoutHome>
-     <div >
-      
+     <div>
       <div className="flex justify-center items-center" >
         <div className="flex justify-center items-center gap-10 p-8 bg-[#EFEFEF] rounded-[8px] mt-5">
           {/* first */}
@@ -59,7 +58,6 @@ const HomePage = () => {
             <div className='absolute bottom-0 right-2'> <Image src={'/images/challan.svg'} alt={'logo'} width={70} height={70} /></div>
           </div>
         </div>
-
       </div>
     </div>
      </LayoutHome>
