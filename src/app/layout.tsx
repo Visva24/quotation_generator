@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import { PrimeReactProvider } from 'primereact/api';
-
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import 'primeicons/primeicons.css';
 import './globals.css';
-import Image from 'next/image';
 
 
 export const metadata: Metadata = {
