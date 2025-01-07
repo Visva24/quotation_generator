@@ -5,7 +5,7 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 import 'primeicons/primeicons.css';
 import './globals.css';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+
 
 export const metadata: Metadata = {
   title: 'Quotation',
@@ -17,8 +17,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  if (pathname === '/log-in') {
+  const isLoginPage = typeof window !== 'undefined' && window.location.pathname === '/log-in';
+
+  if (isLoginPage) {
     return <>{children}</>;
   }
   return (
