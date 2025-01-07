@@ -5,6 +5,7 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 import 'primeicons/primeicons.css';
 import './globals.css';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Quotation',
@@ -16,6 +17,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  if (pathname === '/log-in') {
+    return <>{children}</>;
+  }
   return (
     <html lang="en">
       <body className="flex flex-col bg-[#fff] m-0 p-0 overflow-hidden ">

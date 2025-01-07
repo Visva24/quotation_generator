@@ -3,9 +3,6 @@ import React from 'react'
 import { useRouter } from "next/navigation";
 import 'primeicons/primeicons.css';
 import Image from 'next/image';
-import Breadcrumbs from '../component/Breadcrumbs';
-import Tabs from '../component/Tabs';
-import LayoutHome from './layout';
 
 const HomePage = () => {
 
@@ -23,7 +20,7 @@ const HomePage = () => {
   }
   return (
     <>
-     <LayoutHome>
+     
      <div>
       <div className="flex justify-center items-center" >
         <div className="flex justify-center items-center gap-10 p-8 bg-[#EFEFEF] rounded-[8px] mt-5">
@@ -60,7 +57,7 @@ const HomePage = () => {
         </div>
       </div>
     </div>
-     </LayoutHome>
+ 
     </>
   )
 }

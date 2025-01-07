@@ -11,7 +11,7 @@ const LayoutQuotation: React.FC<LayoutProps> = ({ children }) => {
     const breadcrumb = [
         {
             label: "Home",
-            route: "/"
+            route: "/home"
         },
         {
             label: "Quotation Generator",

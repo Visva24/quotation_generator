@@ -11,15 +11,15 @@ const LayoutHome: React.FC<LayoutProps> = ({ children }) => {
     const breadcrumb = [
         {
             label: "Home",
-            route: "/"
+            route: "/home"
         }
     ]
     return (
         <div className='min-h-screen'>
-            <header className='pl-2 pt-4'>
+            <header className='pl-2 pt-4 '>
                 <Breadcrumbs breadcrumb={breadcrumb} />
                 <div className='bg-[#DFDFDF] px-2.5 py-4 rounded-[8px] mx-2.5 my-3'>
-                    <Tabs tabHead={[{ title: "Home", route: "/", icon: "home" }, { title: "History", route: "/home/history", icon: "history" }]} />
+                    <Tabs tabHead={[{ title: "Home", route: "/home", icon: "home" }, { title: "History", route: "/home/history", icon: "history" }]} />
                 </div>
             </header>
             <main>
