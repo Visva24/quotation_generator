@@ -20,17 +20,9 @@ export default function RootLayout({
   console.log("Using RootLayout");
   return (
     <html lang="en">
-      <body className="flex flex-col bg-[#fff] m-0 p-0 overflow-hidden ">
+      <body className=" bg-[#fff] m-0 p-0 ">
         <PrimeReactProvider>
-          <header className="h-[90px] bg-[#222222] flex items-center">
-            <div className="flex items-center gap-4">
-              <Image src="/images/Logo.svg" alt="Logo" width={100} height={120} />
-              <h1 className="text-white font-semibold text-lg">
-                SHADOW TRADING W.L.L
-              </h1>
-            </div>
-          </header>
-          <main className="h-[calc(100vh_-_90px)] bg-[#fff] overflow-auto no-scrollbar">{children}</main>
+          <main className="h-screen bg-[#fff] overflow-auto no-scrollbar">{children}</main>
         </PrimeReactProvider>
       </body>
     </html>

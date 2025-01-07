@@ -1,6 +1,5 @@
 'use client'
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Dropdown } from 'primereact/dropdown'
 import { Calendar } from 'primereact/calendar'
 import Custombutton from '../component/Custombutton'
@@ -8,7 +7,6 @@ import Image from 'next/image'
 import moment from 'moment'
 
 const page = () => {
-  const router = useRouter();
   const [formdata, setFormdata] = useState<any>(
     {
       customer: "",
