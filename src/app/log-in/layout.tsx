@@ -1,12 +1,8 @@
-interface LayoutProps {
-    children: React.ReactNode;
+export default function LoginLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  console.log("Using LoginLayout");
+  return <>{children}</>;
 }
-
-const LoginLayout: React.FC<LayoutProps> = ({ children }) => {
-    return (
-        <>
-            {children}
-        </>
-    )
-}
-export default LoginLayout;

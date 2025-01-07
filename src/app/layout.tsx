@@ -17,11 +17,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isLoginPage = typeof window !== 'undefined' && window.location.pathname === '/log-in';
-
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
+  console.log("Using RootLayout");
   return (
     <html lang="en">
       <body className="flex flex-col bg-[#fff] m-0 p-0 overflow-hidden ">
