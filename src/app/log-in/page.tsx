@@ -2,9 +2,37 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useState } from "react";
+import { Response } from "@/utils/common";
+import { postMethod } from "@/utils/api";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function LoginPage() {
   const router = useRouter();
+  const [credential, setCredential] = useState<any>(
+    {
+      user_email: "",
+      user_password: ""
+    }
+  );
+  const handleChange = (key:string,value:any) => {
+      setCredential({...credential,[key]:value})
+  }
+  const handleLogin = async() =>{
+    const payload = {
+      user_email:credential.user_email,
+      user_password:credential.user_password
+    }
+    const response:Response = await postMethod("authentication/sign-in",payload)
+    console.log(response)
+    if(response.ok){
+      console.log("qwertyu")
+      router.push("/home")
+    }else{
+      console.log("jhgfdsdfghjkl")
+      toast.warn("Worng Credential")
+    }
+  }
   return (
     <div className="flex h-screen overflow-hidden bg-black">
       <div className="relative w-[50%] h-[100%]  bg-gray-900  overflow-hidden">
@@ -30,6 +58,8 @@ export default function LoginPage() {
                 type="email"
                 placeholder="Email"
                 className="w-full px-4 py-3 pl-14 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                value={credential.user_email}
+                onChange={(e)=>{handleChange("user_email",e.target.value)}}
               />
               <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
                 <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
@@ -41,6 +71,8 @@ export default function LoginPage() {
                 type="password"
                 placeholder="Password"
                 className="w-full px-4 py-3 pl-14 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                value={credential.user_password}
+                onChange={(e)=>{handleChange("user_password",e.target.value)}}
               />
               <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
                 <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
@@ -72,11 +104,12 @@ export default function LoginPage() {
               Continue with Gmail
             </button>
 
-        {/* Login Button */}
-        <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600" onClick={()=>router.push("/home")}>
-          Login
-        </button>
-      </div>
+            {/* Login Button */}
+            <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600" onClick={handleLogin}>
+              Login
+            </button>
+            <ToastContainer />
+          </div>
 
           <hr className="w-full border-t-2 border-gray-400 mt-4" />
 
