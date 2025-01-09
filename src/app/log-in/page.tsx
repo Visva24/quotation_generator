@@ -5,10 +5,11 @@ import Image from "next/image";
 import { useState } from "react";
 import { Response } from "@/utils/common";
 import { postMethod } from "@/utils/api";
-import { ToastContainer, toast } from 'react-toastify';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 
 export default function LoginPage() {
   const router = useRouter();
+  const [showPassword , setShowPassword] = useState<any>(false)
   const [credential, setCredential] = useState<any>(
     {
       user_email: "",
@@ -23,14 +24,36 @@ export default function LoginPage() {
       user_email:credential.user_email,
       user_password:credential.user_password
     }
-    const response:Response = await postMethod("authentication/sign-in",payload)
+    const response:Response = await postMethod("/authentication/sign-in",payload)
     console.log(response)
-    if(response.ok){
-      console.log("qwertyu")
+    if(response.status=="success"){
+      toast.success('Successfully logged In', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+     setTimeout(async()=>{
       router.push("/home")
+     },3000) 
+      
     }else{
-      console.log("jhgfdsdfghjkl")
-      toast.warn("Worng Credential")
+      toast.error('Wrong Credential', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
     }
   }
   return (
@@ -68,7 +91,7 @@ export default function LoginPage() {
 
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="w-full px-4 py-3 pl-14 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 value={credential.user_password}
@@ -77,6 +100,7 @@ export default function LoginPage() {
               <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
                 <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
               </div>
+              <div className="absolute right-3 top-4 text-[14px] cursor-pointer" onClick={()=>{setShowPassword(!showPassword)}}> {showPassword ? "👁️" : "🙈"} </div>
             </div>
 
             <div className="text-right mt-2">
