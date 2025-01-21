@@ -28,7 +28,10 @@ const LayoutHome: React.FC<LayoutProps> = ({ children }) => {
                         SHADOW TRADING W.L.L
                     </h1>
                 </div>
-                <div className='pr-4'>
+                <div className='pr-4 flex gap-3 items-center'>
+                    <div className='rounded-full w-8 h-8 flex items-center justify-center text-[white] text-[14px] bg-[#63a1ee]'>
+                        <p>VV</p>
+                    </div>
                     <Custombutton name={'Logout'} color={'yellow'} onclick={()=>{router.push("/log-in")}}/>
                 </div>
                </div>
