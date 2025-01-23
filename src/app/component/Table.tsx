@@ -1,25 +1,31 @@
+
 import React from "react";
 
 interface TableColumn {
-  label: string; // Column Header Label
-  key: string;   // Key to access row data
-  align?: "left" | "center" | "right"; // Text alignment
-  width?: string; // Fixed width for the column
+  label: string;
+  key: string;
+  align?: "left" | "center" | "right";
+  width?: string;
 }
 
 interface TableRow {
-  id: string | number;  // Unique Identifier for the row
-  [key: string]: any;   // Dynamic Row Data
+  id: string | number;
+  [key: string]: any;
 }
 
 interface TableProps {
   columns: TableColumn[];
-  rows: TableRow[];       
+  rows: TableRow[];
   onRemoveRow?: (id: string | number) => void;
   onEditRow?: (id: string | number) => void; 
+  onRowClick?: (id: string | number) => void;
 }
 
-const Table: React.FC<TableProps> = ({ columns, rows, onRemoveRow, onEditRow }) => {
+const Table: React.FC<TableProps> = ({ columns, rows, onRemoveRow, onEditRow, onRowClick }) => {
+    const handleRowClick = (id: string | number) => {
+        onRowClick?.(id);
+    };
+
     return (
       <div className="overflow-x-auto w-full !text-[14px]">
         <table className="w-full border-collapse table-auto !text-[14px]">
@@ -40,8 +46,12 @@ const Table: React.FC<TableProps> = ({ columns, rows, onRemoveRow, onEditRow }) 
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, index) => (
-              <tr key={row.id || index} className="border-b">
+            {rows?.map((row, index) => (
+              <tr 
+                key={row.id || index} 
+                className="border-b"
+                onClick={() => handleRowClick(row.id)}
+              >
                 {columns.map((column) => (
                   <td
                     key={column.key}
@@ -55,7 +65,7 @@ const Table: React.FC<TableProps> = ({ columns, rows, onRemoveRow, onEditRow }) 
                   <td className="border px-2 py-1 text-center flex gap-2 justify-center">
                     {onEditRow && (
                       <button
-                        onClick={() => onEditRow(row.id)} // Pass the row's id to the onEditRow function
+                        onClick={() => onEditRow(row.id)}
                         className="text-blue-500 hover:text-blue-700"
                       >
                         <i className="pi pi-pencil"></i>
@@ -80,3 +90,4 @@ const Table: React.FC<TableProps> = ({ columns, rows, onRemoveRow, onEditRow }) 
 };
 
 export default Table;
+

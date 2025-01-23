@@ -18,7 +18,7 @@ const page = () => {
      </div>
      {
       selectOption == "Over All" && 
-      <div className='p-[20px] text-[14px] rounded-[12px] bg-[#F9F9F9] mx-4 group'>
+      <div className='p-[20px] text-[14px] rounded-[12px] bg-[#898484] mx-4 group'>
       <div className='flex justify-between items-center'>
         <div className='flex flex-col gap-3'>
           <div className='flex gap-3'>

@@ -1,0 +1,13 @@
+.custom-sidebar .p-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem; /* Adjust padding */
+    background-color: #f5f5f5; /* Light gray background */
+    border-bottom: 1px solid #ddd; /* Optional bottom border */
+  }
+  
+  .custom-sidebar .p-sidebar-close {
+    position: static; /* Reset the close button's position */
+    margin-left: auto; /* Move close icon to the far-right */
+  }

@@ -3,6 +3,7 @@ import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import 'primeicons/primeicons.css';
 import './globals.css';
+// import '../styles/global.scss';
 
 
 export const metadata: Metadata = {
