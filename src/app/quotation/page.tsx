@@ -9,9 +9,11 @@ import Table from '../component/Table'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { useRouter } from 'next/navigation'
+import { parseCookies } from 'nookies'
 
 const page = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const cookies = parseCookies()
   const [tableValues, setTableValues] = useState<any>()
   const [docNo, setDocNo] = useState<any>()
   const [updateId, setUpdateId] = useState<any>()
@@ -144,6 +146,7 @@ const page = () => {
   }
 
   const createQuototion = async () => {
+    const user_id = cookies.user_id
     const payload = {
       customer_name: formdata.customer,
       customer_reference_id: "",
@@ -159,12 +162,7 @@ const page = () => {
       address: formdata.address,
       remark_brand: formdata.remark_brand,
       delivery: formdata.delivery,
-      sub_total: 7000,
-      total_discount: 10,
-      total_tax: 10,
-      grand_total: 5600,
-      created_user_id: 3,
-
+      created_user_id: user_id,
     }
     const response: Response = await postMethod("/quotation/create-quotation-form", payload)
     if (response.status == "success") {
@@ -393,7 +391,7 @@ const page = () => {
               </div>
             </div>
             <div className='flex justify-center items-center my-3 gap-3'>
-              <Custombutton name={'Back'} color={'black'} />
+              <Custombutton name={'Back'} color={'black'} onclick={()=>{router.push("/home")}}/>
               <Custombutton name={'Save'} color={'blue'} onclick={createQuototion} />
             </div>
 

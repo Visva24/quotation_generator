@@ -5,6 +5,7 @@ import Tabs from '../component/Tabs';
 import Image from 'next/image';
 import Custombutton from '../component/Custombutton';
 import { useRouter } from 'next/navigation';
+import Header from '../component/Header';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -20,7 +21,7 @@ const LayoutHome: React.FC<LayoutProps> = ({ children }) => {
     ]
     return (
         <div className='min-h-screen'>
-            <header className="h-[90px] bg-[#222222] flex items-center">
+            {/* <header className="h-[90px] bg-[#222222] flex items-center">
                <div className='flex justify-between w-full items-center'>
                <div className="flex items-center gap-4">
                     <Image src="/images/Logo.svg" alt="Logo" width={100} height={120} />
@@ -35,7 +36,8 @@ const LayoutHome: React.FC<LayoutProps> = ({ children }) => {
                     <Custombutton name={'Logout'} color={'yellow'} onclick={()=>{router.push("/log-in")}}/>
                 </div>
                </div>
-            </header>
+            </header> */}
+            <Header/>
             <div className='pl-2 pt-4 '>
                 <Breadcrumbs breadcrumb={breadcrumb} />
                 <div className='bg-[#DFDFDF] px-2.5 py-4 rounded-[8px] mx-2.5 my-3'>

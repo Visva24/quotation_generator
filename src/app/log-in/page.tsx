@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Response } from "@/utils/common";
 import { postMethod } from "@/utils/api";
 import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { storeUserDataInCookies } from "@/utils/cookies";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -41,6 +42,9 @@ export default function LoginPage() {
      setTimeout(async()=>{
       router.push("/home")
      },3000) 
+
+     storeUserDataInCookies(response.data)
+     console.log(response.data)
       
     }else{
       toast.error('Wrong Credential', {

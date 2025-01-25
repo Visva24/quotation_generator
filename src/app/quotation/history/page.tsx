@@ -3,11 +3,15 @@ import Custombutton from '@/app/component/Custombutton'
 import Table from '@/app/component/Table'
 import { getMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
+import { downloadPDF } from '@/utils/download'
 import Image from 'next/image'
+import { parseCookies } from 'nookies'
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 
 const page = () => {
+  const cookies = parseCookies();
+  const user_name = cookies.user_name
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -28,11 +32,29 @@ const page = () => {
     setHistory(response?.data)
   }
 
-  const getViewData = async (id: any) => {
+  const getViewData = async (id: number) => {
     console.log(id)
     const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${id}`)
     console.log(response.data)
     setViewData(response.data)
+  }
+
+  const downLoadPdf = async(id:number) => {
+     const response:Response = await getMethod(`/quotation/download-quotation-template?id=${id}`)
+     console.log(response.data)
+     downloadPDF(response.data)
+  }
+
+  const Sideheader = () => {
+    return (
+        <div className=" flex items-center justify-between !w-full bg-[#000] h-[70px] px-2 !m-0">
+          <h2 className="text-lg font-semibold text-[#fff]">Quotation Details</h2>
+          <div className='flex gap-2 items-center'>
+          <Custombutton name={'Download'} color={'blue'}  onclick={() => downLoadPdf(viewData?.id)} />
+          <i className='pi pi-times text-[#fff]' onClick={()=>{setSideBar(false)}}></i>
+          </div>
+        </div>
+    )
   }
 
   useEffect(() => {
@@ -66,11 +88,11 @@ const page = () => {
               <div className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
                   <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
-                    <p>VV</p>
+                    <p>FL</p>
                   </div>
                   <div className='flex flex-col gap-1'>
                     <p className='text-[12px]'>Created by</p>
-                    <p className='text-[14px]'>Visva</p>
+                    <p className='text-[14px]'>{user_name}</p>
                   </div>
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -86,11 +108,7 @@ const page = () => {
       {
         sideBar &&
         <>
-          <Sidebar visible={sideBar} position="right" onHide={() => setSideBar(false)} className='w-[800px] custom-sidebar'>
-            {/* <div className="sidebar-header flex items-center justify-between w-full px-4 py-2 bg-gray-100 border-b border-gray-300">
-              <h2 className="text-lg font-semibold">Quotation Details</h2>
-              <Custombutton name={'Download'} color={'blue'} />
-            </div> */}
+          <Sidebar header={<Sideheader/>} visible={sideBar} position="right" showCloseIcon={false} onHide={() => setSideBar(false)} className='w-[800px] custom-sidebar'>
             <div>
               <div className='relative flex flex-col text-[14px] border rounded-[8px] pb-40 '>
                 <div className='absolute top-0 left-0'> <Image src={'/images/shadow-trading-left-vector.svg'} alt={''} width={40} height={100} /></div>
