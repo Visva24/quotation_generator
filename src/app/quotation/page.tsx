@@ -6,17 +6,23 @@ import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
 import Table from '../component/Table'
-import { getMethod, postMethod } from '@/utils/api'
+import { getMethod, patchMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 
 const page = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const type: string = searchParams.get("type") ?? "";
+  console.log(type)
+  const data_id = searchParams.get("id");
   const cookies = parseCookies()
   const [tableValues, setTableValues] = useState<any>()
   const [docNo, setDocNo] = useState<any>()
   const [updateId, setUpdateId] = useState<any>()
+  const [revisedDoc, setRevisedDoc] = useState<string>();
+  const [revisedData, setRevisedData] = useState<any>();
   const [formdata, setFormdata] = useState<any>(
     {
       customer: "",
@@ -62,6 +68,7 @@ const page = () => {
     });
   };
 
+
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -98,21 +105,10 @@ const page = () => {
     { label: "Kilograms", value: "kg" },
     { label: "Liters", value: "L" },
     { label: "Meters", value: "m" },
-    { label: "Square Meters", value: "m2" },
-    { label: "Cubic Meters", value: "m3" },
-    { label: "Boxes", value: "box" },
-    { label: "Sets", value: "set" },
-    { label: "Kilometers", value: "km" },
-    { label: "Grams", value: "g" },
-    { label: "Milliliters", value: "ml" },
-    { label: "Dozens", value: "doz" },
-    { label: "Tons", value: "t" },
-    { label: "Cans", value: "can" },
   ];
 
   const handleRemoveRow = async (id: string | number) => {
     console.log(id)
-    // setRows((prevRows: any) => prevRows.filter((row: any) => row.id !== id));
     const response: Response = await getMethod(`/quotation/delete-quotation-list?record_id=${id}`)
     getTableValues()
   };
@@ -138,31 +134,65 @@ const page = () => {
     console.log(response.data)
     setDocNo(response?.data)
   }
+  const getReviseDocNo = async () => {
+    const response: Response = await getMethod(`/quotation/generate-revision-doc-number?record_id=${data_id}`)
+    await setRevisedDoc(response.data)
+    console.log(response.data)
+  }
 
   const getTableValues = async () => {
-    const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNo}`)
+    const docNumber = type === "revised"? revisedDoc : docNo;
+    const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNumber}`)
+    console.log(response.data)
     setTableValues(response?.data)
-    console.log(response?.data)
+  }
+
+  const getRevisedData = async () => {
+    const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${data_id}&type=${type}`)
+    const data = response.data;
+    console.log(data)
+    if (response.status === "success") {
+      setRevisedData(data)
+      setFormdata({
+        customer: data.customer_name,
+        document_no: data.doc_number,
+        customer_reference: data.customer_reference,
+        contact_person: data.contact_person,
+        contact_no: data.contact_number,
+        document_date: data.doc_date,
+        currency: data.currency,
+        payment_method: data.payment_mode,
+        email: data.email,
+        address: data.address,
+        validity: data.quotation_validity,
+        remark_brand: data.remark_brand,
+        delivery: data.delivery,
+      });
+      await getReviseDocNo() 
+    }
+
   }
 
   const createQuototion = async () => {
     const user_id = cookies.user_id
     const payload = {
-      customer_name: formdata.customer,
+      customer_name: formdata.customer || null,
       customer_reference_id: "",
-      doc_number: docNo,
-      doc_date: formdata.document_date,
-      contact_person: formdata.contact_person,
-      email: formdata.email,
-      contact_number: formdata.contact_number,
-      customer_reference: formdata.customer_reference,
-      payment_mode: formdata.payment_method,
-      currency: formdata.currency,
-      quotation_validity: formdata.validity,
-      address: formdata.address,
-      remark_brand: formdata.remark_brand,
-      delivery: formdata.delivery,
-      created_user_id: user_id,
+      doc_number: docNo || null,
+      doc_date: formdata.document_date || null,
+      contact_person: formdata.contact_person || null,
+      email: formdata.email || null,
+      contact_number: formdata.contact_no || null,
+      customer_reference: formdata.customer_reference || null,
+      payment_mode: formdata.payment_method || null,
+      currency: formdata.currency || null,
+      quotation_validity: formdata.validity || null,
+      address: formdata.address || null,
+      remark_brand: formdata.remark_brand || null,
+      delivery: formdata.delivery || null,
+      created_user_id: user_id || null,
+      total_discount : 0,
+      total_tax : 0
     }
     const response: Response = await postMethod("/quotation/create-quotation-form", payload)
     if (response.status == "success") {
@@ -172,7 +202,7 @@ const page = () => {
 
   const createQuototionList = async () => {
     const payload = {
-      doc_number: docNo,
+      doc_number: type =="revised"? revisedDoc: docNo,
       Quotation_list: [
         {
           item_number: tableData.item_number,
@@ -192,17 +222,54 @@ const page = () => {
     if (response.status == "success") {
       setUpdateId(null)
     }
-
   }
+
+  const createReviseData = async() => {
+    const user_id = cookies.user_id
+    const payload = {
+      customer_name: formdata.customer || null,
+      customer_reference_id: "",
+      doc_number: revisedDoc || null,
+      doc_date: formdata.document_date || null,
+      contact_person: formdata.contact_person || null,
+      email: formdata.email || null,
+      contact_number: formdata.contact_no || null,
+      customer_reference: formdata.customer_reference || null,
+      payment_mode: formdata.payment_method || null,
+      currency: formdata.currency || null,
+      quotation_validity: formdata.validity || null,
+      address: formdata.address || null,
+      remark_brand: formdata.remark_brand || null,
+      delivery: formdata.delivery || null,
+      created_user_id: user_id || null,
+      total_discount : 0,
+      total_tax : 0
+    }
+    const response:Response = await postMethod(`/quotation/update-quotation-form?id=${data_id}`,payload)
+    if (response.status == "success") {
+      router.push("/quotation/history")
+    }
+  }
+
 
   useEffect(() => {
     getDocumentNo()
   }, [])
+  
+  useEffect(() => {
+    getRevisedData()
+  }, [type === "revised"])
+
+  useEffect(() => {
+    if (revisedDoc) {
+      getTableValues();
+    }
+}, [revisedDoc]);
 
   return (
     <>
       <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
-        <div className='col-span-6  !text-[14px] py-4 overflow-y-scroll h-screen'>
+        <div className='col-span-6 !text-[14px] py-4 overflow-y-scroll '>
           <p className='text-[18px] ml-2 font-medium'>Quotation Inputs</p>
           <div className='border mx-2 rounded-[8px] p-2'>
             <div className='grid grid-cols-2 px-2 gap-4'>
@@ -214,12 +281,14 @@ const page = () => {
                   value={formdata.customer}
                 />
               </div>
+             
               <div className='flex flex-col gap-1'>
                 <label htmlFor="">Document No</label>
-                <input className='border h-9 rounded-[6px]'
+                <input
+                  className='border h-9 rounded-[6px]'
                   type='text'
                   onChange={(e) => { handleChange("document_no", e.target.value) }}
-                  value={docNo || formdata.document_no}
+                  value={ type == "revised" ? revisedDoc || "" : docNo || ""}
                 />
               </div>
               <div className='flex flex-col gap-1 small-picker'>
@@ -364,7 +433,6 @@ const page = () => {
               </div>
               <div className='flex justify-end items-center my-3 px-2'>
                 <div className='flex gap-5 items-center'>
-                  <Custombutton name={'Reset'} color={'black'} />
                   <Custombutton name={'Add'} color={'yellow'} onclick={handleAdd} />
                 </div>
               </div>
@@ -391,14 +459,15 @@ const page = () => {
               </div>
             </div>
             <div className='flex justify-center items-center my-3 gap-3'>
-              <Custombutton name={'Back'} color={'black'} onclick={()=>{router.push("/home")}}/>
-              <Custombutton name={'Save'} color={'blue'} onclick={createQuototion} />
+              <Custombutton name={'Back'} color={'black'} onclick={() => { router.push("/home") }} />
+              {type === "revised" ? <Custombutton name={'Revise'} color={'blue'} onclick={createReviseData}/> :<Custombutton name={'Save'} color={'blue'} onclick={createQuototion} />}
             </div>
 
           </div>
         </div>
         <div className='col-span-6  '>
-          <div className='my-2 flex justify-end'>
+          <div className='my-2 flex justify-between items-center'>
+            <p className='text-[18px] font-medium'> Quotation Preview:</p>
             <Custombutton name={'Download'} color={'blue'} />
             {/* <Custombutton name={''} color={'black'}/> */}
           </div>
@@ -428,7 +497,7 @@ const page = () => {
                   </div>
                   <div className='flex flex-col !break-all'>
                     <p>Document Date:</p>
-                    <p className='text-[#929292]'>{moment(formdata.document_date).format("DD/MM/YYYY") || ""}</p>
+                    <p className='text-[#929292]'>{formdata.document_date ? moment(formdata.document_date).format("DD/MM/YYYY") : ""}</p>
                   </div>
                 </div>
                 <hr className='mx-4' />

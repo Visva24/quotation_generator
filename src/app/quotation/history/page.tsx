@@ -5,12 +5,14 @@ import { getMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { downloadPDF } from '@/utils/download'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 
 const page = () => {
   const cookies = parseCookies();
+  const router = useRouter();
   const user_name = cookies.user_name
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
@@ -33,10 +35,13 @@ const page = () => {
   }
 
   const getViewData = async (id: number) => {
-    console.log(id)
     const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${id}`)
     console.log(response.data)
     setViewData(response.data)
+  }
+
+  const reviseData = (id : number | string) => {
+   router.push(`/quotation?type=revised&id=${id}`)
   }
 
   const downLoadPdf = async(id:number) => {
@@ -65,22 +70,21 @@ const page = () => {
     <>
       {
         history?.map((data: any, index: any) => (
-
-          <div key={index} className='p-[20px] text-[14px] rounded-[12px] bg-[#e0dbdb] mx-4 mb-3 group'>
+          <div key={index} className='p-[20px] text-[14px] rounded-[12px] bg-[#F6F6F6] shadow-lg mx-4 mb-3 group'>
             <div className='flex justify-between items-center'>
               <div className='flex flex-col gap-3'>
                 <div className='flex gap-3'>
-                  <p className='px-[10px] py-[4px] rounded-[8px] text-[white] bg-[#5af25a]'>Quotation</p>
-                  <p className='flex gap-2 items-center'><i className='pi pi-indian-rupee text-[yellow] text-[16px]'></i>{data?.total_amount}</p>
+                  <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#F4AA08] to-[#BA8000]'>Quotation</p>
+                  <p className='flex gap-2 items-center text-[18px]'><i className='pi pi-indian-rupee text-[#F4AA08] text-[16px]'></i>{data?.total_amount}</p>
                 </div>
                 <div className='flex gap-3'>
-                  <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[yellow] text-[16px]'></i>{data?.Date}</p> |
-                  <p className='flex gap-2 items-center'><i className='pi pi-file text-[yellow] text-[16px]'></i>{data?.document_number}</p>
+                  <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[#F4AA08] text-[16px]'></i>{data?.Date}</p> |
+                  <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
                 </div>
               </div>
               <div className='flex flex-col gap-3'>
-                <Custombutton name={'View Detail'} color={'red'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
-                <Custombutton name={'Revise'} color={'red'} />
+                <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id)}} />
               </div>
             </div>
             <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
