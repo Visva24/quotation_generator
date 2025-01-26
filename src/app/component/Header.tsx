@@ -3,9 +3,12 @@ import React from 'react'
 import Custombutton from './Custombutton'
 import { useRouter } from 'next/navigation'
 import { clearUserDataFromCookies } from '@/utils/cookies'
+import { parseCookies } from 'nookies'
 
 const Header = () => {
     const router = useRouter();
+    const cookies = parseCookies();
+    const short_name = cookies.avatar_value
     const handleLogout = async() => {
         await clearUserDataFromCookies();
         router.push("/log-in")
@@ -22,7 +25,7 @@ const Header = () => {
                 </div>
                 <div className='pr-4 flex gap-3 items-center'>
                     <div className='rounded-full w-8 h-8 flex items-center justify-center text-[white] text-[14px] bg-[#63a1ee]'>
-                        <p>FL</p>
+                        <p>{short_name}</p>
                     </div>
                     <Custombutton name={'Logout'} color={'yellow'} onclick={handleLogout}/>
                 </div>

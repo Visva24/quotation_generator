@@ -14,6 +14,7 @@ const page = () => {
   const cookies = parseCookies();
   const router = useRouter();
   const user_name = cookies.user_name
+  const short_name = cookies.avatar_value
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -92,7 +93,7 @@ const page = () => {
               <div className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
                   <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
-                    <p>FL</p>
+                    <p>{short_name}</p>
                   </div>
                   <div className='flex flex-col gap-1'>
                     <p className='text-[12px]'>Created by</p>
