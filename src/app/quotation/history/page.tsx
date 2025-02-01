@@ -1,6 +1,6 @@
 "use client"
-import Custombutton from '@/app/component/Custombutton'
-import Table from '@/app/component/Table'
+import Custombutton from '@/component/Custombutton'
+import Table from '@/component/Table'
 import { getMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { downloadPDF } from '@/utils/download'
@@ -10,7 +10,7 @@ import { parseCookies } from 'nookies'
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 
-const page = () => {
+const Page = () => {
   const cookies = parseCookies();
   const router = useRouter();
   const user_name = cookies.user_name
@@ -93,7 +93,7 @@ const page = () => {
               <div className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
                   <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
-                    <p>{short_name}</p>
+                    <p>{short_name || ""}</p>
                   </div>
                   <div className='flex flex-col gap-1'>
                     <p className='text-[12px]'>Created by</p>
@@ -214,4 +214,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

@@ -2,16 +2,16 @@
 import React, { useEffect, useState } from 'react'
 import { Dropdown } from 'primereact/dropdown'
 import { Calendar } from 'primereact/calendar'
-import Custombutton from '../component/Custombutton'
+import Custombutton from '../../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
-import Table from '../component/Table'
+import Table from '../../component/Table'
 import { getMethod, patchMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const type: string = searchParams.get("type") ?? "";
@@ -86,8 +86,12 @@ const page = () => {
       value: "QAR"
     },
     {
-      label: "INR",
-      value: "INR"
+      label: "SAR",
+      value: "SAR"
+    },
+    {
+      label: "USD",
+      value: "USD"
     }
   ]
   const paymentDropdown = [
@@ -96,9 +100,14 @@ const page = () => {
       value: "Cash"
     },
     {
-      label: "Delivery",
-      value: "Delivery"
+      label: "Cheque",
+      value: "Cheque"
+    },
+    {
+      label: "BankTransfer",
+      value: "BankTransfer"
     }
+
   ]
   const units = [
     { label: "Numbers", value: "nos" },
@@ -480,7 +489,7 @@ const page = () => {
                 <div className=''>
                   <Image src={'/images/shadow-trading-logo.svg'} alt={''} width={80} height={90} />
                 </div>
-                <p className='text-[16px] font-medium'>SHADOW TRADING W.L.L</p>
+                <p className='text-[16px] font-medium'>NEW SHADOW TRADING AND CLASSY EVENTS W.L.L</p>
               </div>
               <div className='px-4 flex justify-end gap-2'>
                 <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '> QUOTATION</p>
@@ -569,4 +578,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

@@ -1,8 +1,8 @@
 import { parseCookies } from 'nookies';
 
-export const postMethod = async (url: string, payload?: any): Promise<Response | any> => {
+export const postMethod = async (url: string, payload?: unknown): Promise<Response | unknown> => {
   const environment = process.env.NODE_ENV;
-  let apiUrl = environment === 'development'
+  const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`
     : `${process.env.NEXT_PUBLIC_PRODUCTION_URL}${url}`;
 
@@ -42,9 +42,9 @@ export const postMethod = async (url: string, payload?: any): Promise<Response |
 };
 
 
-export const getMethod = async (url: string): Promise<Response | any> => {
+export const getMethod = async (url: string): Promise<Response | unknown> => {
   const environment = process.env.NODE_ENV;
-  let apiUrl = environment === 'development'
+  const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`
     : `${process.env.NEXT_PUBLIC_PRODUCTION_URL}${url}`;
 
@@ -72,11 +72,11 @@ export const getMethod = async (url: string): Promise<Response | any> => {
   }
 };
 
-export const deleteMethod = async (url: string): Promise<Response | any> => {
+export const deleteMethod = async (url: string): Promise<Response | unknown> => {
   const cookies = parseCookies()
   const token = cookies?.token || '';
   const environment = process.env.NODE_ENV;
-  let apiUrl = environment === 'development'
+  const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`
     : `${process.env.NEXT_PUBLIC_PRODUCTION_URL}${url}`;
   try {
@@ -97,9 +97,9 @@ export const deleteMethod = async (url: string): Promise<Response | any> => {
 }
 
 
-export const patchMethod = async (url: string, payload?: any): Promise<Response | any> => {
+export const patchMethod = async (url: string, payload?: unknown): Promise<Response | unknown> => {
   const environment = process.env.NODE_ENV;
-  let apiUrl = environment === 'development'
+  const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`
     : `${process.env.NEXT_PUBLIC_PRODUCTION_URL}${url}`;
 

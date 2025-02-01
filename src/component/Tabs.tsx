@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import 'primeicons/primeicons.css';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 type Icon = "home" | "history";
 

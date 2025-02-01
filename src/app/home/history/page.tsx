@@ -1,9 +1,9 @@
 "use client"
-import Custombutton from '@/app/component/Custombutton'
-import ToggleSwitch from '@/app/component/ToggleSwitch'
+import Custombutton from '@/component/Custombutton'
+import ToggleSwitch from '@/component/ToggleSwitch'
 import React, { useState } from 'react'
 
-const page = () => {
+const Page = () => {
   const [selectOption ,setSelectOption] = useState<any>('Over All')
   const option = ['Over All', 'Quotations', 'Sales Invoice', 'Delivery Notes'];
   const handleChange = (value:any) => {
@@ -63,4 +63,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
