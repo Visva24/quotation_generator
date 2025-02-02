@@ -1,6 +1,6 @@
 "use client"
-import Custombutton from '@/component/Custombutton'
-import Table from '@/component/Table'
+import Custombutton from '@/app/component/Custombutton'
+import Table from '@/app/component/Table'
 import { getMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { downloadPDF } from '@/utils/download'

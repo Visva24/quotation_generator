@@ -1,8 +1,8 @@
 "use client"
 import React from 'react';
-import Breadcrumbs from '../../component/Breadcrumbs';
-import Tabs from '../../component/Tabs';
-import Header from '../../component/Header';
+import Breadcrumbs from '../component/Breadcrumbs';
+import Tabs from '../component/Tabs';
+import Header from '../component/Header';
 
 interface LayoutProps {
     children: React.ReactNode;

@@ -1,12 +1,12 @@
 
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Dropdown } from 'primereact/dropdown'
 import { Calendar } from 'primereact/calendar'
-import Custombutton from '../../component/Custombutton'
+import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
-import Table from '../../component/Table'
+import Table from '../component/Table'
 import { useRouter } from 'next/navigation'
 
 

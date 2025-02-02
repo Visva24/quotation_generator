@@ -1,6 +1,6 @@
 import { parseCookies } from 'nookies';
 
-export const postMethod = async (url: string, payload?: unknown): Promise<Response | unknown> => {
+export const postMethod = async (url: string, payload?: any): Promise<Response | any> => {
   const environment = process.env.NODE_ENV;
   const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`
@@ -42,7 +42,7 @@ export const postMethod = async (url: string, payload?: unknown): Promise<Respon
 };
 
 
-export const getMethod = async (url: string): Promise<Response | unknown> => {
+export const getMethod = async (url: string): Promise<Response | any> => {
   const environment = process.env.NODE_ENV;
   const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`
@@ -72,7 +72,7 @@ export const getMethod = async (url: string): Promise<Response | unknown> => {
   }
 };
 
-export const deleteMethod = async (url: string): Promise<Response | unknown> => {
+export const deleteMethod = async (url: string): Promise<Response | any> => {
   const cookies = parseCookies()
   const token = cookies?.token || '';
   const environment = process.env.NODE_ENV;
@@ -97,7 +97,7 @@ export const deleteMethod = async (url: string): Promise<Response | unknown> => 
 }
 
 
-export const patchMethod = async (url: string, payload?: unknown): Promise<Response | unknown> => {
+export const patchMethod = async (url: string, payload?: any): Promise<Response | any> => {
   const environment = process.env.NODE_ENV;
   const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`

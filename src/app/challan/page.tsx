@@ -3,10 +3,10 @@
 import React, { useState } from 'react'
 import { Dropdown } from 'primereact/dropdown'
 import { Calendar } from 'primereact/calendar'
-import Custombutton from '../../component/Custombutton'
+import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
-import Table from '../../component/Table'
+import Table from '../component/Table'
 import { useRouter } from 'next/navigation'
 
 const Page = () => {
@@ -42,35 +42,7 @@ const Page = () => {
     { label: "Quantity", key: "quantity", align: "center", width: "80px" },
     { label: "Units", key: "units", align: "center", width: "80px" },
   ];
-  const currency = [
-    {
-      label: "QAR",
-      value: "QAR"
-    },
-    {
-      label: "SAR",
-      value: "SAR"
-    },
-    {
-      label: "USD",
-      value: "USD"
-    }
-  ]
-  const paymentDropdown = [
-    {
-      label: "Cash",
-      value: "Cash"
-    },
-    {
-      label: "Cheque",
-      value: "Cheque"
-    },
-    {
-      label: "BankTransfer",
-      value: "BankTransfer"
-    }
 
-  ]
   const units = [
     { label: "Numbers", value: "nos" },
     { label: "Kilograms", value: "kg" },

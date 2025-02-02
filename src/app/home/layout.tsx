@@ -1,16 +1,14 @@
 "use client"
 import React from 'react';
-import Breadcrumbs from '../../component/Breadcrumbs';
-import Tabs from '../../component/Tabs';
-import { useRouter } from 'next/navigation';
-import Header from '../../component/Header';
+import Breadcrumbs from '../component/Breadcrumbs';
+import Tabs from '../component/Tabs';
+import Header from '../component/Header';
 
 interface LayoutProps {
     children: React.ReactNode;
 }
 
 const LayoutHome: React.FC<LayoutProps> = ({ children }) => {
-    const router = useRouter();
     const breadcrumb = [
         {
             label: "Home",

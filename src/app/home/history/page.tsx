@@ -1,6 +1,6 @@
 "use client"
-import Custombutton from '@/component/Custombutton'
-import ToggleSwitch from '@/component/ToggleSwitch'
+import Custombutton from '@/app/component/Custombutton'
+import ToggleSwitch from '@/app/component/ToggleSwitch'
 import React, { useState } from 'react'
 
 const Page = () => {
