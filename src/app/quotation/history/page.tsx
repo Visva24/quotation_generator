@@ -1,5 +1,6 @@
 "use client"
 import Custombutton from '@/app/component/Custombutton'
+import Loader from '@/app/component/Loader'
 import Table from '@/app/component/Table'
 import { getMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
@@ -29,6 +30,7 @@ const Page = () => {
   const [history, setHistory] = useState<any>();
   const [sideBar, setSideBar] = useState<any>();
   const [viewData, setViewData] = useState<any>();
+  const [loader, setLoader] = useState<boolean>(false);
   const getQuotationHistory = async () => {
     const response: Response = await getMethod(`/quotation/get-quotation-form-history`)
     console.log(response?.data)
@@ -41,25 +43,28 @@ const Page = () => {
     setViewData(response.data)
   }
 
-  const reviseData = (id : number | string) => {
-   router.push(`/quotation?type=revised&id=${id}`)
+  const reviseData = (id: number | string) => {
+    router.push(`/quotation?type=revised&id=${id}`)
   }
 
-  const downLoadPdf = async(id:number) => {
-     const response:Response = await getMethod(`/quotation/download-quotation-template?id=${id}`)
-     console.log(response.data)
-     downloadPDF(response.data)
+  const downLoadPdf = async (id: number) => {
+    setLoader(true)
+    const response: Response = await getMethod(`/quotation/download-quotation-template?id=${id}`)
+    if (response.status === "success") {
+      setTimeout(() => { downloadPDF(response.data), setLoader(false) })
+    }
+
   }
 
   const Sideheader = () => {
     return (
-        <div className=" flex items-center justify-between !w-full bg-[#000] h-[70px] px-2 !m-0">
-          <h2 className="text-lg font-semibold text-[#fff]">Quotation Details</h2>
-          <div className='flex gap-2 items-center'>
-          <Custombutton name={'Download'} color={'blue'}  onclick={() => downLoadPdf(viewData?.id)} />
-          <i className='pi pi-times text-[#fff]' onClick={()=>{setSideBar(false)}}></i>
-          </div>
+      <div className=" flex items-center justify-between !w-full bg-[#000] h-[70px] px-2 !m-0">
+        <h2 className="text-lg font-semibold text-[#fff]">Quotation Details</h2>
+        <div className='flex gap-2 items-center'>
+          <Custombutton name={'Download'} color={'blue'} onclick={() => downLoadPdf(viewData?.id)} />
+          <i className='pi pi-times text-[#fff]' onClick={() => { setSideBar(false) }}></i>
         </div>
+      </div>
     )
   }
 
@@ -85,7 +90,7 @@ const Page = () => {
               </div>
               <div className='flex flex-col gap-3'>
                 <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
-                <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id)}} />
+                <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
               </div>
             </div>
             <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
@@ -113,7 +118,7 @@ const Page = () => {
       {
         sideBar &&
         <>
-          <Sidebar header={<Sideheader/>} visible={sideBar} position="right" showCloseIcon={false} onHide={() => setSideBar(false)} className='w-[800px] custom-sidebar'>
+          <Sidebar header={<Sideheader />} visible={sideBar} position="right" showCloseIcon={false} onHide={() => setSideBar(false)} className='w-[800px] custom-sidebar'>
             <div>
               <div className='relative flex flex-col text-[14px] border rounded-[8px] pb-40 '>
                 <div className='absolute top-0 left-0'> <Image src={'/images/shadow-trading-left-vector.svg'} alt={''} width={40} height={100} /></div>
@@ -124,7 +129,7 @@ const Page = () => {
                     <div className=''>
                       <Image src={'/images/shadow-trading-logo.svg'} alt={''} width={80} height={90} />
                     </div>
-                    <p className='text-[16px] font-medium'>SHADOW TRADING W.L.L</p>
+                    <p className='text-[16px] font-medium'>NEW SHADOW TRADING AND CLASSY EVENTS W.L.L</p>
                   </div>
                   <div className='px-4 flex justify-end gap-2'>
                     <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '> QUOTATION</p>
@@ -188,8 +193,6 @@ const Page = () => {
                     <hr className='mx-4' />
                   </div>
                 </div>
-
-
                 <div className='mx-3'>
                   <Table columns={columns} rows={viewData?.quotation_items} />
                 </div>
@@ -206,6 +209,10 @@ const Page = () => {
                   </div>
                 </div>
               </div>
+              {
+                loader &&
+                <Loader />
+              }
             </div>
           </Sidebar>
         </>

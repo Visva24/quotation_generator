@@ -1,5 +1,4 @@
 "use client"
-
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState } from "react";
@@ -7,46 +6,39 @@ import { Response } from "@/utils/common";
 import { postMethod } from "@/utils/api";
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { storeUserDataInCookies } from "@/utils/cookies";
+import SavePopup from "../component/SavePopup";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [showPassword , setShowPassword] = useState<any>(false)
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [savePop, setSavePop] = useState<boolean>(false);
   const [credential, setCredential] = useState<any>(
     {
       user_email: "",
       user_password: ""
     }
   );
-  const handleChange = (key:string,value:any) => {
-      setCredential({...credential,[key]:value})
+  const handleChange = (key: string, value: any) => {
+    setCredential({ ...credential, [key]: value })
   }
-  const handleLogin = async() =>{
+  const handleLogin = async () => {
     const payload = {
-      user_email:credential.user_email,
-      user_password:credential.user_password
+      user_email: credential.user_email,
+      user_password: credential.user_password
     }
-    const response:Response = await postMethod("/authentication/sign-in",payload)
+    const response: Response = await postMethod("/authentication/sign-in", payload)
     console.log(response)
-    if(response.status=="success"){
-      toast.success('Successfully logged In', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-     setTimeout(async()=>{
-      router.push("/home")
-     },3000) 
+    if (response.status == "success") {
+      setSavePop(true)
+      setTimeout(async () => {
+        setSavePop(false)
+        router.push("/home")
+      }, 3000)
 
-     storeUserDataInCookies(response.data)
-     console.log(response.data)
-      
-    }else{
+      storeUserDataInCookies(response.data)
+      console.log(response.data)
+
+    } else {
       toast.error('Wrong Credential', {
         position: "top-right",
         autoClose: 5000,
@@ -57,7 +49,7 @@ export default function LoginPage() {
         progress: undefined,
         theme: "light",
         transition: Bounce,
-        });
+      });
     }
   }
   return (
@@ -68,7 +60,6 @@ export default function LoginPage() {
           layout="fill"
           objectFit="cover"
           alt="Login Background"
-
         />
       </div>
 
@@ -86,7 +77,7 @@ export default function LoginPage() {
                 placeholder="Email"
                 className="w-full px-4 py-3 pl-14 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 value={credential.user_email}
-                onChange={(e)=>{handleChange("user_email",e.target.value)}}
+                onChange={(e) => { handleChange("user_email", e.target.value) }}
               />
               <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
                 <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
@@ -99,12 +90,12 @@ export default function LoginPage() {
                 placeholder="Password"
                 className="w-full px-4 py-3 pl-14 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 value={credential.user_password}
-                onChange={(e)=>{handleChange("user_password",e.target.value)}}
+                onChange={(e) => { handleChange("user_password", e.target.value) }}
               />
               <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
                 <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
               </div>
-              <div className="absolute right-3 top-4 text-[14px] cursor-pointer" onClick={()=>{setShowPassword(!showPassword)}}> {showPassword ? "👁️" : "🙈"} </div>
+              <div className="absolute right-3 top-4 text-[14px] cursor-pointer" onClick={() => { setShowPassword(!showPassword) }}> {showPassword ? "👁️" : "🙈"} </div>
             </div>
 
             <div className="text-right mt-2">
@@ -154,6 +145,11 @@ export default function LoginPage() {
 
         </div>
       </div>
+      {savePop &&
+        <>
+          <SavePopup message={"Successfully Login"} />
+        </>
+      }
     </div>
   );
 }

@@ -165,6 +165,7 @@ const Page = () => {
       const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${data_id}&type=${type}`)
       const data = response.data;
       console.log(data)
+      const format_date = new Date(data.doc_date)
       if (response.status === "success") {
         setRevisedData(data)
         setFormdata({
@@ -173,7 +174,7 @@ const Page = () => {
           customer_reference: data.customer_reference,
           contact_person: data.contact_person,
           contact_no: data.contact_number,
-          document_date: data.doc_date,
+          document_date: format_date,
           currency: data.currency,
           payment_method: data.payment_mode,
           email: data.email,
