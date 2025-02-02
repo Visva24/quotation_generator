@@ -10,6 +10,8 @@ import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
+import Popup from '../component/Popup';
+import SavePopup from '../component/SavePopup';
 
 const Page = () => {
   const Quotation = () => {
@@ -24,6 +26,8 @@ const Page = () => {
     const [updateId, setUpdateId] = useState<any>()
     const [revisedDoc, setRevisedDoc] = useState<string>();
     const [revisedData, setRevisedData] = useState<any>();
+    const [showPopup , setShowPopup] = useState<boolean>(false);
+    const [savePop , setSavePop] = useState<boolean>(false);
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -206,7 +210,9 @@ const Page = () => {
       }
       const response: Response = await postMethod("/quotation/create-quotation-form", payload)
       if (response.status == "success") {
-        router.push("/quotation/history")
+        setSavePop(true)
+        setTimeout(()=>{setSavePop(false), router.push("/quotation/history")},2000)
+       
       }
     }
 
@@ -468,16 +474,16 @@ const Page = () => {
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
-                <Custombutton name={'Back'} color={'black'} onclick={() => { router.push("/home") }} />
+                <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true)}} />
                 {type === "revised" ? <Custombutton name={'Revise'} color={'blue'} onclick={createReviseData} /> : <Custombutton name={'Save'} color={'blue'} onclick={createQuototion} />}
               </div>
 
             </div>
           </div>
           <div className='col-span-6  '>
-            <div className='my-2 flex justify-between items-center'>
+            <div className='my-2 flex justify-start items-center'>
               <p className='text-[18px] font-medium'> Quotation Preview:</p>
-              <Custombutton name={'Download'} color={'blue'} />
+              {/* <Custombutton name={'Download'} color={'blue'} /> */}
               {/* <Custombutton name={''} color={'black'}/> */}
             </div>
             <div className='relative flex flex-col text-[14px] border rounded-[8px] pb-40 '>
@@ -573,11 +579,21 @@ const Page = () => {
             </div>
           </div>
         </div>
+        {
+          showPopup && 
+          <>
+          <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={()=>{setShowPopup(false)} } handleRedirect={()=>{router.push("/home") } }/>
+          </>
+        }
+        {
+          savePop && 
+          <>
+          <SavePopup message={'Saved Successfully'} />
+          </>
+        }
       </>
     )
   }
-
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Quotation />
