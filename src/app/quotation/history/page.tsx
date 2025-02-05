@@ -1,6 +1,7 @@
 "use client"
 import Custombutton from '@/app/component/Custombutton'
 import Loader from '@/app/component/Loader'
+import MoveForward from '@/app/component/MoveForward'
 import Table from '@/app/component/Table'
 import { getMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
@@ -30,7 +31,13 @@ const Page = () => {
   const [history, setHistory] = useState<any>();
   const [sideBar, setSideBar] = useState<any>();
   const [viewData, setViewData] = useState<any>();
+  const [selectOption ,setSelectOption] = useState<any>('')
   const [loader, setLoader] = useState<boolean>(false);
+  const [movePop, setMovePop] = useState<boolean>(false);
+  const handleChange = (value:any) => {
+    console.log(value)
+    setSelectOption(value)
+  }
   const getQuotationHistory = async () => {
     const response: Response = await getMethod(`/quotation/get-quotation-form-history`)
     console.log(response?.data)
@@ -88,9 +95,14 @@ const Page = () => {
                   <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
                 </div>
               </div>
-              <div className='flex flex-col gap-3'>
-                <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
-                <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
+              <div className='flex items-center gap-4 '>
+                <div className='h-20 w-20 rounded-full cursor-pointer flex justify-center items-center bg-[#FFF0CF]' onClick={()=>{setMovePop(true)}}>
+                  <Image src={'/images/move-forward.svg'} alt={''} height={30} width={30} />
+                </div>
+                <div className='flex flex-col gap-3'>
+                  <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                  <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
+                </div>
               </div>
             </div>
             <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
@@ -113,6 +125,23 @@ const Page = () => {
             </div>
           </div>
         ))
+      }
+
+      {
+        movePop && 
+         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
+                      <div className='flex flex-col gap-4 justify-center items-center p-8'>
+                      <Image src={'/images/illustrate.svg'} alt={''} height={160} width={160} />
+                      <p>Move-forward Quotation To?</p>
+                      <MoveForward options={["Sales Invoice","Delivery Notes"]} value={selectOption} onChange={handleChange}/>
+                      </div>
+                      <div className='w-full flex rounded-b-[8px]'>
+                        <p className='w-[50%] flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-bl-[8px]' onClick={()=>{setMovePop(false)}}>Back</p>
+                        <p  className='w-[50%] flex justify-center items-center bg-[#F4AA08] text-[#fff] p-3 cursor-pointer rounded-br-[8px]' onClick={()=>{router.push(`/${selectOption === "Sales Invoice" ? "invoice" : "challan" }?type=moveData`)}}>Move</p>
+                      </div>
+                    </div>
+                </div>
       }
 
       {

@@ -3,7 +3,16 @@ import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import 'primeicons/primeicons.css';
 import './globals.css';
+import Head from 'next/head';
+import Link from 'next/link';
+import { Montserrat } from 'next/font/google';
 // import '../styles/global.scss';
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-montserrat',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+});
 
 
 export const metadata: Metadata = {
@@ -19,7 +28,10 @@ export default function RootLayout({
   console.log("Using RootLayout");
   return (
     <html lang="en">
-      <body className=" bg-[#fff] m-0 p-0 ">
+      <Head>
+        <Link rel='stylesheet' href={"https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"}/>
+      </Head>
+      <body className=" bg-[#fff] m-0 p-0 font-montserrat">
         <PrimeReactProvider>
           <main className="h-screen bg-[#fff] overflow-auto no-scrollbar">{children}</main>
         </PrimeReactProvider>
