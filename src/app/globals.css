@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://unpkg.com/primereact/resources/themes/lara-light-blue/theme.css");
+@import url("https://unpkg.com/primereact/resources/primereact.min.css");
+@import url("https://unpkg.com/primeicons/primeicons.css");
 
 
 html, body {
@@ -40,6 +43,17 @@ body::-webkit-scrollbar {
   .animate-popup {
     animation: popup 0.3s ease-in-out forwards;
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 

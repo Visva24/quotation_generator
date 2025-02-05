@@ -26,8 +26,8 @@ const Page = () => {
     const [updateId, setUpdateId] = useState<any>()
     const [revisedDoc, setRevisedDoc] = useState<string>();
     const [revisedData, setRevisedData] = useState<any>();
-    const [showPopup , setShowPopup] = useState<boolean>(false);
-    const [savePop , setSavePop] = useState<boolean>(false);
+    const [showPopup, setShowPopup] = useState<boolean>(false);
+    const [savePop, setSavePop] = useState<boolean>(false);
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -212,8 +212,8 @@ const Page = () => {
       const response: Response = await postMethod("/quotation/create-quotation-form", payload)
       if (response.status == "success") {
         setSavePop(true)
-        setTimeout(()=>{setSavePop(false), router.push("/quotation/history")},2000)
-       
+        setTimeout(() => { setSavePop(false), router.push("/quotation/history") }, 2000)
+
       }
     }
 
@@ -347,9 +347,9 @@ const Page = () => {
                     value={formdata.customer_reference}
                   />
                 </div>
-                <div className='flex flex-col gap-1'>
+                <div className='flex flex-col gap-1 '>
                   <label htmlFor="">Payment Method</label>
-                  <Dropdown className='border h-9 rounded-[6px]'
+                  <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
                     options={paymentDropdown}
                     onChange={(e) => { handleChange("payment_method", e.target.value) }}
                     value={formdata.payment_method}
@@ -357,7 +357,7 @@ const Page = () => {
                 </div>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Currency</label>
-                  <Dropdown className='border h-9 rounded-[6px]'
+                  <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
                     options={currency}
                     onChange={(e) => { handleChange("currency", e.target.value) }}
                     value={formdata.currency}
@@ -411,7 +411,7 @@ const Page = () => {
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Units</label>
-                    <Dropdown className='border h-9 rounded-[6px]'
+                    <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
                       options={units}
                       optionLabel='label'
                       optionValue='value'
@@ -426,6 +426,8 @@ const Page = () => {
                     <label htmlFor="">Price</label>
                     <input className='border h-9 rounded-[6px] w-full'
                       type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("price", e.target.value) }}
                       value={tableData.price}
                     />
@@ -434,6 +436,8 @@ const Page = () => {
                     <label htmlFor="">Discount</label>
                     <input className='border h-9 rounded-[6px] w-full'
                       type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("discount", e.target.value) }}
                       value={tableData.discount}
                     />
@@ -442,6 +446,8 @@ const Page = () => {
                     <label htmlFor="">Tax</label>
                     <input className='border h-9 rounded-[6px] w-full'
                       type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("tax", e.target.value) }}
                       value={tableData.tax}
                     />
@@ -475,7 +481,7 @@ const Page = () => {
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
-                <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true)}} />
+                <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
                 {type === "revised" ? <Custombutton name={'Revise'} color={'blue'} onclick={createReviseData} /> : <Custombutton name={'Save'} color={'blue'} onclick={createQuototion} />}
               </div>
 
@@ -581,15 +587,15 @@ const Page = () => {
           </div>
         </div>
         {
-          showPopup && 
+          showPopup &&
           <>
-          <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={()=>{setShowPopup(false)} } handleRedirect={()=>{router.push("/home") } }/>
+            <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={() => { setShowPopup(false) }} handleRedirect={() => { router.push("/home") }} />
           </>
         }
         {
-          savePop && 
+          savePop &&
           <>
-          <SavePopup message={'Saved Successfully'} />
+            <SavePopup message={'Saved Successfully'} />
           </>
         }
       </>

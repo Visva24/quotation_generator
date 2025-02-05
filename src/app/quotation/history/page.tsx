@@ -31,10 +31,11 @@ const Page = () => {
   const [history, setHistory] = useState<any>();
   const [sideBar, setSideBar] = useState<any>();
   const [viewData, setViewData] = useState<any>();
-  const [selectOption ,setSelectOption] = useState<any>('')
+  const [selectOption, setSelectOption] = useState<any>('')
   const [loader, setLoader] = useState<boolean>(false);
   const [movePop, setMovePop] = useState<boolean>(false);
-  const handleChange = (value:any) => {
+  const [selectedId , setSelectedId] = useState<any>()
+  const handleChange = (value: any) => {
     console.log(value)
     setSelectOption(value)
   }
@@ -83,65 +84,65 @@ const Page = () => {
     <>
       {
         history?.map((data: any, index: any) => (
-          <div key={index} className='p-[20px] text-[14px] rounded-[12px] bg-[#F6F6F6] shadow-lg mx-4 mb-3 group'>
-            <div className='flex justify-between items-center'>
-              <div className='flex flex-col gap-3'>
-                <div className='flex gap-3'>
-                  <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#F4AA08] to-[#BA8000]'>Quotation</p>
-                  <p className='flex gap-2 items-center text-[18px]'><i className='pi pi-indian-rupee text-[#F4AA08] text-[16px]'></i>{data?.total_amount}</p>
-                </div>
-                <div className='flex gap-3'>
-                  <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[#F4AA08] text-[16px]'></i>{data?.Date}</p> |
-                  <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
-                </div>
-              </div>
-              <div className='flex items-center gap-4 '>
-                <div className='h-20 w-20 rounded-full cursor-pointer flex justify-center items-center bg-[#FFF0CF]' onClick={()=>{setMovePop(true)}}>
-                  <Image src={'/images/move-forward.svg'} alt={''} height={30} width={30} />
-                </div>
-                <div className='flex flex-col gap-3'>
-                  <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
-                  <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
-                </div>
-              </div>
-            </div>
-            <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
-              <hr className='my-1 border-[1px] border-[#9f9f9f]' />
+            <div key={index} className='p-[20px] text-[14px] rounded-[12px] bg-[#F6F6F6] shadow-lg mx-4 mb-3 group'>
               <div className='flex justify-between items-center'>
-                <div className='flex gap-2 items-center'>
-                  <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
-                    <p>{short_name || ""}</p>
+                <div className='flex flex-col gap-3'>
+                  <div className='flex gap-3'>
+                    <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#F4AA08] to-[#BA8000]'>Quotation</p>
+                    <p className='flex gap-2 items-center text-[18px]'><i className='pi pi-indian-rupee text-[#F4AA08] text-[16px]'></i>{data?.total_amount}</p>
+                  </div>
+                  <div className='flex gap-3'>
+                    <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[#F4AA08] text-[16px]'></i>{data?.Date}</p> |
+                    <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
+                  </div>
+                </div>
+                <div className='flex items-center gap-4 '>
+                  <div className='h-16 w-16 rounded-full cursor-pointer flex justify-center items-center bg-[#FFF0CF]' onClick={() => { setMovePop(true),setSelectedId(data?.id)}}>
+                    <Image src={'/images/move-forward.svg'} alt={''} height={28} width={28} />
+                  </div>
+                  <div className='flex flex-col gap-3'>
+                    <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                    <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
+                  </div>
+                </div>
+              </div>
+              <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
+                <hr className='my-1 border-[1px] border-[#9f9f9f]' />
+                <div className='flex justify-between items-center'>
+                  <div className='flex gap-2 items-center'>
+                    <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
+                      <p>{short_name || ""}</p>
+                    </div>
+                    <div className='flex flex-col gap-1'>
+                      <p className='text-[12px]'>Created by</p>
+                      <p className='text-[14px]'>{user_name}</p>
+                    </div>
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <p className='text-[12px]'>Created by</p>
-                    <p className='text-[14px]'>{user_name}</p>
+                    <p className='font-semibold'>Remarks</p>
+                    <p>{data?.remarks}</p>
                   </div>
-                </div>
-                <div className='flex flex-col gap-1'>
-                  <p className='font-semibold'>Remarks</p>
-                  <p>{data?.remarks}</p>
                 </div>
               </div>
             </div>
-          </div>
         ))
       }
 
       {
-        movePop && 
-         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
-                      <div className='flex flex-col gap-4 justify-center items-center p-8'>
-                      <Image src={'/images/illustrate.svg'} alt={''} height={160} width={160} />
-                      <p>Move-forward Quotation To?</p>
-                      <MoveForward options={["Sales Invoice","Delivery Notes"]} value={selectOption} onChange={handleChange}/>
-                      </div>
-                      <div className='w-full flex rounded-b-[8px]'>
-                        <p className='w-[50%] flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-bl-[8px]' onClick={()=>{setMovePop(false)}}>Back</p>
-                        <p  className='w-[50%] flex justify-center items-center bg-[#F4AA08] text-[#fff] p-3 cursor-pointer rounded-br-[8px]' onClick={()=>{router.push(`/${selectOption === "Sales Invoice" ? "invoice" : "challan" }?type=moveData`)}}>Move</p>
-                      </div>
-                    </div>
-                </div>
+        movePop &&
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
+            <div className='flex flex-col gap-4 justify-center items-center p-8'>
+              <Image src={'/images/illustrate.svg'} alt={''} height={160} width={160} />
+              <p>Move-forward Quotation To?</p>
+              <MoveForward options={["Sales Invoice", "Delivery Notes"]} value={selectOption} onChange={handleChange} />
+            </div>
+            <div className='w-full flex rounded-b-[8px]'>
+              <p className='w-[50%] flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-bl-[8px]' onClick={() => { setMovePop(false) }}>Back</p>
+              <p className='w-[50%] flex justify-center items-center bg-[#F4AA08] text-[#fff] p-3 cursor-pointer rounded-br-[8px]' onClick={() => { router.push(`/${selectOption === "Sales Invoice" ? "invoice" : "challan"}?type=moveData&id=${selectedId}`) }}>Move</p>
+            </div>
+          </div>
+        </div>
       }
 
       {

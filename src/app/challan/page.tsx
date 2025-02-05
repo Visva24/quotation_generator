@@ -7,7 +7,7 @@ import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
 import Table from '../component/Table'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
@@ -16,6 +16,10 @@ import SavePopup from '../component/SavePopup'
 const Page = () => {
   const Delivery = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const type: string = searchParams.get("type") ?? "";
+    const data_id = searchParams.get("id")
+    console.log(type,data_id)
     const cookies = parseCookies();
     const [docNo, setDocNo] = useState<any>();
     const [updateId, setUpdateId] = useState<any>();
@@ -122,7 +126,7 @@ const Page = () => {
         setSavePop(true)
         setTimeout(()=>{setSavePop(false), router.push("/challan/history")},2000)
       }
-    }
+    } 
 
     const createChallanList = async () => {
       console.log(updateId)
@@ -151,12 +155,19 @@ const Page = () => {
       } else {
         console.log(response.message)
       }
+    }
 
+    const getMovedData = async() => {
+      const response: Response = await getMethod(`/delivery-challan/move-forward-delivery-challan?quotation_id=${data_id}`)
+      console.log(response?.data)
     }
 
     useEffect(() => {
       getDocumentNo()
     }, [])
+    useEffect(() => {
+      getMovedData()
+    }, [type === "moveData"])
     return (
       <>
         <div>

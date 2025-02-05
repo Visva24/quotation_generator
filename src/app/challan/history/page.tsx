@@ -37,8 +37,6 @@ const Page = () => {
     setViewData(response.data)
   }
 
-
-
   const downLoadPdf = async (id: number) => {
     setLoader(true)
     const response: Response = await getMethod(`/delivery-challan/download-delivery-challan-template?id=${id}`)
