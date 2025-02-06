@@ -5,11 +5,13 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
+import Custombutton from '../component/Custombutton';
 
 const SignUpPage = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [savePop, setSavePop] = useState<boolean>(false);
+    const [error, setError] = useState<string>("initial");
     const [credential, setCredential] = useState<any>(
         {
             user_name: "",
@@ -20,10 +22,24 @@ const SignUpPage = () => {
         }
     );
     const handleChange = (key: string, value: any) => {
+        setError("initial")
+        if (key === "confirm_pass") {
+            setError("red")
+            console.log(value, credential.user_password)
+            if (value === credential.user_password) {
+                setError("green")
+            }
+        }
         setCredential({ ...credential, [key]: value })
     }
 
     const handleSignIn = async () => {
+
+
+        if (credential.user_password !== credential.confirm_pass) {
+            setSavePop(true)
+            return;
+        }
         const payload = {
             user_name: credential.user_name,
             user_email: credential.user_email,
@@ -89,7 +105,7 @@ const SignUpPage = () => {
                                     />
                                     <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
                                 </div>
-                                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                                <div className={`flex p-1 gap-2  items-center rounded-lg w-[330px]  bg-white ${error == "red" ? "border-[2px] border-red-400" : error == "green" ? "border-[2px] border-green-400" : "border-none"}`}>
                                     <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
                                     <input
                                         type={showPassword ? "text" : "password"}
@@ -139,6 +155,20 @@ const SignUpPage = () => {
                 </div>
 
             </div>
+            {
+                savePop && 
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-8 rounded-[12px] shadow-lg w-[450px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
+                        <div className='w-full flex flex-col gap-3'>
+                            <p className='flex justify-center'>Passwords do not match. Please re-check and enter the correct password.</p>
+                            <div className='flex gap-4 justify-center items-center'>
+                                <Custombutton name={'OK'} color={'black'} onclick={()=>{setSavePop(false)}} />
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </>
     )
 }
