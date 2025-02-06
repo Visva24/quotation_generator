@@ -53,103 +53,77 @@ export default function LoginPage() {
     }
   }
   return (
-    <div className="flex h-screen overflow-hidden bg-black">
-      <div className="relative w-[50%] h-[100%]  bg-gray-900  overflow-hidden">
-        <Image
-          src={'/images/loginImg.png'}
-          layout="fill"
-          objectFit="cover"
-          alt="Login Background"
-        />
-      </div>
-
-      <div className="flex-1 flex items-center justify-center">
-        <div className="w-[80%] max-w-sm space-y-6">
-          <div className="text-left">
-            <h1 className="text-4xl font-bold text-white">Welcome!</h1>
-            <p className="text-lg mt-2 text-gray-400">Today will be great</p>
+    <>
+      <div className="h-screen w-screen grid grid-cols-12 text-[#fff]">
+        <div className="col-span-7 bg-[#000] ">
+          <div className="flex h-full items-center justify-center">
+            <Image src="/images/loginImg.png" alt={""} height={400} width={400} className="shadow-2xl  shadow-[#901129]" />
           </div>
-
-          <div className="space-y-4">
-            <div className="relative">
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full px-4 py-3 pl-14 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                value={credential.user_email}
-                onChange={(e) => { handleChange("user_email", e.target.value) }}
-              />
-              <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
-                <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+        </div>
+        <div className="col-span-5 bg-[#000] overflow-y-auto">
+          <div className="mt-10 flex justify-center items-center">
+            <div className="flex flex-col gap-4">
+              <div>
+                <h2 className="text-[34px] font-bold">Welcome!</h2>
+                <p>Today will be great</p>
               </div>
-            </div>
-
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="w-full px-4 py-3 pl-14 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                value={credential.user_password}
-                onChange={(e) => { handleChange("user_password", e.target.value) }}
-              />
-              <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
-                <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
+              <div className="flex flex-col gap-4">
+                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                  <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="  text-black w-full py-3 bg-white  focus:outline-none"
+                    value={credential.user_email}
+                    onChange={(e) => { handleChange("user_email", e.target.value) }}
+                  />
+                </div>
+                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                  <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    className=" text-black w-full py-3 bg-white  focus:outline-none"
+                    value={credential.user_password}
+                    onChange={(e) => { handleChange("user_password", e.target.value) }}
+                  />
+                  <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-[#F4AA08] text-[14px] cursor-pointer">Forgot password?</p>
+                  <p onClick={()=>{router.push("/signup")}} className="text-[#F4AA08] text-[14px] cursor-pointer">Sign Up!</p>
+                </div>
               </div>
-              <div className="absolute right-3 top-4 text-[14px] cursor-pointer" onClick={() => { setShowPassword(!showPassword) }}> {showPassword ? "👁️" : "🙈"} </div>
+              {/* <div className="flex gap-1 items-center px-6">
+                <hr className=" w-full border-t-1 border-[#fff]" />
+                or
+                <hr className=" w-full  border-t-1 border-[#fff]" />
+              </div> */}
+              <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600" onClick={handleLogin}>
+                Login
+              </button>
+              <div className="px-6 mt-2"> <hr className=" w-full px-6  border-t-1 border-[#fff]" /></div>
+              <div className="flex flex-col gap-2 justify-center items-center">
+                <Image
+                  src="/images/flower.svg"
+                  alt="Footer Logo"
+                  width={120}
+                  height={120}
+                />
+                <p className="text-[24px] font-light text-white">SHADOW TRADING W.L.L</p>
+              </div>
+
             </div>
-
-            <div className="text-right mt-2">
-              <a href="#" className="text-yellow-500 hover:underline text-sm">
-                Forgot password?
-              </a>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center text-gray-400 mt-4">
-            <hr className="w-1/3 border-t-2 border-gray-400" />
-            <span className="mx-2">or</span>
-            <hr className="w-1/3 border-t-2 border-gray-400" />
-          </div>
-
-          <div className="space-y-4 mt-4">
-            <button className="w-full flex items-center justify-center bg-gray-700 px-4 py-3 rounded-lg text-white hover:bg-gray-600">
-              <Image
-                src="/images/gmail.png"
-                alt="Gmail Icon"
-                width={20}
-                height={20}
-                className="mr-2"
-              />
-              Continue with Gmail
-            </button>
-
-            {/* Login Button */}
-            <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600" onClick={handleLogin}>
-              Login
-            </button>
             <ToastContainer />
           </div>
-
-          <hr className="w-full border-t-2 border-gray-400 mt-4" />
-
-          <div className="text-center text-gray-400 mt-6 space-y-2">
-            <Image
-              src="/images/flower.svg"
-              alt="Footer Logo"
-              width={150}
-              height={150}
-              className="mx-auto"
-            />
-            <p className="text-2xl font-Montserrat text-white">SHADOW TRADING W.L.L</p>
-          </div>
-
         </div>
+
       </div>
       {savePop &&
         <>
           <SavePopup message={"Successfully Login"} />
         </>
       }
-    </div>
+    </>
   );
 }
