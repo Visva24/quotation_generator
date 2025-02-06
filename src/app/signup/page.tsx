@@ -1,4 +1,6 @@
 "use client"
+import { postMethod } from '@/utils/api';
+import { Response } from '@/utils/common';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
@@ -6,7 +8,40 @@ import { ToastContainer } from 'react-toastify'
 
 const SignUpPage = () => {
     const router = useRouter();
-    const [showPassword, setShowPassword] = useState<boolean>(false)
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [savePop, setSavePop] = useState<boolean>(false);
+    const [credential, setCredential] = useState<any>(
+        {
+            user_name: "",
+            user_email: "",
+            phone_number: "",
+            user_password: "",
+            confirm_pass: "",
+        }
+    );
+    const handleChange = (key: string, value: any) => {
+        setCredential({ ...credential, [key]: value })
+    }
+
+    const handleSignIn = async () => {
+        const payload = {
+            user_name: credential.user_name,
+            user_email: credential.user_email,
+            user_password: credential.user_password,
+            phone_number: credential.phone_number
+        }
+        const response: Response = await postMethod("/authentication/sign-up", payload)
+        console.log(response)
+        if (response.status == "success") {
+            setSavePop(true)
+            setTimeout(async () => {
+                setSavePop(false)
+                router.push("/log-in")
+            }, 3000)
+        }
+    }
+
+
     return (
         <>
             <div className="h-screen w-screen grid grid-cols-12 text-[#fff]">
@@ -19,17 +54,18 @@ const SignUpPage = () => {
                     <div className="mt-10 flex justify-center items-center">
                         <div className="flex flex-col gap-4">
                             <div>
-                                <h2 className="text-[34px] font-bold">Welcome!</h2>
+                                <h2 className="text-[34px] font-bold">Sign Up!</h2>
                                 <p>Today will be great</p>
                             </div>
                             <div className="flex flex-col gap-4">
-                            <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
                                     <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
                                     <input
                                         type="email"
                                         placeholder="Enter Name"
                                         className="  text-black w-full py-3 bg-white  focus:outline-none"
-
+                                        value={credential.user_name}
+                                        onChange={(e) => { handleChange("user_name", e.target.value) }}
                                     />
                                 </div>
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
@@ -38,7 +74,8 @@ const SignUpPage = () => {
                                         type="email"
                                         placeholder="Enter Email"
                                         className="  text-black w-full py-3 bg-white  focus:outline-none"
-
+                                        value={credential.user_email}
+                                        onChange={(e) => { handleChange("user_email", e.target.value) }}
                                     />
                                 </div>
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
@@ -47,18 +84,42 @@ const SignUpPage = () => {
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Enter Password"
                                         className=" text-black w-full py-3 bg-white  focus:outline-none"
-
+                                        value={credential.user_password}
+                                        onChange={(e) => { handleChange("user_password", e.target.value) }}
                                     />
                                     <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
                                 </div>
-                               
+                                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                                    <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Confrim Password"
+                                        className=" text-black w-full py-3 bg-white  focus:outline-none"
+                                        value={credential.confirm_pass}
+                                        onChange={(e) => { handleChange("confirm_pass", e.target.value) }}
+                                    />
+                                    <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
+                                </div>
+                                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                                    <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+                                    <input
+                                        type="number"
+                                        placeholder="Enter Mobile"
+                                        className="  text-black w-full py-3 bg-white  focus:outline-none"
+                                        onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                                        onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                                        value={credential.phone_number}
+                                        onChange={(e) => { handleChange("phone_number", e.target.value) }}
+                                    />
+                                </div>
+
                             </div>
                             {/* <div className="flex gap-1 items-center px-6">
                                 <hr className=" w-full border-t-1 border-[#fff]" />
                                 or
                                 <hr className=" w-full  border-t-1 border-[#fff]" />
                             </div> */}
-                            <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600"  >
+                            <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600" onClick={handleSignIn}  >
                                 Sign In
                             </button>
                             <div className="px-6 mt-2"> <hr className=" w-full px-6  border-t-1 border-[#fff]" /></div>
