@@ -137,10 +137,10 @@ const Page = () => {
         doc_number: docNo,
         challan_list: [
           {
-            item_number: tableData.item_number,
-            description: tableData.description,
-            quantity: tableData.quantity,
-            units: tableData.unit,
+            item_number: tableData.item_number || null,
+            description: tableData.description || null,
+            quantity: tableData.quantity || null,
+            units: tableData.unit || null,
           }
         ],
         record_id: updateId ? updateId : null

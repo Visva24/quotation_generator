@@ -154,12 +154,12 @@ const Page = () => {
         doc_number: docNo,
         invoice_list: [
           {
-            item_number: tableData.item_number,
-            description: tableData.description,
-            quantity: tableData.quantity,
-            units: tableData.unit,
-            price: tableData.price,
-            discount: tableData.discount,
+            item_number: tableData.item_number || null,
+            description: tableData.description || null,
+            quantity: tableData.quantity || null,
+            units: tableData.unit || null,
+            price: tableData.price || null,
+            discount: tableData.discount || null,
           }
         ],
         record_id: updateId ? updateId : null
@@ -207,8 +207,8 @@ const Page = () => {
       const response: Response = await postMethod("/sales-invoice/create-sales-invoice-form", payload)
       if (response.status == "success") {
         console.log(response.message)
-        // setSavePop(true)
-        // setTimeout(() => { setSavePop(false), router.push("/quotation/history") }, 2000)
+        setSavePop(true)
+        setTimeout(() => { setSavePop(false), router.push("/invoice/history") }, 2000)
       }
     }
     useEffect(() => {
@@ -298,14 +298,6 @@ const Page = () => {
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Validity</label>
-                  <input className='border h-9 rounded-[6px]'
-                    type='text'
-                    onChange={(e) => { handleChange("validity", e.target.value) }}
-                    value={formdata.validity}
-                  />
-                </div>
-                <div className='flex flex-col gap-1'>
                   <label htmlFor="">Customer Reference</label>
                   <input className='border h-9 rounded-[6px]'
                     type='text'
@@ -323,6 +315,14 @@ const Page = () => {
                     type='text'
                     onChange={(e) => { handleChange("dn_no", e.target.value) }}
                     value={formdata.dn_no}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor="">Validity</label>
+                  <input className='border h-9 rounded-[6px]'
+                    type='text'
+                    onChange={(e) => { handleChange("validity", e.target.value) }}
+                    value={formdata.validity}
                   />
                 </div>
               </div>
@@ -463,7 +463,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col  !break-all'>
                       <p>Document No:</p>
-                      <p className='text-[#929292]'>{formdata.document_no}  </p>
+                      <p className='text-[#929292]'>{docNo ? docNo : ""}  </p>
                     </div>
                     <div className='flex flex-col !break-all'>
                       <p>Document Date:</p>

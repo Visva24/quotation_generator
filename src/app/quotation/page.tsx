@@ -222,13 +222,13 @@ const Page = () => {
         doc_number: type == "revised" ? revisedDoc : docNo,
         Quotation_list: [
           {
-            item_number: tableData.item_number,
-            description: tableData.description,
-            quantity: tableData.quantity,
-            units: tableData.unit,
-            price: tableData.price,
-            discount: tableData.discount,
-            tax: tableData.tax
+            item_number: tableData.item_number || null,
+            description: tableData.description || null,
+            quantity: tableData.quantity || null,
+            units: tableData.unit || null,
+            price: tableData.price || null,
+            discount: tableData.discount || null,
+            tax: tableData.tax || null
           }
         ],
         record_id: updateId ? updateId : null
