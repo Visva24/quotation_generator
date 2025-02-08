@@ -209,6 +209,7 @@ const Page = () => {
                     <p>Payment Terms: <span>{viewData?.payment_terms}</span></p>
                     <p>Remark Brand: <span>{viewData?.remark_brand}</span></p>
                     <p>Delivery: <span>{viewData?.delivery}</span></p>
+                    <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>
                   </div>
                   <div className='flex flex-col gap-1'>
                     <p className=' text-[12px]'>Sub Total:{viewData?.sub_total}</p>

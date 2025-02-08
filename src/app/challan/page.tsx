@@ -160,7 +160,7 @@ const Page = () => {
       }
     }
 
-    const getMovedData = async () => {
+    const getMovedDataChallan = async () => {
       const response: Response = await getMethod(`/delivery-challan/move-forward-delivery-challan?quotation_id=${data_id}`)
       console.log(response?.data)
       const data = response?.data[0]
@@ -196,7 +196,7 @@ const Page = () => {
   }, [moveDoc]);
 
     useEffect(() => {
-      getMovedData()
+      getMovedDataChallan()
       getTableValues()
     }, [type === "moveData"])
     return (

@@ -7,7 +7,7 @@ import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
 import Table from '../component/Table'
-import { forbidden, useRouter } from 'next/navigation'
+import { forbidden, useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
@@ -18,11 +18,15 @@ import SavePopup from '../component/SavePopup'
 const Page = () => {
   const Invoice = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const type: string = searchParams.get("type") ?? "";
+    const data_id = searchParams.get("id")
     const cookies = parseCookies();
     const [docNo, setDocNo] = useState<any>();
     const [savePop, setSavePop] = useState<boolean>();
     const [tableValues, setTableValues] = useState<any>()
-    const [updateId, setUpdateId] = useState<any>()
+    const [updateId, setUpdateId] = useState<any>();
+    const [moveDoc, setMoveDoc] = useState<any>();
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -108,8 +112,8 @@ const Page = () => {
       setTableData({ ...tableData, [key]: value })
     }
     const getTableValues = async () => {
-      const docNumber =  docNo;
-      const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${docNumber}`)
+      const document_no = type == "moveData" ? moveDoc : docNo;
+      const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${document_no}`)
       console.log(response.data)
       setTableValues(response?.data)
     }
@@ -211,9 +215,48 @@ const Page = () => {
         setTimeout(() => { setSavePop(false), router.push("/invoice/history") }, 2000)
       }
     }
+
+    const getMovedDataInvoice = async () => {
+      const response: Response = await getMethod(`/sales-invoice/move-forward-sales-invoice?quotation_id=${data_id}`)
+      console.log(response?.data)
+      const data = response?.data[0]
+      setMoveDoc(data.doc_number)
+      getTableValues()
+      console.log(data.doc_number)
+      const format_doc_date = data.doc_date ? new Date(data.doc_date) : null;
+      if (response.status === "success") {
+        setFormdata({
+          customer: data.customer_name || "",
+          document_no: data.doc_number || "",
+          customer_reference: data.customer_reference || "",
+          contact_person: data.contact_person || "",
+          contact_no: data.contact_number || "",
+          document_date: format_doc_date || "",
+          currency: data.currency || "",
+          payment_method: data.payment_mode || "",
+          email: data.email || "",
+          address: data.address || "",
+          validity: data.quotation_validity || "",
+          remark_brand: data.remark_brand || "",
+          delivery: data.delivery || "",
+        })
+      }
+
+    }
+
     useEffect(() => {
       getDocumentNo()
     }, [])
+    useEffect(() => {
+      if (moveDoc) {
+        getTableValues();
+      }
+    }, [moveDoc]);
+
+    useEffect(() => {
+      getMovedDataInvoice()
+      getTableValues()
+    }, [type === "moveData"])
 
     return (
       <div>
@@ -249,7 +292,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("contact_person", e.target.value) }}
-                    value={formdata.contact_person}
+                    value={formdata.contact_person ?? ""}
                   />
                 </div>
               </div>
@@ -259,7 +302,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("email", e.target.value) }}
-                    value={formdata.email}
+                    value={formdata.email ?? ""}
                   />
                 </div>
               </div>
@@ -269,7 +312,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("contact_no", e.target.value) }}
-                    value={formdata.contact_no}
+                    value={formdata.contact_no ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -277,7 +320,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("address", e.target.value) }}
-                    value={formdata.address}
+                    value={formdata.address ?? ""}
                   />
                 </div>
 
@@ -286,7 +329,7 @@ const Page = () => {
                   <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
                     options={paymentDropdown}
                     onChange={(e) => { handleChange("payment_method", e.target.value) }}
-                    value={formdata.payment_method}
+                    value={formdata.payment_method ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -294,7 +337,7 @@ const Page = () => {
                   <Dropdown className='border h-9 rounded-[6px]'
                     options={currency}
                     onChange={(e) => { handleChange("currency", e.target.value) }}
-                    value={formdata.currency}
+                    value={formdata.currency ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -302,7 +345,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("customer_reference", e.target.value) }}
-                    value={formdata.customer_reference}
+                    value={formdata.customer_reference ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -314,7 +357,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("dn_no", e.target.value) }}
-                    value={formdata.dn_no}
+                    value={formdata.dn_no ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -322,7 +365,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("validity", e.target.value) }}
-                    value={formdata.validity}
+                    value={formdata.validity ?? ""}
                   />
                 </div>
               </div>
@@ -399,7 +442,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("sales_emp", e.target.value) }}
-                      value={formdata.sales_emp}
+                      value={formdata.sales_emp ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -407,7 +450,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("pay_terms", e.target.value) }}
-                      value={formdata.pay_terms}
+                      value={formdata.pay_terms ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -415,7 +458,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("remark_brand", e.target.value) }}
-                      value={formdata.remark_brand}
+                      value={formdata.remark_brand ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -423,7 +466,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("delivery", e.target.value) }}
-                      value={formdata.delivery}
+                      value={formdata.delivery ?? ""}
                     />
                   </div>
                 </div>
@@ -463,7 +506,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col  !break-all'>
                       <p>Document No:</p>
-                      <p className='text-[#929292]'>{docNo ? docNo : ""}  </p>
+                      <p className='text-[#929292]'>{formdata.document_no || docNo}  </p>
                     </div>
                     <div className='flex flex-col !break-all'>
                       <p>Document Date:</p>
@@ -525,7 +568,7 @@ const Page = () => {
 
 
               <div className='mx-3'>
-                <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow}/>
+                <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow} />
               </div>
               <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                 <div className='flex flex-col gap-2'>
@@ -533,11 +576,12 @@ const Page = () => {
                   <p>Payment Terms: <span>{formdata.pay_terms}</span></p>
                   <p>Remark Brand: <span>{formdata.remark_brand}</span></p>
                   <p>Delivery: <span>{formdata.delivery}</span></p>
+                  <p>Amount in Words: <span>{tableValues?.amount_in_words}</span></p>
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <p className=' text-[12px]'>Sub Total:{ }</p>
-                  <p>DIS:{ }</p>
-                  <p>Total:{ }</p>
+                  <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total}</p>
+                  <p>DIS:{tableValues?.total_discount}</p>
+                  <p>Total:{tableValues?.grand_total}</p>
                 </div>
               </div>
             </div>

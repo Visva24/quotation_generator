@@ -8,11 +8,15 @@ import { Response } from '@/utils/common'
 import { downloadPDF } from '@/utils/download'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { parseCookies } from 'nookies'
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 
 const Page = () => {
   const router = useRouter();
+  const cookies = parseCookies()
+  const user_id = cookies.user_id
+  console.log(user_id,"user_id")
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
