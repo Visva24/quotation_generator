@@ -577,10 +577,10 @@ const Page = () => {
                   <p>Delivery: <span>{formdata.delivery}</span></p>
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total}</p>
-                  <p>DIS:{tableValues?.total_discount}</p>
-                  <p>TAX:{tableValues?.total_tax}</p>
-                  <p>Total:{tableValues?.grand_total}</p>
+                  <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total || 0}</p>
+                  <p>DIS:{tableValues?.total_discount || 0}</p>
+                  <p>TAX:{tableValues?.total_tax  || 0}</p>
+                  <p>Total:{tableValues?.grand_total  || 0}</p>
                 </div>
               </div>
             </div>

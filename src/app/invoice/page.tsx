@@ -1,18 +1,28 @@
 
 'use client'
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Dropdown } from 'primereact/dropdown'
 import { Calendar } from 'primereact/calendar'
 import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
 import Table from '../component/Table'
-import { useRouter } from 'next/navigation'
+import { forbidden, useRouter } from 'next/navigation'
+import { parseCookies } from 'nookies'
+import { getMethod, postMethod } from '@/utils/api'
+import { Response } from '@/utils/common'
+import SavePopup from '../component/SavePopup'
+
 
 
 const Page = () => {
   const Invoice = () => {
     const router = useRouter();
+    const cookies = parseCookies();
+    const [docNo, setDocNo] = useState<any>();
+    const [savePop, setSavePop] = useState<boolean>();
+    const [tableValues, setTableValues] = useState<any>()
+    const [updateId, setUpdateId] = useState<any>()
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -30,6 +40,8 @@ const Page = () => {
         dn_no: "",
         ref_date: "",
         delivery: "",
+        sales_emp: "",
+        pay_terms: ""
       }
     )
     const [tableData, setTableData] = useState<any>({
@@ -67,6 +79,10 @@ const Page = () => {
     ]
     const paymentDropdown = [
       {
+        label: "Credit",
+        value: "Credit"
+      },
+      {
         label: "Cash",
         value: "Cash"
       },
@@ -91,6 +107,114 @@ const Page = () => {
       setFormdata({ ...formdata, [key]: value })
       setTableData({ ...tableData, [key]: value })
     }
+    const getTableValues = async () => {
+      const docNumber =  docNo;
+      const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${docNumber}`)
+      console.log(response.data)
+      setTableValues(response?.data)
+    }
+    const handleAdd = async () => {
+      await createInvoiceList();
+      getTableValues();
+      setTableData({
+        item_number: "",
+        description: "",
+        quantity: "",
+        unit: "",
+        price: "",
+        discount: "",
+        tax: "",
+      });
+    };
+
+    const handleRemoveRow = async (id: string | number) => {
+      console.log(id)
+      const response: Response = await getMethod(`/sales-invoice/delete-sales-invoice-list?record_id=${id}`)
+      getTableValues()
+    };
+
+    const handleEditRow = (id: string | number) => {
+      const selectedRow = tableValues.list.find((row: any) => row.id === id);
+      setUpdateId(id)
+      console.log(id, selectedRow)
+      setTableData({
+        item_number: selectedRow?.item_number,
+        description: selectedRow?.description,
+        quantity: selectedRow?.quantity,
+        unit: selectedRow?.units,
+        price: selectedRow?.price,
+        discount: selectedRow?.discount,
+        tax: selectedRow?.tax,
+      });
+
+    };
+
+    const createInvoiceList = async () => {
+      const payload = {
+        doc_number: docNo,
+        invoice_list: [
+          {
+            item_number: tableData.item_number,
+            description: tableData.description,
+            quantity: tableData.quantity,
+            units: tableData.unit,
+            price: tableData.price,
+            discount: tableData.discount,
+          }
+        ],
+        record_id: updateId ? updateId : null
+      }
+      console.log(payload);
+      const response: Response = await postMethod("/sales-invoice/save-or-update-invoice-list", payload)
+      console.log(response?.data)
+      if (response.status == "success") {
+        setUpdateId(null)
+      }
+    }
+
+    const getDocumentNo = async () => {
+      const response: Response = await getMethod("/quotation/generate-dynamic-doc-number?doc_type=sales")
+      if (response.status === "success") {
+        setDocNo(response?.data)
+      } else {
+        console.log(response.message)
+      }
+    }
+
+    const createInvoice = async () => {
+      const user_id = cookies.user_id
+      const payload = {
+        customer_name: formdata.customer || null,
+        customer_reference_id: "",
+        doc_number: docNo || null,
+        doc_date: formdata.document_date || null,
+        contact_person: formdata.contact_person || null,
+        email: formdata.email || null,
+        contact_number: formdata.contact_no || null,
+        customer_reference: formdata.customer_reference || null,
+        payment_mode: formdata.payment_method || null,
+        currency: formdata.currency || null,
+        quotation_validity: formdata.validity || null,
+        address: formdata.address || null,
+        remark_brand: formdata.remark_brand || null,
+        delivery: formdata.delivery || null,
+        created_user_id: user_id || null,
+        dn_number: formdata.dn_no || null,
+        reference_date: formdata.ref_date || null,
+        sales_employee: formdata.sales_emp || null,
+        payment_terms: formdata.pay_terms || null
+      }
+      const response: Response = await postMethod("/sales-invoice/create-sales-invoice-form", payload)
+      if (response.status == "success") {
+        console.log(response.message)
+        // setSavePop(true)
+        // setTimeout(() => { setSavePop(false), router.push("/quotation/history") }, 2000)
+      }
+    }
+    useEffect(() => {
+      getDocumentNo()
+    }, [])
+
     return (
       <div>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
@@ -113,12 +237,12 @@ const Page = () => {
                     className='border h-9 rounded-[6px]'
                     type='text'
                     onChange={(e) => { handleChange("document_no", e.target.value) }}
-                    value={""}
+                    value={docNo ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1 small-picker'>
                   <label htmlFor="">Document Date</label>
-                  <Calendar className='border h-9 rounded-[6px]' value={formdata.document_date || ""} onChange={(e) => handleChange("document_date", e.value as Date)} />
+                  <Calendar className='border h-9 rounded-[6px]' value={formdata.document_date || null} onChange={(e) => handleChange("document_date", e.value as Date)} />
                 </div>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Contact person</label>
@@ -149,11 +273,20 @@ const Page = () => {
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Customer Reference</label>
+                  <label htmlFor="">Address</label>
                   <input className='border h-9 rounded-[6px]'
                     type='text'
-                    onChange={(e) => { handleChange("customer_reference", e.target.value) }}
-                    value={formdata.customer_reference}
+                    onChange={(e) => { handleChange("address", e.target.value) }}
+                    value={formdata.address}
+                  />
+                </div>
+
+                <div className='flex flex-col gap-1 '>
+                  <label htmlFor="">Payment Method</label>
+                  <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
+                    options={paymentDropdown}
+                    onChange={(e) => { handleChange("payment_method", e.target.value) }}
+                    value={formdata.payment_method}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -165,22 +298,6 @@ const Page = () => {
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Reference Date</label>
-                  <input className='border h-9 rounded-[6px]'
-                    type='text'
-                    onChange={(e) => { handleChange("ref_date", e.target.value) }}
-                    value={formdata.ref_date}
-                  />
-                </div>
-                <div className='flex flex-col gap-1'>
-                  <label htmlFor="">DN number</label>
-                  <input className='border h-9 rounded-[6px]'
-                    type='text'
-                    onChange={(e) => { handleChange("dn_no", e.target.value) }}
-                    value={formdata.dn_no}
-                  />
-                </div>
-                <div className='flex flex-col gap-1'>
                   <label htmlFor="">Validity</label>
                   <input className='border h-9 rounded-[6px]'
                     type='text'
@@ -189,11 +306,23 @@ const Page = () => {
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Address</label>
+                  <label htmlFor="">Customer Reference</label>
                   <input className='border h-9 rounded-[6px]'
                     type='text'
-                    onChange={(e) => { handleChange("address", e.target.value) }}
-                    value={formdata.address}
+                    onChange={(e) => { handleChange("customer_reference", e.target.value) }}
+                    value={formdata.customer_reference}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor="">Reference Date</label>
+                  <Calendar className='border h-9 rounded-[6px]' value={formdata.ref_date || null} onChange={(e) => handleChange("ref_date", e.value as Date)} />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor="">DN number</label>
+                  <input className='border h-9 rounded-[6px]'
+                    type='text'
+                    onChange={(e) => { handleChange("dn_no", e.target.value) }}
+                    value={formdata.dn_no}
                   />
                 </div>
               </div>
@@ -258,7 +387,7 @@ const Page = () => {
                 </div>
                 <div className='flex justify-end items-center my-3 px-2'>
                   <div className='flex gap-5 items-center'>
-                    <Custombutton name={'Add'} color={'yellow'} />
+                    <Custombutton name={'Add'} color={'yellow'} onclick={handleAdd} />
                   </div>
                 </div>
               </div>
@@ -269,16 +398,16 @@ const Page = () => {
                     <label htmlFor="">Sales Employee</label>
                     <input className='border h-9 rounded-[6px]'
                       type='text'
-                      onChange={(e) => { handleChange("delivery", e.target.value) }}
-                      value={formdata.delivery}
+                      onChange={(e) => { handleChange("sales_emp", e.target.value) }}
+                      value={formdata.sales_emp}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Payment Terms</label>
                     <input className='border h-9 rounded-[6px]'
                       type='text'
-                      onChange={(e) => { handleChange("delivery", e.target.value) }}
-                      value={formdata.delivery}
+                      onChange={(e) => { handleChange("pay_terms", e.target.value) }}
+                      value={formdata.pay_terms}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -297,21 +426,19 @@ const Page = () => {
                       value={formdata.delivery}
                     />
                   </div>
-
-
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
                 <Custombutton name={'Back'} color={'black'} onclick={() => { router.push("/home") }} />
-                {<Custombutton name={'Revise'} color={'blue'} />}
+                <Custombutton name={'Save'} color={'blue'} onclick={createInvoice} />
               </div>
 
             </div>
           </div>
           <div className='col-span-6  '>
-            <div className='my-2 flex justify-between items-center'>
+            <div className='my-2 flex justify-start items-center'>
               <p className='text-[18px] font-medium'> Invoice Preview:</p>
-              <Custombutton name={'Download'} color={'blue'} />
+              {/* <Custombutton name={'Download'} color={'blue'} /> */}
               {/* <Custombutton name={''} color={'black'}/> */}
             </div>
             <div className='relative flex flex-col text-[14px] border rounded-[8px] pb-40 '>
@@ -326,7 +453,7 @@ const Page = () => {
                   <p className='text-[16px] font-medium'>NEW SHADOW TRADING AND CLASSY EVENTS W.L.L</p>
                 </div>
                 <div className='px-4 flex justify-end gap-2'>
-                  <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '> INVOICE</p>
+                  <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '>SALES INVOICE</p>
                 </div>
                 <div className='pl-10 mb-4'>
                   <div className='grid grid-cols-3 text-[12px] px-4 my-4 '>
@@ -361,8 +488,8 @@ const Page = () => {
                   <hr className='mx-4' />
                   <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
                     <div>
-                      <p>Contact Reference:</p>
-                      <p className='text-[#929292] break-word'>{formdata.customer_reference}</p>
+                      <p>Address:</p>
+                      <p className='text-[#929292] break-word'>{formdata.address}</p>
                     </div>
                     <div>
                       <p>Payment Method:</p>
@@ -374,10 +501,18 @@ const Page = () => {
                     </div>
                   </div>
                   <hr className='mx-4' />
-                  <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
+                  <div className='grid grid-cols-4 gap-6 text-[12px] px-4 my-4'>
                     <div>
-                      <p>Address:</p>
-                      <p className='text-[#929292] break-word'>{formdata.address}</p>
+                      <p>Contact Reference:</p>
+                      <p className='text-[#929292] break-word'>{formdata.customer_reference}</p>
+                    </div>
+                    <div>
+                      <p>Reference Date:</p>
+                      <p className='text-[#929292] break-word'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
+                    </div>
+                    <div>
+                      <p>DN number:</p>
+                      <p className='text-[#929292] break-word'>{formdata.dn_no}</p>
                     </div>
                     <div>
                       <p>Validity:</p>
@@ -390,10 +525,12 @@ const Page = () => {
 
 
               <div className='mx-3'>
-                <Table columns={columns} rows={[]} />
+                <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow}/>
               </div>
               <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                 <div className='flex flex-col gap-2'>
+                  <p>Sales Employee: <span>{formdata.sales_emp}</span></p>
+                  <p>Payment Terms: <span>{formdata.pay_terms}</span></p>
                   <p>Remark Brand: <span>{formdata.remark_brand}</span></p>
                   <p>Delivery: <span>{formdata.delivery}</span></p>
                 </div>
@@ -406,7 +543,10 @@ const Page = () => {
             </div>
           </div>
         </div>
-
+        {
+          savePop &&
+          <SavePopup message={'Saved Successfully'} />
+        }
       </div>
     )
   }

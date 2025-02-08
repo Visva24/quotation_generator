@@ -28,7 +28,7 @@ const Page = () => {
   const getQuotationHistory = async () => {
     const response: Response = await getMethod(`/delivery-challan/get-delivery-challan-form-history`)
     console.log(response?.data)
-    // setHistory(response?.data)
+    setHistory(response?.data)
   }
 
   const getViewData = async (id: number) => {
@@ -69,8 +69,8 @@ const Page = () => {
             <div className='flex justify-between items-center'>
               <div className='flex flex-col gap-3'>
                 <div className='flex gap-3'>
-                  <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#F4AA08] to-[#BA8000]'>Quotation</p>
-                  <p className='flex gap-2 items-center text-[18px]'><i className='pi pi-indian-rupee text-[#F4AA08] text-[16px]'></i>{data?.total_amount}</p>
+                  <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#08A5F4] to-[#005DBA]'>Delivery Notes</p>
+                  <p className='flex gap-2 items-center text-[18px]'><span className=' text-[#F4AA08] text-[16px]'>{data?.symbol}</span>{data?.total_amount}</p>
                 </div>
                 <div className='flex gap-3'>
                   <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[#F4AA08] text-[16px]'></i>{data?.Date}</p> |
@@ -87,11 +87,11 @@ const Page = () => {
               <div className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
                   <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
-                    <p>{short_name || ""}</p>
+                    <p>{data?.created_by?.avatar_value}</p>
                   </div>
                   <div className='flex flex-col gap-1'>
                     <p className='text-[12px]'>Created by</p>
-                    <p className='text-[14px]'>{user_name}</p>
+                    <p className='text-[14px]'>{data?.created_by?.user_name}</p>
                   </div>
                 </div>
                 <div className='flex flex-col gap-1'>

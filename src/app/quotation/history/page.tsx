@@ -85,7 +85,7 @@ const Page = () => {
                 <div className='flex flex-col gap-3'>
                   <div className='flex gap-3'>
                     <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#F4AA08] to-[#BA8000]'>Quotation</p>
-                    <p className='flex gap-2 items-center text-[18px]'><i className='pi pi-indian-rupee text-[#F4AA08] text-[16px]'></i>{data?.total_amount}</p>
+                    <p className='flex gap-2 items-center text-[18px]'><span className=' text-[#F4AA08] text-[16px]'>{data?.symbol}</span>{data?.total_amount}</p>
                   </div>
                   <div className='flex gap-3'>
                     <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[#F4AA08] text-[16px]'></i>{data?.Date}</p> |
