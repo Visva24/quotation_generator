@@ -28,7 +28,7 @@ const Page = () => {
   const getQuotationHistory = async () => {
     const response: Response = await getMethod(`/delivery-challan/get-delivery-challan-form-history`)
     console.log(response?.data)
-    setHistory(response?.data)
+    // setHistory(response?.data)
   }
 
   const getViewData = async (id: number) => {

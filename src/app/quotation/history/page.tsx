@@ -8,15 +8,11 @@ import { Response } from '@/utils/common'
 import { downloadPDF } from '@/utils/download'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { parseCookies } from 'nookies'
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 
 const Page = () => {
-  const cookies = parseCookies();
   const router = useRouter();
-  const user_name = cookies.user_name
-  const short_name = cookies.avatar_value
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -111,11 +107,11 @@ const Page = () => {
                 <div className='flex justify-between items-center'>
                   <div className='flex gap-2 items-center'>
                     <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
-                      <p>{short_name || ""}</p>
+                      <p>{data?.created_by?.avatar_value}</p>
                     </div>
                     <div className='flex flex-col gap-1'>
                       <p className='text-[12px]'>Created by</p>
-                      <p className='text-[14px]'>{user_name}</p>
+                      <p className='text-[14px]'>{data?.created_by?.user_name}</p>
                     </div>
                   </div>
                   <div className='flex flex-col gap-1'>

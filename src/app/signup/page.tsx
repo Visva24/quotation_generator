@@ -6,11 +6,13 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import Custombutton from '../component/Custombutton';
+import SavePopup from '../component/SavePopup';
 
 const SignUpPage = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [savePop, setSavePop] = useState<boolean>(false);
+    const [pop , setPop] = useState<boolean>(false)
     const [error, setError] = useState<string>("initial");
     const [credential, setCredential] = useState<any>(
         {
@@ -34,8 +36,6 @@ const SignUpPage = () => {
     }
 
     const handleSignIn = async () => {
-
-
         if (credential.user_password !== credential.confirm_pass) {
             setSavePop(true)
             return;
@@ -49,9 +49,9 @@ const SignUpPage = () => {
         const response: Response = await postMethod("/authentication/sign-up", payload)
         console.log(response)
         if (response.status == "success") {
-            setSavePop(true)
+            setPop(true)
             setTimeout(async () => {
-                setSavePop(false)
+                setPop(false)
                 router.push("/log-in")
             }, 3000)
         }
@@ -168,6 +168,10 @@ const SignUpPage = () => {
                         </div>
                     </div>
                 </div>
+            }
+            {
+                pop && 
+                <SavePopup message={'Successfully Sign In'}/>
             }
         </>
     )

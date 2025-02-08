@@ -19,12 +19,13 @@ const Page = () => {
     const searchParams = useSearchParams();
     const type: string = searchParams.get("type") ?? "";
     const data_id = searchParams.get("id")
-    console.log(type,data_id)
+    console.log(type, data_id)
     const cookies = parseCookies();
     const [docNo, setDocNo] = useState<any>();
+    const [moveDoc,setMoveDoc] = useState<any>();
     const [updateId, setUpdateId] = useState<any>();
     const [tableValues, setTableValues] = useState<any>();
-    const [savePop , setSavePop] =useState<boolean>();
+    const [savePop, setSavePop] = useState<boolean>();
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -80,7 +81,9 @@ const Page = () => {
     };
 
     const getTableValues = async () => {
-      const response: Response = await getMethod(`/delivery-challan/get-all-challan-list?doc_number=${docNo}`)
+      console.log(moveDoc,"doc" )
+      const document_no =  type == "moveData" ? moveDoc : docNo;
+      const response: Response = await getMethod(`/delivery-challan/get-all-challan-list?doc_number=${document_no}`)
       console.log(response.data)
       setTableValues(response?.data)
     }
@@ -124,9 +127,9 @@ const Page = () => {
       const response: Response = await postMethod("/delivery-challan/create-delivery-challan-form", payload)
       if (response.status == "success") {
         setSavePop(true)
-        setTimeout(()=>{setSavePop(false), router.push("/challan/history")},2000)
+        setTimeout(() => { setSavePop(false), router.push("/challan/history") }, 2000)
       }
-    } 
+    }
 
     const createChallanList = async () => {
       console.log(updateId)
@@ -157,16 +160,44 @@ const Page = () => {
       }
     }
 
-    const getMovedData = async() => {
+    const getMovedData = async () => {
       const response: Response = await getMethod(`/delivery-challan/move-forward-delivery-challan?quotation_id=${data_id}`)
       console.log(response?.data)
+      const data = response?.data[0]
+      setMoveDoc(data.doc_number)
+      getTableValues()
+      console.log(data.doc_number)
+      const format_ref_date = data.reference_date ? new Date(data.reference_date) : null;
+      const format_doc_date = data.doc_date ? new Date(data.doc_date) : null;
+      if(response.status === "success"){
+        setFormdata({
+          customer: data.customer_name || "",
+          document_date: format_doc_date,
+          contact_person: data.contact_person || "" ,
+          email: data.email || "",
+          contact_no: data.contact_number || "",
+          customer_reference: data.customer_reference || "",
+          address: data.address || "" ,
+          remark_brand: data.remark_brand || "",
+          ref_date:format_ref_date ,
+        })
+      }
+      
     }
 
     useEffect(() => {
       getDocumentNo()
     }, [])
+
+    useEffect(() => {
+      if (moveDoc) {
+          getTableValues();
+      }
+  }, [moveDoc]);
+
     useEffect(() => {
       getMovedData()
+      getTableValues()
     }, [type === "moveData"])
     return (
       <>
@@ -181,7 +212,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange('customer', e.target.value) }}
-                      value={formdata.customer}
+                      value={formdata.customer ?? ""}
                     />
                   </div>
 
@@ -191,19 +222,19 @@ const Page = () => {
                       className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("document_no", e.target.value) }}
-                      value={docNo || ""}
+                      value={docNo ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1 small-picker'>
                     <label htmlFor="">Document Date</label>
-                    <Calendar className='border h-9 rounded-[6px]' value={formdata.document_date || ""} onChange={(e) => handleChange("document_date", e.value as Date)} />
+                    <Calendar className='border h-9 rounded-[6px]' value={formdata.document_date || null} onChange={(e) => handleChange("document_date", e.value as Date)} />
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Contact person</label>
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("contact_person", e.target.value) }}
-                      value={formdata.contact_person}
+                      value={formdata.contact_person ?? ""}
                     />
                   </div>
                 </div>
@@ -213,7 +244,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("email", e.target.value) }}
-                      value={formdata.email}
+                      value={formdata.email ?? ""}
                     />
                   </div>
                 </div>
@@ -223,7 +254,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("contact_no", e.target.value) }}
-                      value={formdata.contact_no}
+                      value={formdata.contact_no ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -231,7 +262,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("customer_reference", e.target.value) }}
-                      value={formdata.customer_reference}
+                      value={formdata.customer_reference ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -239,12 +270,12 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px]'
                       type='text'
                       onChange={(e) => { handleChange("address", e.target.value) }}
-                      value={formdata.address}
+                      value={formdata.address ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1 small-picker'>
                     <label htmlFor="">Reference Date</label>
-                    <Calendar className='border h-9 rounded-[6px]' value={formdata.ref_date || ""} onChange={(e) => handleChange("ref_date", e.value as Date)} />
+                    <Calendar className='border h-9 rounded-[6px]' value={formdata.ref_date || null} onChange={(e) => handleChange("ref_date", e.value as Date)} />
                   </div>
                 </div>
               </div>
@@ -398,8 +429,8 @@ const Page = () => {
           </div>
         </div>
         {
-          savePop && 
-          <SavePopup message={'Saved Successfully'}/>
+          savePop &&
+          <SavePopup message={'Saved Successfully'} />
         }
       </>
     )
