@@ -19,10 +19,11 @@ const Page = () => {
     const searchParams = useSearchParams();
     const type: string = searchParams.get("type") ?? "";
     const data_id = searchParams.get("id")
+    const current_user_id = searchParams.get("current_user_id")
     console.log(type, data_id)
     const cookies = parseCookies();
     const [docNo, setDocNo] = useState<any>();
-    const [moveDoc,setMoveDoc] = useState<any>();
+    const [moveDoc, setMoveDoc] = useState<any>();
     const [updateId, setUpdateId] = useState<any>();
     const [tableValues, setTableValues] = useState<any>();
     const [savePop, setSavePop] = useState<boolean>();
@@ -81,8 +82,8 @@ const Page = () => {
     };
 
     const getTableValues = async () => {
-      console.log(moveDoc,"doc" )
-      const document_no =  type == "moveData" ? moveDoc : docNo;
+      console.log(moveDoc, "doc")
+      const document_no = type == "moveData" ? moveDoc : docNo;
       const response: Response = await getMethod(`/delivery-challan/get-all-challan-list?doc_number=${document_no}`)
       console.log(response.data)
       setTableValues(response?.data)
@@ -161,7 +162,7 @@ const Page = () => {
     }
 
     const getMovedDataChallan = async () => {
-      const response: Response = await getMethod(`/delivery-challan/move-forward-delivery-challan?quotation_id=${data_id}`)
+      const response: Response = await getMethod(`/delivery-challan/move-forward-delivery-challan?quotation_id=${data_id}&current_user_id=${current_user_id}`)
       console.log(response?.data)
       const data = response?.data[0]
       setMoveDoc(data.doc_number)
@@ -169,20 +170,20 @@ const Page = () => {
       console.log(data.doc_number)
       const format_ref_date = data.reference_date ? new Date(data.reference_date) : null;
       const format_doc_date = data.doc_date ? new Date(data.doc_date) : null;
-      if(response.status === "success"){
+      if (response.status === "success") {
         setFormdata({
           customer: data.customer_name || "",
           document_date: format_doc_date,
-          contact_person: data.contact_person || "" ,
+          contact_person: data.contact_person || "",
           email: data.email || "",
           contact_no: data.contact_number || "",
           customer_reference: data.customer_reference || "",
-          address: data.address || "" ,
+          address: data.address || "",
           remark_brand: data.remark_brand || "",
-          ref_date:format_ref_date ,
+          ref_date: format_ref_date,
         })
       }
-      
+
     }
 
     useEffect(() => {
@@ -191,9 +192,9 @@ const Page = () => {
 
     useEffect(() => {
       if (moveDoc) {
-          getTableValues();
+        getTableValues();
       }
-  }, [moveDoc]);
+    }, [moveDoc]);
 
     useEffect(() => {
       getMovedDataChallan()
@@ -209,7 +210,7 @@ const Page = () => {
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Customer</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange('customer', e.target.value) }}
                       value={formdata.customer ?? ""}
@@ -219,10 +220,11 @@ const Page = () => {
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Document No</label>
                     <input
-                      className='border h-9 rounded-[6px]'
+                      className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("document_no", e.target.value) }}
                       value={docNo ?? ""}
+                      disabled
                     />
                   </div>
                   <div className='flex flex-col gap-1 small-picker'>
@@ -231,7 +233,7 @@ const Page = () => {
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Contact person</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("contact_person", e.target.value) }}
                       value={formdata.contact_person ?? ""}
@@ -241,7 +243,7 @@ const Page = () => {
                 <div className='px-2 my-2'>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">E-mail</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("email", e.target.value) }}
                       value={formdata.email ?? ""}
@@ -251,15 +253,17 @@ const Page = () => {
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Contact No</label>
-                    <input className='border h-9 rounded-[6px]'
-                      type='text'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
+                      type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("contact_no", e.target.value) }}
                       value={formdata.contact_no ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Customer Reference</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("customer_reference", e.target.value) }}
                       value={formdata.customer_reference ?? ""}
@@ -267,7 +271,7 @@ const Page = () => {
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Address</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("address", e.target.value) }}
                       value={formdata.address ?? ""}
@@ -285,7 +289,7 @@ const Page = () => {
                   <div className='grid grid-cols-2 px-2 gap-4'>
                     <div className='flex flex-col gap-1'>
                       <label htmlFor="">Item No.</label>
-                      <input className='border h-9 rounded-[6px]'
+                      <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='text'
                         onChange={(e) => { handleChange("item_number", e.target.value) }}
                         value={tableData.item_number}
@@ -293,7 +297,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col gap-1'>
                       <label htmlFor="">Description</label>
-                      <input className='border h-9 rounded-[6px]'
+                      <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='text'
                         onChange={(e) => { handleChange("description", e.target.value) }}
                         value={tableData.description}
@@ -301,8 +305,10 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col gap-1'>
                       <label htmlFor="">Quantity</label>
-                      <input className='border h-9 rounded-[6px]'
+                      <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='number'
+                        onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                        onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                         onChange={(e) => { handleChange("quantity", e.target.value) }}
                         value={tableData.quantity}
                       />
@@ -330,7 +336,7 @@ const Page = () => {
                   <div className='grid grid-cols-2 px-2 gap-4'>
                     <div className='flex flex-col gap-1'>
                       <label htmlFor="">Remark Brand</label>
-                      <input className='border h-9 rounded-[6px]'
+                      <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='text'
                         onChange={(e) => { handleChange("remark_brand", e.target.value) }}
                         value={formdata.remark_brand}

@@ -57,3 +57,76 @@ input[type=number] {
 }
 
 
+.p-dropdown-label {
+  padding: 5px 10px !important; /* Adjust spacing */
+  font-size: 14px !important; /* Change font size */
+}
+.p-dropdown.p-focus {
+  border: 2px solid #F4AA08 !important;
+  box-shadow: 0 0 10px rgba(244, 170, 8, 0.7) !important;
+}
+
+.p-calendar .p-inputtext:focus {
+  border-color: #F4AA08 !important; /* Yellow border on focus */
+  box-shadow: 0 0 4px rgba(244, 170, 8, 0.5) !important; /* Optional glow effect */
+}
+
+/* 🌟 Resize the Calendar Pop-up Container */
+/* 🌟 Calendar Pop-up Container */
+.p-datepicker {
+  width: 310px !important; /* Adjust to a more balanced width */
+  height: auto !important; /* Keep height flexible */
+  font-size: 14px !important; /* Ensure text remains readable */
+  padding: 12px !important; /* Add padding for better spacing */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important; /* Add rounded corners */
+}
+
+/* 🌟 Resize the Header (Month & Year) */
+.p-datepicker .p-datepicker-header {
+  height: 50px !important; /* Increase header height */
+  font-size: 14px !important; /* Make text in the header clearer */
+}
+
+/* 🌟 Resize the Grid for Days */
+.p-datepicker table td {
+  width: 20px !important; /* Adjust width of date cells */
+  height: 20px !important; /* Adjust height of date cells */
+  font-size: 11px !important; /* Adjust font size */
+  padding: 0px !important; /* Remove unnecessary padding */
+}
+
+/* 🌟 Adjust Navigation Buttons (Previous/Next) */
+.p-datepicker .p-datepicker-prev,
+.p-datepicker .p-datepicker-next {
+  font-size: 14px !important; /* Resize navigation icons */
+  width: 28px !important; /* Adjust button size */
+  height: 28px !important;
+}
+
+/* 🌟 Adjust Weekday Names (Su, Mo, etc.) */
+.p-datepicker .p-datepicker-weekday {
+  font-size: 12px !important; /* Slightly increase font size */
+}
+
+/* 🌟 Adjust Selected Date Highlight Circle */
+.p-datepicker table td span.p-highlight {
+  width: 24px !important; /* Better size for selected date */
+  height: 24px !important;
+  line-height: 24px !important; /* Center text vertically */
+  font-size: 13px !important; /* Ensure text is visible */
+}
+
+/* 🌟 Adjust Input Focus Color */
+.p-calendar .p-inputwrapper-focus .p-inputtext {
+  border-color: #F4AA08 !important; /* Focus border color */
+  box-shadow: 0 0 4px rgba(244, 170, 8, 0.5) !important; /* Focus shadow */
+}
+
+/* 🌟 Adjust Input Field Size */
+.p-calendar .p-inputtext {
+  height: 28px !important; /* Adjust input field height */
+  font-size: 14px !important; /* Adjust font size for readability */
+  padding: 4px 8px !important; /* Adjust input padding */
+}
+

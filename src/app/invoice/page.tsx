@@ -21,6 +21,7 @@ const Page = () => {
     const searchParams = useSearchParams();
     const type: string = searchParams.get("type") ?? "";
     const data_id = searchParams.get("id")
+    const current_user_id = searchParams.get("current_user_id")
     const cookies = parseCookies();
     const [docNo, setDocNo] = useState<any>();
     const [savePop, setSavePop] = useState<boolean>();
@@ -217,7 +218,7 @@ const Page = () => {
     }
 
     const getMovedDataInvoice = async () => {
-      const response: Response = await getMethod(`/sales-invoice/move-forward-sales-invoice?quotation_id=${data_id}`)
+      const response: Response = await getMethod(`/sales-invoice/move-forward-sales-invoice?quotation_id=${data_id}&current_user_id=${current_user_id}`)
       console.log(response?.data)
       const data = response?.data[0]
       setMoveDoc(data.doc_number)
