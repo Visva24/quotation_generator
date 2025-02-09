@@ -139,7 +139,7 @@ const Page = () => {
             </div>
             <div className='w-full flex rounded-b-[8px]'>
               <p className='w-[50%] flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-bl-[8px]' onClick={() => { setMovePop(false) }}>Back</p>
-              <p className='w-[50%] flex justify-center items-center bg-[#F4AA08] text-[#fff] p-3 cursor-pointer rounded-br-[8px]' onClick={() => { router.push(`/${selectOption === "Sales Invoice" ? "invoice" : "challan"}?type=moveData&id=${selectedId}&current_use_id=${user_id}`) }}>Move</p>
+              <p className='w-[50%] flex justify-center items-center bg-[#F4AA08] text-[#fff] p-3 cursor-pointer rounded-br-[8px]' onClick={() => { router.push(`/${selectOption === "Sales Invoice" ? "invoice" : "challan"}?type=moveData&id=${selectedId}&current_user_id=${user_id}`) }}>Move</p>
             </div>
           </div>
         </div>

@@ -86,6 +86,7 @@ export default function LoginPage() {
                     className=" text-black w-full py-3 bg-white  focus:outline-none"
                     value={credential.user_password}
                     onChange={(e) => { handleChange("user_password", e.target.value) }}
+                    onKeyDown={(e) => { if (e.key === "Enter") handleLogin(); }}
                   />
                   <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
                 </div>

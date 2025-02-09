@@ -12,6 +12,7 @@ import { parseCookies } from 'nookies'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import SavePopup from '../component/SavePopup'
+import Popup from '../component/Popup'
 
 const Page = () => {
   const Delivery = () => {
@@ -20,6 +21,7 @@ const Page = () => {
     const type: string = searchParams.get("type") ?? "";
     const data_id = searchParams.get("id")
     const current_user_id = searchParams.get("current_user_id")
+    console.log(current_user_id, "current_user_id")
     console.log(type, data_id)
     const cookies = parseCookies();
     const [docNo, setDocNo] = useState<any>();
@@ -27,6 +29,8 @@ const Page = () => {
     const [updateId, setUpdateId] = useState<any>();
     const [tableValues, setTableValues] = useState<any>();
     const [savePop, setSavePop] = useState<boolean>();
+    const [error, setError] = useState<boolean>(false);
+    const [showPopup, setShowPopup] = useState<boolean>(false);
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -71,6 +75,10 @@ const Page = () => {
       setTableData({ ...tableData, [key]: value })
     }
     const handleAdd = async () => {
+      if (!tableData.description || !tableData.quantity) {
+        setError(true)
+        return
+      }
       await createChallanList();
       getTableValues();
       setTableData({
@@ -110,6 +118,10 @@ const Page = () => {
 
 
     const createDeliveryNote = async () => {
+      if (!formdata.customer || !formdata.document_date || !formdata.ref_date) {
+        setError(true)
+        return;
+      }
       const user_id = cookies.user_id
       const payload = {
         customer_name: formdata.customer || null,
@@ -186,6 +198,15 @@ const Page = () => {
 
     }
 
+    const resetTempData = async () => {
+      const response: Response = await getMethod(`/delivery-challan/reset-temp-Challan-list?doc_number=${docNo}`)
+    }
+
+    const handleYes = async () => {
+      await resetTempData()
+      router.push("/home")
+    }
+
     useEffect(() => {
       getDocumentNo()
     }, [])
@@ -209,7 +230,7 @@ const Page = () => {
               <div className='border mx-2 rounded-[8px] p-2'>
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Customer</label>
+                    <label htmlFor="">Customer <span className='text-red-500'>*</span></label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange('customer', e.target.value) }}
@@ -218,7 +239,7 @@ const Page = () => {
                   </div>
 
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Document No</label>
+                    <label htmlFor="">Document No <span className='text-red-500'>*</span></label>
                     <input
                       className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
@@ -228,7 +249,7 @@ const Page = () => {
                     />
                   </div>
                   <div className='flex flex-col gap-1 small-picker'>
-                    <label htmlFor="">Document Date</label>
+                    <label htmlFor="">Document Date <span className='text-red-500'>*</span></label>
                     <Calendar className='border h-9 rounded-[6px]' value={formdata.document_date || null} onChange={(e) => handleChange("document_date", e.value as Date)} />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -278,7 +299,7 @@ const Page = () => {
                     />
                   </div>
                   <div className='flex flex-col gap-1 small-picker'>
-                    <label htmlFor="">Reference Date</label>
+                    <label htmlFor="">Reference Date <span className='text-red-500'>*</span></label>
                     <Calendar className='border h-9 rounded-[6px]' value={formdata.ref_date || null} onChange={(e) => handleChange("ref_date", e.value as Date)} />
                   </div>
                 </div>
@@ -296,7 +317,7 @@ const Page = () => {
                       />
                     </div>
                     <div className='flex flex-col gap-1'>
-                      <label htmlFor="">Description</label>
+                      <label htmlFor="">Description <span className='text-red-500'>*</span></label>
                       <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='text'
                         onChange={(e) => { handleChange("description", e.target.value) }}
@@ -304,7 +325,7 @@ const Page = () => {
                       />
                     </div>
                     <div className='flex flex-col gap-1'>
-                      <label htmlFor="">Quantity</label>
+                      <label htmlFor="">Quantity <span className='text-red-500'>*</span></label>
                       <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='number'
                         onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
@@ -345,7 +366,7 @@ const Page = () => {
                   </div>
                 </div>
                 <div className='flex justify-center items-center my-3 gap-3'>
-                  <Custombutton name={'Back'} color={'black'} onclick={() => { router.push("/home") }} />
+                  <Custombutton name={'Back'} color={'black'} onclick={() => {setShowPopup(true) }} />
                   <Custombutton name={'Save'} color={'blue'} onclick={createDeliveryNote} />
                 </div>
 
@@ -437,6 +458,28 @@ const Page = () => {
         {
           savePop &&
           <SavePopup message={'Saved Successfully'} />
+        }
+        {
+          showPopup &&
+          <>
+            <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={() => { setShowPopup(false) }} handleRedirect={handleYes} />
+          </>
+        }
+        {
+          error &&
+          <>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
+                <div className='flex flex-col gap-4 justify-center items-center p-8'>
+                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
+                  <p>Fill the Mandatory Fields!!!</p>
+                </div>
+                <div className='w-full rounded-b-[8px]'>
+                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setError(false) }}>Back</p>
+                </div>
+              </div>
+            </div>
+          </>
         }
       </>
     )

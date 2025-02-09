@@ -12,6 +12,7 @@ import { parseCookies } from 'nookies'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import SavePopup from '../component/SavePopup'
+import Popup from '../component/Popup'
 
 
 
@@ -28,6 +29,8 @@ const Page = () => {
     const [tableValues, setTableValues] = useState<any>()
     const [updateId, setUpdateId] = useState<any>();
     const [moveDoc, setMoveDoc] = useState<any>();
+    const [error, setError] = useState<boolean>(false);
+    const [showPopup, setShowPopup] = useState<boolean>(false);
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -119,6 +122,10 @@ const Page = () => {
       setTableValues(response?.data)
     }
     const handleAdd = async () => {
+      if (!tableData.description || !tableData.quantity || !tableData.price) {
+        setError(true)
+        return
+      }
       await createInvoiceList();
       getTableValues();
       setTableData({
@@ -187,6 +194,10 @@ const Page = () => {
     }
 
     const createInvoice = async () => {
+      if (!formdata.customer || !formdata.document_date || !formdata.validity || !formdata.currency || !formdata.payment_method || !formdata.sales_emp) {
+        setError(true)
+        return;
+      }
       const user_id = cookies.user_id
       const payload = {
         customer_name: formdata.customer || null,
@@ -245,6 +256,15 @@ const Page = () => {
 
     }
 
+    const resetTempData = async () => {
+      const response: Response = await getMethod(`/sales-invoice/reset-temp-sales-invoice-list?doc_number=${docNo}`)
+    }
+
+    const handleYes = async () => {
+      await resetTempData()
+      router.push("/home")
+    }
+
     useEffect(() => {
       getDocumentNo()
     }, [])
@@ -267,8 +287,8 @@ const Page = () => {
             <div className='border mx-2 rounded-[8px] p-2'>
               <div className='grid grid-cols-2 px-2 gap-4'>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Customer</label>
-                  <input className='border h-9 rounded-[6px]'
+                  <label htmlFor="">Customer <span className='text-red-500'>*</span></label>
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange('customer', e.target.value) }}
                     value={formdata.customer}
@@ -276,21 +296,22 @@ const Page = () => {
                 </div>
 
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Document No</label>
+                  <label htmlFor="">Document No <span className='text-red-500'>*</span></label>
                   <input
-                    className='border h-9 rounded-[6px]'
+                    className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("document_no", e.target.value) }}
                     value={docNo ?? ""}
+                    disabled
                   />
                 </div>
                 <div className='flex flex-col gap-1 small-picker'>
-                  <label htmlFor="">Document Date</label>
+                  <label htmlFor="">Document Date <span className='text-red-500'>*</span></label>
                   <Calendar className='border h-9 rounded-[6px]' value={formdata.document_date || null} onChange={(e) => handleChange("document_date", e.value as Date)} />
                 </div>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Contact person</label>
-                  <input className='border h-9 rounded-[6px]'
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("contact_person", e.target.value) }}
                     value={formdata.contact_person ?? ""}
@@ -300,7 +321,7 @@ const Page = () => {
               <div className='px-2 my-2'>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">E-mail</label>
-                  <input className='border h-9 rounded-[6px]'
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("email", e.target.value) }}
                     value={formdata.email ?? ""}
@@ -310,15 +331,17 @@ const Page = () => {
               <div className='grid grid-cols-2 px-2 gap-4'>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Contact No</label>
-                  <input className='border h-9 rounded-[6px]'
-                    type='text'
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
+                    type='number'
+                    onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                    onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                     onChange={(e) => { handleChange("contact_no", e.target.value) }}
                     value={formdata.contact_no ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Address</label>
-                  <input className='border h-9 rounded-[6px]'
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("address", e.target.value) }}
                     value={formdata.address ?? ""}
@@ -326,7 +349,7 @@ const Page = () => {
                 </div>
 
                 <div className='flex flex-col gap-1 '>
-                  <label htmlFor="">Payment Method</label>
+                  <label htmlFor="">Payment Method <span className='text-red-500'>*</span></label>
                   <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
                     options={paymentDropdown}
                     onChange={(e) => { handleChange("payment_method", e.target.value) }}
@@ -334,7 +357,7 @@ const Page = () => {
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Currency</label>
+                  <label htmlFor="">Currency <span className='text-red-500'>*</span></label>
                   <Dropdown className='border h-9 rounded-[6px]'
                     options={currency}
                     onChange={(e) => { handleChange("currency", e.target.value) }}
@@ -343,7 +366,7 @@ const Page = () => {
                 </div>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Customer Reference</label>
-                  <input className='border h-9 rounded-[6px]'
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("customer_reference", e.target.value) }}
                     value={formdata.customer_reference ?? ""}
@@ -354,16 +377,16 @@ const Page = () => {
                   <Calendar className='border h-9 rounded-[6px]' value={formdata.ref_date || null} onChange={(e) => handleChange("ref_date", e.value as Date)} />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">DN number</label>
-                  <input className='border h-9 rounded-[6px]'
+                  <label htmlFor="">DN Number</label>
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("dn_no", e.target.value) }}
                     value={formdata.dn_no ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Validity</label>
-                  <input className='border h-9 rounded-[6px]'
+                  <label htmlFor="">Validity <span className='text-red-500'>*</span></label>
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("validity", e.target.value) }}
                     value={formdata.validity ?? ""}
@@ -377,24 +400,26 @@ const Page = () => {
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Item No.</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("item_number", e.target.value) }}
                       value={tableData.item_number}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Description</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <label htmlFor="">Description <span className='text-red-500'>*</span></label>
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("description", e.target.value) }}
                       value={tableData.description}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Quantity</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <label htmlFor="">Quantity <span className='text-red-500'>*</span></label>
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("quantity", e.target.value) }}
                       value={tableData.quantity}
                     />
@@ -413,17 +438,21 @@ const Page = () => {
                 </div>
                 <div className='grid grid-cols-2  gap-4 m-4'>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Price</label>
-                    <input className='border h-9 rounded-[6px] w-full'
+                    <label htmlFor="">Price <span className='text-red-500'>*</span></label>
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2 w-full'
                       type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("price", e.target.value) }}
                       value={tableData.price}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Discount</label>
-                    <input className='border h-9 rounded-[6px] w-full'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2 w-full'
                       type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("discount", e.target.value) }}
                       value={tableData.discount}
                     />
@@ -439,8 +468,8 @@ const Page = () => {
               <div className='border mx-2 rounded-[8px] p-2'>
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Sales Employee</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <label htmlFor="">Sales Employee <span className='text-red-500'>*</span></label>
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("sales_emp", e.target.value) }}
                       value={formdata.sales_emp ?? ""}
@@ -448,7 +477,7 @@ const Page = () => {
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Payment Terms</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("pay_terms", e.target.value) }}
                       value={formdata.pay_terms ?? ""}
@@ -456,7 +485,7 @@ const Page = () => {
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Remark Brand</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("remark_brand", e.target.value) }}
                       value={formdata.remark_brand ?? ""}
@@ -464,7 +493,7 @@ const Page = () => {
                   </div>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Delivery</label>
-                    <input className='border h-9 rounded-[6px]'
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("delivery", e.target.value) }}
                       value={formdata.delivery ?? ""}
@@ -473,7 +502,7 @@ const Page = () => {
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
-                <Custombutton name={'Back'} color={'black'} onclick={() => { router.push("/home") }} />
+                <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true)}} />
                 <Custombutton name={'Save'} color={'blue'} onclick={createInvoice} />
               </div>
 
@@ -555,7 +584,7 @@ const Page = () => {
                       <p className='text-[#929292] break-word'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
                     </div>
                     <div>
-                      <p>DN number:</p>
+                      <p>DN Number:</p>
                       <p className='text-[#929292] break-word'>{formdata.dn_no}</p>
                     </div>
                     <div>
@@ -591,6 +620,28 @@ const Page = () => {
         {
           savePop &&
           <SavePopup message={'Saved Successfully'} />
+        }
+        {
+          showPopup &&
+          <>
+            <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={() => { setShowPopup(false) }} handleRedirect={handleYes} />
+          </>
+        }
+        {
+          error &&
+          <>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
+                <div className='flex flex-col gap-4 justify-center items-center p-8'>
+                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
+                  <p>Fill the Mandatory Fields!!!</p>
+                </div>
+                <div className='w-full rounded-b-[8px]'>
+                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setError(false) }}>Back</p>
+                </div>
+              </div>
+            </div>
+          </>
         }
       </div>
     )

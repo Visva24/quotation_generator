@@ -123,7 +123,13 @@ const SignUpPage = () => {
                                         placeholder="Enter Mobile"
                                         className="  text-black w-full py-3 bg-white  focus:outline-none"
                                         onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
-                                        onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                                        onKeyDown={(e) => {
+                                            if (["e", "E", "+", "-"].includes(e.key)) {
+                                              e.preventDefault(); // Prevent unwanted characters
+                                            } else if (e.key === "Enter") {
+                                                handleSignIn(); // Trigger login when Enter is pressed
+                                            }
+                                          }}
                                         value={credential.phone_number}
                                         onChange={(e) => { handleChange("phone_number", e.target.value) }}
                                     />

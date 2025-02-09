@@ -5,12 +5,10 @@ import { getMethod } from '@/utils/api';
 import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { Sidebar } from 'primereact/sidebar';
 import React, { useEffect, useState } from 'react'
 
 const InvoiceHistory = () => {
-    const router = useRouter();
     const columns: any = [
       { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
       { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -24,14 +22,7 @@ const InvoiceHistory = () => {
     const [history, setHistory] = useState<any>();
     const [sideBar, setSideBar] = useState<any>();
     const [viewData, setViewData] = useState<any>();
-    const [selectOption, setSelectOption] = useState<any>('')
     const [loader, setLoader] = useState<boolean>(false);
-    const [movePop, setMovePop] = useState<boolean>(false);
-    const [selectedId, setSelectedId] = useState<any>()
-    const handleChange = (value: any) => {
-      console.log(value)
-      setSelectOption(value)
-    }
     const getInvoiceHistory = async () => {
       const response: Response = await getMethod(`/sales-invoice/get-sales-invoice-form-history`)
       console.log(response?.data)
@@ -207,6 +198,7 @@ const InvoiceHistory = () => {
                   <p>Payment Terms: <span>{viewData?.payment_terms}</span></p>
                   <p>Remark Brand: <span>{viewData?.remark_brand}</span></p>
                   <p>Delivery: <span>{viewData?.delivery}</span></p>
+                  <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{viewData?.sub_total}</p>

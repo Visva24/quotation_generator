@@ -7,11 +7,14 @@ import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { parseCookies } from 'nookies';
 import { Sidebar } from 'primereact/sidebar';
 import React, { useEffect, useState } from 'react'
 
 const QuotationHistory = () => {
     const router = useRouter();
+    const cookies = parseCookies();
+    const user_id = cookies.user_id
     const columns: any = [
         { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
         { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -134,7 +137,7 @@ const QuotationHistory = () => {
                         </div>
                         <div className='w-full flex rounded-b-[8px]'>
                             <p className='w-[50%] flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-bl-[8px]' onClick={() => { setMovePop(false) }}>Back</p>
-                            <p className='w-[50%] flex justify-center items-center bg-[#F4AA08] text-[#fff] p-3 cursor-pointer rounded-br-[8px]' onClick={() => { router.push(`/${selectOption === "Sales Invoice" ? "invoice" : "challan"}?type=moveData&id=${selectedId}`) }}>Move</p>
+                            <p className='w-[50%] flex justify-center items-center bg-[#F4AA08] text-[#fff] p-3 cursor-pointer rounded-br-[8px]' onClick={() => { router.push(`/${selectOption === "Sales Invoice" ? "invoice" : "challan"}?type=moveData&id=${selectedId}&current_user_id=${user_id}`) }}>Move</p>
                         </div>
                     </div>
                 </div>

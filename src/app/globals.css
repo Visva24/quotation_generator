@@ -95,11 +95,14 @@ input[type=number] {
   font-size: 11px !important; /* Adjust font size */
   padding: 0px !important; /* Remove unnecessary padding */
 }
+.p-datepicker table th {
+  font-size: 11px !important; /* Adjust font size */
+}
 
 /* 🌟 Adjust Navigation Buttons (Previous/Next) */
 .p-datepicker .p-datepicker-prev,
 .p-datepicker .p-datepicker-next {
-  font-size: 14px !important; /* Resize navigation icons */
+  font-size: 12px !important; /* Resize navigation icons */
   width: 28px !important; /* Adjust button size */
   height: 28px !important;
 }

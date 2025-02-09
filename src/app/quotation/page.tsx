@@ -281,6 +281,15 @@ const Page = () => {
       }
     }
 
+    const resetTempData = async () => {
+      const response: Response = await getMethod(`/quotation/reset-quotation-list?doc_number=${docNo}`)
+    }
+
+    const handleYes = async() => {
+      await resetTempData()
+      router.push("/home")
+    }
+
 
     useEffect(() => {
       getDocumentNo()
@@ -608,7 +617,7 @@ const Page = () => {
         {
           showPopup &&
           <>
-            <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={() => { setShowPopup(false) }} handleRedirect={() => { router.push("/home") }} />
+            <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={() => { setShowPopup(false) }} handleRedirect={handleYes} />
           </>
         }
         {

@@ -17,7 +17,7 @@ const HomePage = () => {
         <div className="relative border p-3 rounded-[8px] bg-[#fff] w-[230px] h-[240px] hover:bg-[#FFC648] hover:text-white"
           onClick={handleRedirect}
         >
-          <div className="flex gap-5 items-center justify-between">
+          <div className="flex gap-6 items-center justify-between">
             <p className="text-[18px] font-medium">{moduleName}</p>
             <div className="p-3 rounded-full border">
               <Image src={'/images/rightarrow.svg'} alt={'logo'} width={20} height={20} />
