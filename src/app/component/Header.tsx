@@ -30,7 +30,7 @@ const Header = () => {
                         </h1>
                     </div>
                     <div className='pr-4 flex gap-3 items-center'>
-                        <div className='rounded-full w-8 h-8 flex items-center justify-center text-[white] text-[14px] bg-[#63a1ee]'>
+                        <div className='rounded-full w-8 h-8 flex items-center justify-center text-[white] text-[14px] bg-[#63a1ee] cursor-pointer' onClick={()=>{router.push("/profile")}}>
                             <p>{avatar}</p>
                         </div>
                         <Custombutton name={'Logout'} color={'yellow'} onclick={handleLogout} />

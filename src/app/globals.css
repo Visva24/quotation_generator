@@ -69,7 +69,7 @@ input[type=number] {
 .p-autocomplete input {
   padding: 5px 10px !important; /* Adjust spacing */
   font-size: 14px !important; /* Change font size */
-  width: 295px;
+  width: 100%;
 }
 
 .p-autocomplete .p-inputtext:focus {

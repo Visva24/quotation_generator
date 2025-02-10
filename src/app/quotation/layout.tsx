@@ -16,7 +16,7 @@ const LayoutQuotation: React.FC<LayoutProps> = ({ children }) => {
         },
         {
             label: "Quotation Generator",
-            route: "/#"
+            route: "/quotation"
         }
     ]
     return (
