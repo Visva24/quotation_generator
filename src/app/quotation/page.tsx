@@ -12,6 +12,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import Popup from '../component/Popup';
 import SavePopup from '../component/SavePopup';
+import { AutoComplete } from 'primereact/autocomplete';
 
 const Page = () => {
   const Quotation = () => {
@@ -29,6 +30,8 @@ const Page = () => {
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [savePop, setSavePop] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
+    const [suggestDrop,setSuggestDrop] = useState<{ customer_name: string; id: number }[]>([]);
+    const [suggestion,setSuggestion] = useState<{ customer_name: string; id: number }[]>([]);
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -57,9 +60,40 @@ const Page = () => {
     });
 
     const handleChange = (key: string, value: any) => {
+      console.log(value,"value")
       setFormdata({ ...formdata, [key]: value })
       setTableData({ ...tableData, [key]: value })
     }
+
+    const handleSelect = (value: { customer_name: string; id: number }) => {
+      handleChange("customer", value.customer_name); 
+      autofillData(value?.id)
+    };
+
+    const autofillData = async(id:number) => {
+       const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${id}`)
+       console.log(response?.data)
+       const autoFillData = response?.data;
+       const format_date = new Date(autoFillData.doc_date)
+       if(response.status === "success"){
+        setFormdata({
+          customer: autoFillData?.customer_name,
+          document_no: autoFillData?.doc_number,
+          customer_reference: autoFillData?.customer_reference,
+          contact_person: autoFillData?.contact_person,
+          contact_no: autoFillData?.contact_number,
+          document_date: format_date,
+          currency: autoFillData?.currency,
+          payment_method: autoFillData?.payment_mode,
+          email: autoFillData?.email,
+          address: autoFillData?.address,
+          validity: autoFillData?.quotation_validity,
+          remark_brand: autoFillData?.remark_brand,
+          delivery: autoFillData?.delivery,
+        })
+       }
+    }
+
     const handleAdd = async () => {
       if (!tableData.description || !tableData.quantity || !tableData.price) {
         setError(true)
@@ -226,7 +260,6 @@ const Page = () => {
       if (response.status == "success") {
         setSavePop(true)
         setTimeout(() => { setSavePop(false), router.push("/quotation/history") }, 2000)
-
       }
     }
 
@@ -281,6 +314,19 @@ const Page = () => {
       }
     }
 
+    const suggestions = async() => {
+      const response:Response = await getMethod("/quotation/get-customer-dropdown")
+      console.log(response?.data)
+      setSuggestDrop(response?.data)
+    }
+    const searchCustomer = (event: { query: string }) => {
+      const filtered = suggestDrop.filter((customer:any) =>
+        customer.customer_name.toLowerCase().includes(event.query.toLowerCase())
+      );
+      setSuggestion(filtered); 
+    };
+  
+
     const resetTempData = async () => {
       const response: Response = await getMethod(`/quotation/reset-quotation-list?doc_number=${docNo}`)
     }
@@ -293,6 +339,7 @@ const Page = () => {
 
     useEffect(() => {
       getDocumentNo()
+      suggestions()
     }, [])
 
     useEffect(() => {
@@ -311,13 +358,14 @@ const Page = () => {
             <p className='text-[18px] ml-2 font-medium'>Quotation Inputs</p>
             <div className='border mx-2 rounded-[8px] p-2'>
               <div className='grid grid-cols-2 px-2 gap-4'>
-                <div className='flex flex-col gap-1'>
+                <div className='flex flex-col gap-1  w-full'>
                   <label htmlFor="">Customer <span className='text-red-500'>*</span></label>
-                  <input className='border h-9 rounded-[6px] px-2  focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08]'
+                  {/* <input className='border h-9 rounded-[6px] px-2  focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08]'
                     type='text'
                     onChange={(e) => { handleChange('customer', e.target.value) }}
                     value={formdata.customer}
-                  />
+                  /> */}
+                  <AutoComplete className='border h-9 w-full rounded-[6px]' value={formdata.customer} suggestions={suggestion}  completeMethod={searchCustomer} field="customer_name"  onChange={(e) => { handleChange('customer', e.target.value) }}  onSelect={(e) => handleSelect(e.value)} />
                 </div>
 
                 <div className='flex flex-col gap-1'>
@@ -332,7 +380,7 @@ const Page = () => {
                 </div>
                 <div className='flex flex-col gap-1 small-picker'>
                   <label htmlFor="">Document Date  <span className='text-red-500'>*</span></label>
-                  <Calendar className='border h-9 rounded-[6px] custom-calendar' value={formdata.document_date || ""} onChange={(e) => handleChange("document_date", e.value as Date)} />
+                  <Calendar className='border h-9 rounded-[6px] ' value={formdata.document_date || ""} onChange={(e) => handleChange("document_date", e.value as Date)} />
                 </div>
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Contact person</label>
