@@ -76,9 +76,8 @@ const ChallanHistory = () => {
                 <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
               </div>
             </div>
-            <div className='flex flex-col gap-3'>
+            <div className=''>
               <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
-              <Custombutton name={'Revise'} color={'black'} onclick={() => { }} />
             </div>
           </div>
           <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
