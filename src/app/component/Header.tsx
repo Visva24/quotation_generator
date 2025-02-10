@@ -16,9 +16,9 @@ const Header = () => {
         }
     }, [cookies])
     const handleLogout = async () => {
-       setIsPopupVisible(true)
+        setIsPopupVisible(true)
     }
-   
+
     return (
         <>
             <header className="h-[90px] bg-[#222222] flex items-center">
@@ -30,10 +30,13 @@ const Header = () => {
                         </h1>
                     </div>
                     <div className='pr-4 flex gap-3 items-center'>
-                        <div className='rounded-full w-8 h-8 flex items-center justify-center text-[white] text-[14px] bg-[#63a1ee] cursor-pointer' onClick={()=>{router.push("/profile")}}>
+                        <div className='flex gap-1 items-center border border-[#606060] px-3 py-1 rounded-[24px] cursor-pointer' onClick={handleLogout}>
+                            <Image src={'/images/logout.svg'} alt={''} width={24} height={24} />
+                            <p className='text-[#F4AA08] text-[14px]'>Logout</p>
+                        </div>
+                        <div className='rounded-full w-8 h-8 flex items-center justify-center text-[white] text-[14px] bg-[#63a1ee] cursor-pointer' onClick={() => { router.push("/profile") }}>
                             <p>{avatar}</p>
                         </div>
-                        <Custombutton name={'Logout'} color={'yellow'} onclick={handleLogout} />
                     </div>
                 </div>
             </header>
@@ -44,7 +47,7 @@ const Header = () => {
                             <p className='flex justify-center'>Are you sure you want to log out?</p>
                             <div className='flex gap-4 justify-center items-center'>
                                 <Custombutton name={'No'} color={'black'} onclick={() => { setIsPopupVisible(false) }} />
-                                <Custombutton name={'Yes'} color={'blue'} onclick={() => {  clearUserDataFromCookies();router.push("/log-in") }} />
+                                <Custombutton name={'Yes'} color={'blue'} onclick={() => { clearUserDataFromCookies(); router.push("/log-in") }} />
                             </div>
                         </div>
                     </div>

@@ -95,6 +95,24 @@ const SignUpPage = () => {
                                     />
                                 </div>
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                                    <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+                                    <input
+                                        type="number"
+                                        placeholder="Enter Mobile"
+                                        className="  text-black w-full py-3 bg-white  focus:outline-none"
+                                        onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                                        onKeyDown={(e) => {
+                                            if (["e", "E", "+", "-"].includes(e.key)) {
+                                              e.preventDefault(); // Prevent unwanted characters
+                                            } else if (e.key === "Enter") {
+                                                handleSignIn(); // Trigger login when Enter is pressed
+                                            }
+                                          }}
+                                        value={credential.phone_number}
+                                        onChange={(e) => { handleChange("phone_number", e.target.value) }}
+                                    />
+                                </div>
+                                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
                                     <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
                                     <input
                                         type={showPassword ? "text" : "password"}
@@ -116,24 +134,7 @@ const SignUpPage = () => {
                                     />
                                     <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
                                 </div>
-                                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
-                                    <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
-                                    <input
-                                        type="number"
-                                        placeholder="Enter Mobile"
-                                        className="  text-black w-full py-3 bg-white  focus:outline-none"
-                                        onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
-                                        onKeyDown={(e) => {
-                                            if (["e", "E", "+", "-"].includes(e.key)) {
-                                              e.preventDefault(); // Prevent unwanted characters
-                                            } else if (e.key === "Enter") {
-                                                handleSignIn(); // Trigger login when Enter is pressed
-                                            }
-                                          }}
-                                        value={credential.phone_number}
-                                        onChange={(e) => { handleChange("phone_number", e.target.value) }}
-                                    />
-                                </div>
+                                
 
                             </div>
                             {/* <div className="flex gap-1 items-center px-6">
