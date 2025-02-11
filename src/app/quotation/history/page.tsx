@@ -16,7 +16,7 @@ const Page = () => {
   const router = useRouter();
   const cookies = parseCookies()
   const user_id = cookies.user_id
-  console.log(user_id,"user_id")
+  console.log(user_id, "user_id")
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -34,7 +34,7 @@ const Page = () => {
   const [selectOption, setSelectOption] = useState<any>('')
   const [loader, setLoader] = useState<boolean>(false);
   const [movePop, setMovePop] = useState<boolean>(false);
-  const [selectedId , setSelectedId] = useState<any>()
+  const [selectedId, setSelectedId] = useState<any>()
   const handleChange = (value: any) => {
     console.log(value)
     setSelectOption(value)
@@ -83,7 +83,9 @@ const Page = () => {
   return (
     <>
       {
-        history?.map((data: any, index: any) => (
+        (history?.length > 0) ?
+
+          history?.map((data: any, index: any) => (
             <div key={index} className='p-[20px] text-[14px] rounded-[12px] bg-[#F6F6F6] shadow-lg mx-4 mb-3 group'>
               <div className='flex justify-between items-center'>
                 <div className='flex flex-col gap-3'>
@@ -97,7 +99,7 @@ const Page = () => {
                   </div>
                 </div>
                 <div className='flex items-center gap-4 '>
-                  <div className='h-16 w-16 rounded-full cursor-pointer flex justify-center items-center bg-[#FFF0CF]' onClick={() => { setMovePop(true),setSelectedId(data?.id)}}>
+                  <div className='h-16 w-16 rounded-full cursor-pointer flex justify-center items-center bg-[#FFF0CF]' onClick={() => { setMovePop(true), setSelectedId(data?.id) }}>
                     <Image src={'/images/move-forward.svg'} alt={''} height={28} width={28} />
                   </div>
                   <div className='flex flex-col gap-3'>
@@ -125,7 +127,14 @@ const Page = () => {
                 </div>
               </div>
             </div>
-        ))
+          )) :
+          <>
+            <div className='flex justify-center'>
+              <div className='my-[30px]'>
+                <Image src={'/images/nodata.svg'} alt={''} height={550} width={550} />
+              </div>
+            </div>
+          </>
       }
 
       {

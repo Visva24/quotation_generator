@@ -144,3 +144,27 @@ input[type=number] {
   padding: 4px 8px !important; /* Adjust input padding */
 }
 
+.scroll-bar {
+  overflow-x: auto;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #F4AA08 #f1f1f1; /* Thumb & Track */
+}
+
+.scroll-bar::-webkit-scrollbar {
+  height: 6px; /* Horizontal scrollbar thickness */
+}
+
+.scroll-bar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+  background: #F4AA08;
+  border-radius: 10px;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+

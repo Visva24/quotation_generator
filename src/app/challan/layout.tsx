@@ -22,7 +22,7 @@ const LayoutChallan: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className='min-h-screen'>
             <Header/>
-            <div className='pl-2 pt-4'>
+            <div className='pl-2 pt-1'>
                 <Breadcrumbs breadcrumb={breadcrumb} />
                 <div className='bg-[#DFDFDF] px-2.5 py-4 rounded-[8px] mx-2.5 my-3'>
                     <Tabs tabHead={[{ title: "Home", route: "/challan", icon: "home" }, { title: "History", route: "/challan/history", icon: "history" }]} />

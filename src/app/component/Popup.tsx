@@ -15,7 +15,7 @@ const Popup:React.FC<popups> = ({message,handleCancel,handleRedirect}) => {
                         <p className='flex justify-center'>{message}</p>
                         <div className='flex gap-4 justify-center items-center'>
                             <Custombutton name={'No'} color={'black'} onclick={handleCancel} />
-                            <Custombutton name={'Yes'} color={'blue'} onclick={handleRedirect} />
+                            <Custombutton name={'Yes'} color={'yellow'} onclick={handleRedirect} />
                         </div>
                     </div>
                 </div>

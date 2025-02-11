@@ -31,7 +31,7 @@ const Profile = () => {
         <>
             <div className='relative'>
                 <div style={{ backgroundImage: `url('/images/profile-banner.svg')` }} className='w-full h-[200px]'>
-                    <div className='pl-2 pt-4 '>
+                    <div className='pl-2 pt-1 '>
                         <ProfileBreadcrumbs breadcrumb={breadcrumb} />
                     </div>
                 </div>

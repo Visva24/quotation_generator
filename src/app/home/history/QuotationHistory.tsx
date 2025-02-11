@@ -81,49 +81,57 @@ const QuotationHistory = () => {
     return (
         <>
             {
-                history?.map((data: any, index: any) => (
-                    <div key={index} className='p-[20px] text-[14px] rounded-[12px] bg-[#F6F6F6] shadow-lg mx-4 mb-3 group'>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex flex-col gap-3'>
-                                <div className='flex gap-3'>
-                                    <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#F4AA08] to-[#BA8000]'>Quotation</p>
-                                    <p className='flex gap-2 items-center text-[18px]'><span className=' text-[#F4AA08] text-[16px]'>{data?.symbol}</span>{data?.total_amount}</p>
-                                </div>
-                                <div className='flex gap-3'>
-                                    <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[#F4AA08] text-[16px]'></i>{data?.Date}</p> |
-                                    <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
-                                </div>
-                            </div>
-                            <div className='flex items-center gap-4 '>
-                                <div className='h-16 w-16 rounded-full cursor-pointer flex justify-center items-center bg-[#FFF0CF]' onClick={() => { setMovePop(true), setSelectedId(data?.id) }}>
-                                    <Image src={'/images/move-forward.svg'} alt={''} height={28} width={28} />
-                                </div>
-                                <div className='flex flex-col gap-3'>
-                                    <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
-                                    <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
-                            <hr className='my-1 border-[1px] border-[#9f9f9f]' />
+                (history?.length > 0) ?
+                    history?.map((data: any, index: any) => (
+                        <div key={index} className='p-[20px] text-[14px] rounded-[12px] bg-[#F6F6F6] shadow-lg mx-4 mb-3 group'>
                             <div className='flex justify-between items-center'>
-                                <div className='flex gap-2 items-center'>
-                                    <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
-                                        <p>{data?.created_by?.avatar_value}</p>
+                                <div className='flex flex-col gap-3'>
+                                    <div className='flex gap-3'>
+                                        <p className='px-[10px] py-[4px] rounded-full text-[white] bg-gradient-to-r from-[#F4AA08] to-[#BA8000]'>Quotation</p>
+                                        <p className='flex gap-2 items-center text-[18px]'><span className=' text-[#F4AA08] text-[16px]'>{data?.symbol}</span>{data?.total_amount}</p>
+                                    </div>
+                                    <div className='flex gap-3'>
+                                        <p className='flex gap-2 items-center'><i className='pi pi-calendar text-[#F4AA08] text-[16px]'></i>{data?.Date}</p> |
+                                        <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
+                                    </div>
+                                </div>
+                                <div className='flex items-center gap-4 '>
+                                    <div className='h-16 w-16 rounded-full cursor-pointer flex justify-center items-center bg-[#FFF0CF]' onClick={() => { setMovePop(true), setSelectedId(data?.id) }}>
+                                        <Image src={'/images/move-forward.svg'} alt={''} height={28} width={28} />
+                                    </div>
+                                    <div className='flex flex-col gap-3'>
+                                        <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                                        <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
+                                <hr className='my-1 border-[1px] border-[#9f9f9f]' />
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex gap-2 items-center'>
+                                        <div className='rounded-full w-10 h-10 flex items-center justify-center text-[white] bg-[#63a1ee]'>
+                                            <p>{data?.created_by?.avatar_value}</p>
+                                        </div>
+                                        <div className='flex flex-col gap-1'>
+                                            <p className='text-[12px]'>Created by</p>
+                                            <p className='text-[14px]'>{data?.created_by?.user_name}</p>
+                                        </div>
                                     </div>
                                     <div className='flex flex-col gap-1'>
-                                        <p className='text-[12px]'>Created by</p>
-                                        <p className='text-[14px]'>{data?.created_by?.user_name}</p>
+                                        <p className='font-semibold'>Remarks</p>
+                                        <p>{data?.remarks}</p>
                                     </div>
-                                </div>
-                                <div className='flex flex-col gap-1'>
-                                    <p className='font-semibold'>Remarks</p>
-                                    <p>{data?.remarks}</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))
+                    )) :
+                    <>
+                        <div className='flex justify-center'>
+                            <div className='my-[30px]'>
+                                <Image src={'/images/nodata.svg'} alt={''} height={550} width={550} />
+                            </div>
+                        </div>
+                    </>
             }
 
             {

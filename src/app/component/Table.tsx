@@ -27,7 +27,7 @@ const Table: React.FC<TableProps> = ({ columns, rows, onRemoveRow, onEditRow, on
     };
 
     return (
-      <div className="overflow-x-auto w-full !text-[14px]">
+      <div className="overflow-x-auto w-full !text-[14px] scroll-bar">
         <table className="w-full border-collapse table-auto !text-[14px]">
           <thead>
             <tr className="bg-[#f6f6f6]">

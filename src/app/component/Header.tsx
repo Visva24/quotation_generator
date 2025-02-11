@@ -47,7 +47,7 @@ const Header = () => {
                             <p className='flex justify-center'>Are you sure you want to log out?</p>
                             <div className='flex gap-4 justify-center items-center'>
                                 <Custombutton name={'No'} color={'black'} onclick={() => { setIsPopupVisible(false) }} />
-                                <Custombutton name={'Yes'} color={'blue'} onclick={() => { clearUserDataFromCookies(); router.push("/log-in") }} />
+                                <Custombutton name={'Yes'} color={'yellow'} onclick={() => { clearUserDataFromCookies(); router.push("/log-in") }} />
                             </div>
                         </div>
                     </div>

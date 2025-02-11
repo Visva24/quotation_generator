@@ -282,7 +282,7 @@ const Page = () => {
     return (
       <div>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
-          <div className='col-span-6 !text-[14px] py-4 overflow-y-scroll '>
+          <div className='col-span-6 !text-[14px] py-4 overflow-y-scroll scroll-bar'>
             <p className='text-[18px] ml-2 font-medium'>Invoice Inputs</p>
             <div className='border mx-2 rounded-[8px] p-2'>
               <div className='grid grid-cols-2 px-2 gap-4'>
@@ -503,7 +503,7 @@ const Page = () => {
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
                 <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true)}} />
-                <Custombutton name={'Save'} color={'blue'} onclick={createInvoice} />
+                <Custombutton name={'Save'} color={'yellow'} onclick={createInvoice} />
               </div>
 
             </div>
