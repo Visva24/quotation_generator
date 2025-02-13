@@ -2,12 +2,13 @@
 import Custombutton from '@/app/component/Custombutton'
 import Loader from '@/app/component/Loader'
 import MoveForward from '@/app/component/MoveForward'
+import Popup from '@/app/component/Popup'
 import Table from '@/app/component/Table'
 import { getMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { downloadPDF } from '@/utils/download'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
@@ -121,8 +122,8 @@ const Page = () => {
                     </div>
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <p className='font-semibold'>Remarks</p>
-                    <p>{data?.remarks}</p>
+                    <p className='font-semibold'>Customer</p>
+                    <p>{data?.customer_name}</p>
                   </div>
                 </div>
               </div>
@@ -228,6 +229,10 @@ const Page = () => {
                         <p>Validity:</p>
                         <p className='text-[#929292] break-word'>{viewData?.quotation_validity}</p>
                       </div>
+                      <div>
+                        <p>Payment Terms:</p>
+                        <p className='text-[#929292] break-word'>{viewData?.payment_terms}</p>
+                      </div>
                     </div>
                     <hr className='mx-4' />
                   </div>
@@ -237,7 +242,7 @@ const Page = () => {
                 </div>
                 <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                   <div className='flex flex-col gap-2'>
-                    <p>Remark Brand: <span>{viewData?.remark_brand}</span></p>
+                    <p>Remark: <span>{viewData?.remark_brand}</span></p>
                     <p>Delivery: <span>{viewData?.delivery}</span></p>
                     <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>
                   </div>
@@ -257,6 +262,7 @@ const Page = () => {
           </Sidebar>
         </>
       }
+      
     </>
   )
 }

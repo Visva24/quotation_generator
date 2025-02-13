@@ -118,8 +118,8 @@ const QuotationHistory = () => {
                                         </div>
                                     </div>
                                     <div className='flex flex-col gap-1'>
-                                        <p className='font-semibold'>Remarks</p>
-                                        <p>{data?.remarks}</p>
+                                        <p className='font-semibold'>Customer</p>
+                                        <p>{data?.customer_name}</p>
                                     </div>
                                 </div>
                             </div>
@@ -225,6 +225,10 @@ const QuotationHistory = () => {
                                                 <p>Validity:</p>
                                                 <p className='text-[#929292] break-word'>{viewData?.quotation_validity}</p>
                                             </div>
+                                            <div>
+                                                <p>Payment Terms:</p>
+                                                <p className='text-[#929292] break-word'>{viewData?.quotation_validity}</p>
+                                            </div>
                                         </div>
                                         <hr className='mx-4' />
                                     </div>
@@ -234,7 +238,7 @@ const QuotationHistory = () => {
                                 </div>
                                 <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                                     <div className='flex flex-col gap-2'>
-                                        <p>Remark Brand: <span>{viewData?.remark_brand}</span></p>
+                                        <p>Remark: <span>{viewData?.remark_brand}</span></p>
                                         <p>Delivery: <span>{viewData?.delivery}</span></p>
                                         <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>
                                     </div>

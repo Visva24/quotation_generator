@@ -8,7 +8,7 @@ import moment from 'moment'
 import Table from '../component/Table'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import Popup from '../component/Popup';
 import SavePopup from '../component/SavePopup';
@@ -17,6 +17,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 const Page = () => {
   const Quotation = () => {
     const router = useRouter();
+    const pathName = usePathname();
     const searchParams = useSearchParams();
     const type: string = searchParams.get("type") ?? "";
     console.log(type)
@@ -47,6 +48,7 @@ const Page = () => {
         validity: "",
         remark_brand: "",
         delivery: "",
+        pay_terms:""
       }
     )
     const [tableData, setTableData] = useState<any>({
@@ -77,19 +79,17 @@ const Page = () => {
        const format_date = new Date(autoFillData.doc_date)
        if(response.status === "success"){
         setFormdata({
-          customer: autoFillData?.customer_name,
-          document_no: autoFillData?.doc_number,
-          customer_reference: autoFillData?.customer_reference,
-          contact_person: autoFillData?.contact_person,
-          contact_no: autoFillData?.contact_number,
-          document_date: format_date,
-          currency: autoFillData?.currency,
-          payment_method: autoFillData?.payment_mode,
-          email: autoFillData?.email,
-          address: autoFillData?.address,
-          validity: autoFillData?.quotation_validity,
-          remark_brand: autoFillData?.remark_brand,
-          delivery: autoFillData?.delivery,
+          customer: autoFillData?.customer_name || "",
+          document_no: autoFillData?.doc_number || "",
+          customer_reference: autoFillData?.customer_reference || "",
+          contact_person: autoFillData?.contact_person || "",
+          contact_no: autoFillData?.contact_number || "",
+          document_date: format_date || "",
+          currency: autoFillData?.currency || "",
+          payment_method: autoFillData?.payment_mode || "",
+          email: autoFillData?.email || "",
+          address: autoFillData?.address || "",
+          validity: autoFillData?.quotation_validity || "",
         })
        }
     }
@@ -120,7 +120,7 @@ const Page = () => {
       { label: "Quantity", key: "quantity", align: "center", width: "80px" },
       { label: "Units", key: "units", align: "center", width: "80px" },
       { label: "Price", key: "price", align: "center", width: "100px" },
-      { label: "Tax(%)", key: "tax", align: "center", width: "100px" },
+      { label: `${formdata.currency == "SAR" ? "VAT(%)" : "TAX(%)"}`, key: "tax", align: "center", width: "100px" },
       { label: "Discount(%)", key: "discount", align: "center", width: "100px" },
       { label: "Total", key: "amount", align: "center", width: "100px" },
     ];
@@ -175,13 +175,13 @@ const Page = () => {
       setUpdateId(id)
       console.log(id, selectedRow)
       setTableData({
-        item_number: selectedRow?.item_number,
-        description: selectedRow?.description,
-        quantity: selectedRow?.quantity,
-        unit: selectedRow?.units,
-        price: selectedRow?.price,
-        discount: selectedRow?.discount,
-        tax: selectedRow?.tax,
+        item_number: selectedRow?.item_number || "",
+        description: selectedRow?.description || "",
+        quantity: selectedRow?.quantity || "",
+        unit: selectedRow?.units || "",
+        price: selectedRow?.price || "",
+        discount: selectedRow?.discount || "",
+        tax: selectedRow?.tax || "",
       });
 
     };
@@ -212,19 +212,19 @@ const Page = () => {
       if (response.status === "success") {
         setRevisedData(data)
         setFormdata({
-          customer: data.customer_name,
-          document_no: data.doc_number,
-          customer_reference: data.customer_reference,
-          contact_person: data.contact_person,
-          contact_no: data.contact_number,
-          document_date: format_date,
-          currency: data.currency,
-          payment_method: data.payment_mode,
-          email: data.email,
-          address: data.address,
-          validity: data.quotation_validity,
-          remark_brand: data.remark_brand,
-          delivery: data.delivery,
+          customer: data.customer_name || "",
+          document_no: data.doc_number || "",
+          customer_reference: data.customer_reference || "",
+          contact_person: data.contact_person || "",
+          contact_no: data.contact_number || "",
+          document_date: format_date || "",
+          currency: data.currency || "",
+          payment_method: data.payment_mode || "",
+          email: data.email || "",
+          address: data.address || "",
+          validity: data.quotation_validity || "",
+          remark_brand: data.remark_brand || "",
+          delivery: data.delivery || "",
         });
         await getReviseDocNo()
       }
@@ -304,6 +304,7 @@ const Page = () => {
         address: formdata.address || null,
         remark_brand: formdata.remark_brand || null,
         delivery: formdata.delivery || null,
+        payment_terms:formdata.pay_terms || null ,
         created_user_id: user_id || null,
         total_discount: 0,
         total_tax: 0
@@ -335,7 +336,6 @@ const Page = () => {
       await resetTempData()
       router.push("/home")
     }
-
 
     useEffect(() => {
       getDocumentNo()
@@ -387,7 +387,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("contact_person", e.target.value) }}
-                    value={formdata.contact_person}
+                    value={formdata.contact_person ?? ""}
                   />
                 </div>
               </div>
@@ -397,7 +397,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("email", e.target.value) }}
-                    value={formdata.email}
+                    value={formdata.email ?? ""}
                   />
                 </div>
               </div>
@@ -409,7 +409,7 @@ const Page = () => {
                     onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                     onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                     onChange={(e) => { handleChange("contact_no", e.target.value) }}
-                    value={formdata.contact_no}
+                    value={formdata.contact_no ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -417,7 +417,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("customer_reference", e.target.value) }}
-                    value={formdata.customer_reference}
+                    value={formdata.customer_reference ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1 '>
@@ -425,7 +425,7 @@ const Page = () => {
                   <Dropdown className='border h-9 rounded-[6px]  focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     options={paymentDropdown}
                     onChange={(e) => { handleChange("payment_method", e.target.value) }}
-                    value={formdata.payment_method}
+                    value={formdata.payment_method ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -433,7 +433,7 @@ const Page = () => {
                   <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
                     options={currency}
                     onChange={(e) => { handleChange("currency", e.target.value) }}
-                    value={formdata.currency}
+                    value={formdata.currency ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -441,7 +441,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("validity", e.target.value) }}
-                    value={formdata.validity}
+                    value={formdata.validity ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -449,7 +449,7 @@ const Page = () => {
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("address", e.target.value) }}
-                    value={formdata.address}
+                    value={formdata.address ?? ""}
                   />
                 </div>
               </div>
@@ -538,11 +538,11 @@ const Page = () => {
               <div className='border mx-2 rounded-[8px] p-2'>
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Remark Brand</label>
+                    <label htmlFor="">Remark</label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("remark_brand", e.target.value) }}
-                      value={formdata.remark_brand}
+                      value={formdata.remark_brand ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -550,7 +550,15 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("delivery", e.target.value) }}
-                      value={formdata.delivery}
+                      value={formdata.delivery ?? ""}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <label htmlFor="">Payment Terms</label>
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
+                      type='text'
+                      onChange={(e) => { handleChange("pay_terms", e.target.value) }}
+                      value={formdata.pay_terms ?? ""}
                     />
                   </div>
                 </div>
@@ -590,7 +598,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col  !break-all'>
                       <p>Document No:</p>
-                      <p className='text-[#929292]'>{formdata.document_no || docNo}  </p>
+                      <p className='text-[#929292]'>{ docNo ? docNo : formdata.document_no || ""}  </p>
                     </div>
                     <div className='flex flex-col !break-all'>
                       <p>Document Date:</p>
@@ -637,6 +645,10 @@ const Page = () => {
                       <p>Validity:</p>
                       <p className='text-[#929292] break-word'>{formdata.validity}</p>
                     </div>
+                    <div>
+                      <p>Payment Terms:</p>
+                      <p className='text-[#929292] break-word'>{formdata.pay_terms}</p>
+                    </div>
                   </div>
                   <hr className='mx-4' />
                 </div>
@@ -648,14 +660,14 @@ const Page = () => {
               </div>
               <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                 <div className='flex flex-col gap-2'>
-                  <p>Remark Brand: <span>{formdata.remark_brand}</span></p>
+                  <p>Remark: <span>{formdata.remark_brand}</span></p>
                   <p>Delivery: <span>{formdata.delivery}</span></p>
                   <p>Amount in Words: <span>{tableValues?.amount_in_words}</span></p>
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total || 0}</p>
                   <p>DIS:{tableValues?.total_discount || 0}</p>
-                  <p>TAX:{tableValues?.total_tax || 0}</p>
+                  <p>{formdata.currency == "SAR" ? "VAT" : "TAX"}:{tableValues?.total_tax || 0}</p>
                   <p>Total:{tableValues?.grand_total || 0}</p>
                 </div>
               </div>

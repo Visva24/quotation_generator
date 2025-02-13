@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import React from 'react';
+import React from "react";
 
 interface BreadcrumbItem {
   label: string;
@@ -8,20 +7,26 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   breadcrumb: BreadcrumbItem[];
+  onNavigate: (route: string) => void;
 }
 
-const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ breadcrumb }) => {
+const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ breadcrumb, onNavigate }) => {
   return (
     <>
       {breadcrumb.map((item, index) => (
         <div key={index} className="h-[30px] text-[14px] inline-flex items-center gap-[2px]">
-          <div className='ml-1'>
-            <Link href={item?.route} className={`${index===breadcrumb.length-1 ? "text-[#F4AA08]":""}`}>{item?.label}</Link>
+          <div className="ml-1">
+            {index === breadcrumb.length - 1 ? (
+              <span className="text-[#F4AA08] cursor-pointer">{item.label}</span>
+            ) : (
+              <button onClick={() => onNavigate(item.route)}>{item.label}</button>
+            )}
           </div>
-          {index < breadcrumb.length - 1 && <i className="pi pi-angle-right pt-[3px] text-[14px]"></i>}
+          {index < breadcrumb.length - 1 && (
+            <i className="pi pi-angle-right pt-[3px] text-[14px]"></i>
+          )}
         </div>
       ))}
-
     </>
   );
 };

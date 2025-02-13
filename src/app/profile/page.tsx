@@ -5,11 +5,18 @@ import ProfileBreadcrumbs from '../component/ProfileBreadcrumbs'
 import { TabPanel, TabView } from 'primereact/tabview'
 import TabIndex from '../component/TabPanel'
 import Custombutton from '../component/Custombutton'
+import Image from 'next/image'
+import { getMethod, postMethod } from '@/utils/api'
+import { Response } from '@/utils/common'
 
 const Profile = () => {
     const cookies = parseCookies();
     const [avatar, setAvatar] = useState<any>();
     const [userName, setUserName] = useState<any>();
+    const [userSign, setUserSign] = useState<any>();
+    const [uploadSign, setUploadSign] = useState<any>({
+        signature: ""
+    })
     const [activeIndex, setActiveIndex] = useState(0);
     const breadcrumb = [
         {
@@ -21,12 +28,61 @@ const Profile = () => {
             route: "/profile"
         }
     ]
+
+    const handleChange = (key: string, file: File | null) => {
+        console.log(file)
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const base64String = reader.result as string;
+                console.log(base64String,"base64String")
+                setUploadSign((prev: any) => ({ ...prev, [key]: base64String }));
+            };
+            reader.onerror = (error) => {
+                console.error("Error converting file to Base64:", error);
+            };
+        } else {
+            setUploadSign((prev: any) => ({ ...prev, [key]: null }));
+        }
+    };
+
+    const getUploadSignature = async () => {
+        const response: Response = await getMethod(`/quotation/get-user-Profile-details?user_id=${cookies?.user_id ? cookies?.user_id : null}`)
+        const data = response.data;
+        if (response.status == "success") {
+            console.log(response.data)
+            const base64Prefix = "data:image/png;base64,";
+            const signatureSrc = data?.user_signature.startsWith(base64Prefix)
+                ? data.user_signature
+                : base64Prefix + data?.user_signature;
+            setUserSign(signatureSrc)
+        }
+    }
+
+
+    const uploadSignature = async () => {
+        const payLoad = {
+            user_name: cookies.user_name ? cookies.user_name : uploadSign.user_name || null,
+            user_id: cookies.user_id ? cookies.user_id : uploadSign.user_id || null,
+            signature: uploadSign.signature || null
+        }
+        const response: Response = await postMethod("/quotation/upload-user-details", payLoad)
+        if(response.status == "success"){
+            getUploadSignature()
+        }
+       
+    }
+
     useEffect(() => {
         if (cookies.avatar_value || cookies.user_name) {
             setAvatar(cookies.avatar_value || "")
             setUserName(cookies.user_name || "")
         }
     }, [cookies])
+    useEffect(() => {
+        getUploadSignature()
+    }, [])
     return (
         <>
             <div className='relative'>
@@ -54,33 +110,59 @@ const Profile = () => {
                                 {
                                     activeIndex == 0 &&
                                     <>
-                                        <div className='px-4  relative text-[14px]'>
-                                            <div className='mt-2 flex flex-col gap-1 '>
-                                                <label htmlFor="" className=''>Upload Signature</label>
-                                                <div className='border border-[#F4AA08] bg-[#FFFDF8] w-[400px] rounded-[6px]'>
-                                                    <div className='flex flex-col justify-center items-center px-5 py-3'>
-                                                        <input
-                                                            type='file'
-                                                            id="release_images"
-                                                            hidden
-                                                            onChange={(e) => {
+                                        <div className="px-4 relative text-[14px]">
+                                            <div className="mt-2 flex flex-col gap-1">
+                                                <label className="font-medium text-gray-700">Upload Signature</label>
 
-                                                            }}
+                                                <div className="border border-[#F4AA08] bg-[#FFFDF8] w-[400px] rounded-[6px]">
+                                                    <div className="flex flex-col justify-center items-center px-5 py-3">
+                                                        <input
+                                                            type="file"
+                                                            id="signature"
+                                                            hidden
                                                             accept=".jpeg, .png"
-                                                            multiple
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0] || null;
+                                                                handleChange("signature", file);
+                                                            }}
                                                         />
-                                                        <label htmlFor="release_images" className='py-[6px] px-[16px] bg-[#F4AA08] text-[12px] rounded-[4px] text-white hover:cursor-pointer'>Upload File</label>
-                                                        <p className='text-[12px] text-[#F4AA08] font-medium mt-1.5'>2MB Limit</p>
-                                                        <p className='text-[10px] text-[#F4AA08]'>JPEG,PNG</p>
+                                                        <label
+                                                            htmlFor="signature"
+                                                            className="py-[6px] px-[16px] bg-[#F4AA08] text-[12px] rounded-[4px] text-white hover:cursor-pointer"
+                                                        >
+                                                            Upload File
+                                                        </label>
+                                                        <p className="text-[12px] text-[#F4AA08] font-medium mt-1.5">2MB Limit</p>
+                                                        <p className="text-[10px] text-[#F4AA08]">JPEG, PNG</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className='-bottom-12 absolute '>
-                                                <Custombutton name={'Update'} color={'yellow'}/>
+                                            {(uploadSign?.signature || userSign)&&(
+                                                <div className="mt-2 ">
+                                                    <img
+                                                        src={userSign ? userSign : uploadSign.signature ? uploadSign.signature : ""}
+                                                        alt="Signature Preview"
+                                                        className=" p-3 h-[150px] w-[250px] border border-gray-300 rounded-md"
+                                                       
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="mt-10">
+                                                <Custombutton name="Update" color="yellow" onclick={uploadSignature} />
                                             </div>
+                                        </div>
+
+                                    </>
+                                }
+                                {
+                                    activeIndex == 1 &&
+                                    <>
+                                        <div className='px-4  flex justify-center'>
+                                            <Image src={'/images/decide.svg'} alt={'logo'} width={200} height={200} />
                                         </div>
                                     </>
                                 }
+
                             </div>
                         </div>
                     </div>

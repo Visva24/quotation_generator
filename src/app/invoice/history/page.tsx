@@ -105,8 +105,8 @@ const Page = () => {
                     </div>
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <p className='font-semibold'>Remarks</p>
-                    <p>{data?.remarks}</p>
+                    <p className='font-semibold'>Customer</p>
+                    <p>{data?.customer_name}</p>
                   </div>
                 </div>
               </div>
