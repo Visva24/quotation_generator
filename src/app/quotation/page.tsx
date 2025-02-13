@@ -343,8 +343,8 @@ const Page = () => {
     }, [])
 
     useEffect(() => {
-      getRevisedData()
-    }, [type === "revised"])
+     if(type){ getRevisedData()}
+    }, [type])
 
     useEffect(() => {
       if (revisedDoc) {

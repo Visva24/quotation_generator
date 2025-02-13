@@ -1,16 +1,20 @@
 import { setCookie, parseCookies, destroyCookie } from 'nookies';
 
-
-
 export const storeUserDataInCookies = (data: any) => {
   setCookie(null, 'access_token', data.access_token, {
     maxAge: 30 * 24 * 60 * 60, // 30 days
-    path: '/', // Make it available site-wide
+    path: '/', // Available site-wide
+    httpOnly: false, // Allow JavaScript access
+    secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+    sameSite: 'Lax', // Allow cookies on same site requests
   });
 
   setCookie(null, 'refresh_token', data.refresh_token, {
     maxAge: 30 * 24 * 60 * 60,
     path: '/',
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Lax',
   });
 
   setCookie(null, 'user_name', data.user.user_name || '', {
@@ -33,6 +37,7 @@ export const storeUserDataInCookies = (data: any) => {
     path: '/',
   });
 };
+
 
 // Get user name from cookies
 
