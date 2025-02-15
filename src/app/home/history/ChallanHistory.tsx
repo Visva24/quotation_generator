@@ -17,8 +17,8 @@ const ChallanHistory = () => {
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
     { label: "Description", key: "description", align: "left", width: "300px" },
-    { label: "Quantity", key: "quantity", align: "center", width: "80px" },
     { label: "Units", key: "units", align: "center", width: "80px" },
+    { label: "Quantity", key: "quantity", align: "center", width: "80px" },
   ];
   const [history, setHistory] = useState<any>();
   const [sideBar, setSideBar] = useState<any>();

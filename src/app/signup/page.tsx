@@ -143,7 +143,7 @@ const SignUpPage = () => {
                                 <hr className=" w-full  border-t-1 border-[#fff]" />
                             </div> */}
                             <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600" onClick={handleSignIn}  >
-                                Sign In
+                                Sign Up
                             </button>
                             <div className="px-6 mt-2"> <hr className=" w-full px-6  border-t-1 border-[#fff]" /></div>
                             <div className="flex flex-col gap-2 justify-center items-center">

@@ -214,7 +214,7 @@ const Page = () => {
                   <div className='flex flex-col gap-2'>
                     <p>Sales Employee: <span>{viewData?.sales_employee}</span></p>
                     <p>Payment Terms: <span>{viewData?.payment_terms}</span></p>
-                    <p>Remark Brand: <span>{viewData?.remark_brand}</span></p>
+                    <p>Remark: <span>{viewData?.remark_brand}</span></p>
                     <p>Delivery: <span>{viewData?.delivery}</span></p>
                     <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>
                   </div>

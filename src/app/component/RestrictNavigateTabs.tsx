@@ -33,9 +33,7 @@ const RestrictNavigateTabs: React.FC<RestrictNavigateTabsProps> = ({ tabHead, on
                             onNavigate(header.route);
                         }
                     }}
-                    className={`border-b-[3px] mr-3 gap-2 ${
-                        pathname === header.route ? "border-[#F4AA08] rounded-b-sm cursor-default" : "border-transparent"
-                    }`}
+                    className={`border-b-[3px] mr-3 gap-2 text-[#8B8B8B] ${pathname === header.route ? "border-[#F4AA08] !text-[#000] rounded-b-sm cursor-default" : "border-transparent"}`}
                     disabled={pathname === header.route}
                 >
                     <i className={iconMap[header.icon]}></i> {header.title}

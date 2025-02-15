@@ -282,8 +282,8 @@ const Page = () => {
     return (
       <div>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
-          <div className='col-span-6 !text-[14px] py-4 overflow-y-scroll scroll-bar'>
-            <p className='text-[18px] ml-2 font-medium'>Invoice Inputs</p>
+          <div className='col-span-6 !text-[14px] overflow-y-scroll scroll-bar'>
+            <p className='text-[18px] ml-2 font-medium mb-2'>Invoice Inputs</p>
             <div className='border mx-2 rounded-[8px] p-2'>
               <div className='grid grid-cols-2 px-2 gap-4'>
                 <div className='flex flex-col gap-1'>
@@ -484,7 +484,7 @@ const Page = () => {
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Remark Brand</label>
+                    <label htmlFor="">Remark</label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("remark_brand", e.target.value) }}
@@ -509,8 +509,8 @@ const Page = () => {
             </div>
           </div>
           <div className='col-span-6  '>
-            <div className='my-2 flex justify-start items-center'>
-              <p className='text-[18px] font-medium'> Invoice Preview:</p>
+            <div className='flex justify-start items-center'>
+              <p className='text-[18px] font-medium mb-2'> Invoice Preview:</p>
               {/* <Custombutton name={'Download'} color={'blue'} /> */}
               {/* <Custombutton name={''} color={'black'}/> */}
             </div>
@@ -604,7 +604,7 @@ const Page = () => {
                 <div className='flex flex-col gap-2'>
                   <p>Sales Employee: <span>{formdata.sales_emp}</span></p>
                   <p>Payment Terms: <span>{formdata.pay_terms}</span></p>
-                  <p>Remark Brand: <span>{formdata.remark_brand}</span></p>
+                  <p>Remark: <span>{formdata.remark_brand}</span></p>
                   <p>Delivery: <span>{formdata.delivery}</span></p>
                   <p>Amount in Words: <span>{tableValues?.amount_in_words}</span></p>
                 </div>

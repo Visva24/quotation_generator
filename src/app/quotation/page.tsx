@@ -354,8 +354,8 @@ const Page = () => {
     return (
       <>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
-          <div className='col-span-6 !text-[14px] py-4 overflow-y-scroll scroll-bar'>
-            <p className='text-[18px] ml-2 font-medium'>Quotation Inputs</p>
+          <div className='col-span-6 !text-[14px]  overflow-y-scroll scroll-bar'>
+            <p className='text-[18px] ml-2 font-medium mb-2'>Quotation Inputs</p>
             <div className='border mx-2 rounded-[8px] p-2'>
               <div className='grid grid-cols-2 px-2 gap-4'>
                 <div className='flex flex-col gap-1  w-full'>
@@ -570,9 +570,9 @@ const Page = () => {
 
             </div>
           </div>
-          <div className='col-span-6  '>
-            <div className='my-2 flex justify-start items-center'>
-              <p className='text-[18px] font-medium'> Quotation Preview:</p>
+          <div className='col-span-6 '>
+            <div className=' flex justify-start items-center'>
+              <p className='text-[18px] font-medium mb-2'> Quotation Preview:</p>
               {/* <Custombutton name={'Download'} color={'blue'} /> */}
               {/* <Custombutton name={''} color={'black'}/> */}
             </div>

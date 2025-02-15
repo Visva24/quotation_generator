@@ -59,8 +59,9 @@ const Page = () => {
       { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
       { label: "Item No.", key: "item_number", align: "center", width: "100px" },
       { label: "Description", key: "description", align: "left", width: "300px" },
-      { label: "Quantity", key: "quantity", align: "center", width: "80px" },
       { label: "Units", key: "units", align: "center", width: "80px" },
+      { label: "Quantity", key: "quantity", align: "center", width: "80px" },
+     
     ];
 
     const units = [
@@ -225,8 +226,8 @@ const Page = () => {
       <>
         <div>
           <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
-            <div className='col-span-6 !text-[14px] py-4 overflow-y-scroll scroll-bar'>
-              <p className='text-[18px] ml-2 font-medium'>Delivery Note Inputs</p>
+            <div className='col-span-6 !text-[14px] overflow-y-scroll scroll-bar'>
+              <p className='text-[18px] ml-2 font-medium mb-2'>Delivery Note Inputs</p>
               <div className='border mx-2 rounded-[8px] p-2'>
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
@@ -373,8 +374,8 @@ const Page = () => {
               </div>
             </div>
             <div className='col-span-6  '>
-              <div className='my-2 flex justify-between items-center'>
-                <p className='text-[18px] font-medium'> Delivery Note Preview:</p>
+              <div className='flex justify-between items-center'>
+                <p className='text-[18px] font-medium mb-2'> Delivery Note Preview:</p>
                 {/* <Custombutton name={'Download'} color={'blue'} /> */}
                 {/* <Custombutton name={''} color={'black'}/> */}
               </div>
