@@ -4,7 +4,7 @@ import Loader from '@/app/component/Loader'
 import MoveForward from '@/app/component/MoveForward'
 import Popup from '@/app/component/Popup'
 import Table from '@/app/component/Table'
-import { getMethod } from '@/utils/api'
+import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import { downloadPDF } from '@/utils/download'
 import Image from 'next/image'
@@ -41,7 +41,12 @@ const Page = () => {
     setSelectOption(value)
   }
   const getQuotationHistory = async () => {
-    const response: Response = await getMethod(`/quotation/get-quotation-form-history`)
+    let payload={
+      filter_data:{
+          date:null
+      }
+  }
+    const response: Response = await postMethod(`/quotation/get-quotation-form-history`,payload)
     console.log(response?.data)
     setHistory(response?.data)
   }
