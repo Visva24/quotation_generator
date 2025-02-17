@@ -16,7 +16,6 @@ const Page = () => {
     <div>
       <div className='mx-4 flex justify-between items-center mb-3'>
         <ToggleSwitch options={option} value={selectOption} onChange={handleChange} />
-        <p>filter</p>
       </div>
       {
         selectOption == "Quotations" &&

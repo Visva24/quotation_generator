@@ -31,8 +31,8 @@ const Page = () => {
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [savePop, setSavePop] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
-    const [suggestDrop,setSuggestDrop] = useState<{ customer_name: string; id: number }[]>([]);
-    const [suggestion,setSuggestion] = useState<{ customer_name: string; id: number }[]>([]);
+    const [suggestDrop, setSuggestDrop] = useState<{ customer_name: string; id: number }[]>([]);
+    const [suggestion, setSuggestion] = useState<{ customer_name: string; id: number }[]>([]);
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -48,7 +48,7 @@ const Page = () => {
         validity: "",
         remark_brand: "",
         delivery: "",
-        pay_terms:""
+        pay_terms: ""
       }
     )
     const [tableData, setTableData] = useState<any>({
@@ -62,22 +62,22 @@ const Page = () => {
     });
 
     const handleChange = (key: string, value: any) => {
-      console.log(value,"value")
+      console.log(value, "value")
       setFormdata({ ...formdata, [key]: value })
       setTableData({ ...tableData, [key]: value })
     }
 
     const handleSelect = (value: { customer_name: string; id: number }) => {
-      handleChange("customer", value.customer_name); 
+      handleChange("customer", value.customer_name);
       autofillData(value?.id)
     };
 
-    const autofillData = async(id:number) => {
-       const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${id}`)
-       console.log(response?.data)
-       const autoFillData = response?.data;
-       const format_date = new Date(autoFillData.doc_date)
-       if(response.status === "success"){
+    const autofillData = async (id: number) => {
+      const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${id}`)
+      console.log(response?.data)
+      const autoFillData = response?.data;
+      const format_date = new Date(autoFillData.doc_date)
+      if (response.status === "success") {
         setFormdata({
           customer: autoFillData?.customer_name || "",
           document_no: autoFillData?.doc_number || "",
@@ -91,7 +91,7 @@ const Page = () => {
           address: autoFillData?.address || "",
           validity: autoFillData?.quotation_validity || "",
         })
-       }
+      }
     }
 
     const handleAdd = async () => {
@@ -304,7 +304,7 @@ const Page = () => {
         address: formdata.address || null,
         remark_brand: formdata.remark_brand || null,
         delivery: formdata.delivery || null,
-        payment_terms:formdata.pay_terms || null ,
+        payment_terms: formdata.pay_terms || null,
         created_user_id: user_id || null,
         total_discount: 0,
         total_tax: 0
@@ -315,24 +315,24 @@ const Page = () => {
       }
     }
 
-    const suggestions = async() => {
-      const response:Response = await getMethod("/quotation/get-customer-dropdown")
+    const suggestions = async () => {
+      const response: Response = await getMethod("/quotation/get-customer-dropdown")
       console.log(response?.data)
       setSuggestDrop(response?.data)
     }
     const searchCustomer = (event: { query: string }) => {
-      const filtered = suggestDrop.filter((customer:any) =>
+      const filtered = suggestDrop.filter((customer: any) =>
         customer.customer_name.toLowerCase().includes(event.query.toLowerCase())
       );
-      setSuggestion(filtered); 
+      setSuggestion(filtered);
     };
-  
+
 
     const resetTempData = async () => {
       const response: Response = await getMethod(`/quotation/reset-quotation-list?doc_number=${docNo}`)
     }
 
-    const handleYes = async() => {
+    const handleYes = async () => {
       await resetTempData()
       router.push("/home")
     }
@@ -343,7 +343,20 @@ const Page = () => {
     }, [])
 
     useEffect(() => {
-     if(type){ getRevisedData()}
+      if (docNo) {
+        getTableValues()
+      }
+    }, [docNo])
+
+    // useEffect(() => {
+    //   if (tableValues && tableValues?.length > 0) {
+    //     console.log("first")
+    //     resetTempData()
+    //   }
+    // }, [tableValues])
+
+    useEffect(() => {
+      if (type) { getRevisedData() }
     }, [type])
 
     useEffect(() => {
@@ -365,7 +378,7 @@ const Page = () => {
                     onChange={(e) => { handleChange('customer', e.target.value) }}
                     value={formdata.customer}
                   /> */}
-                  <AutoComplete className='border h-9 w-full rounded-[6px]' value={formdata.customer} suggestions={suggestion}  completeMethod={searchCustomer} field="customer_name"  onChange={(e) => { handleChange('customer', e.target.value) }}  onSelect={(e) => handleSelect(e.value)} />
+                  <AutoComplete className='border h-9 w-full rounded-[6px]' value={formdata.customer} suggestions={suggestion} completeMethod={searchCustomer} field="customer_name" onChange={(e) => { handleChange('customer', e.target.value) }} onSelect={(e) => handleSelect(e.value)} />
                 </div>
 
                 <div className='flex flex-col gap-1'>
@@ -598,7 +611,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col  !break-all'>
                       <p>Document No:</p>
-                      <p className='text-[#929292]'>{ docNo ? docNo : formdata.document_no || ""}  </p>
+                      <p className='text-[#929292]'>{docNo ? docNo : formdata.document_no || ""}  </p>
                     </div>
                     <div className='flex flex-col !break-all'>
                       <p>Document Date:</p>

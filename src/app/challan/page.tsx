@@ -61,7 +61,7 @@ const Page = () => {
       { label: "Description", key: "description", align: "left", width: "300px" },
       { label: "Units", key: "units", align: "center", width: "80px" },
       { label: "Quantity", key: "quantity", align: "center", width: "80px" },
-     
+
     ];
 
     const units = [
@@ -219,9 +219,17 @@ const Page = () => {
     }, [moveDoc]);
 
     useEffect(() => {
-      getMovedDataChallan()
-      getTableValues()
-    }, [type === "moveData"])
+      if (docNo) {
+        getTableValues()
+      }
+    }, [docNo])
+
+    useEffect(() => {
+      if (type) {
+        getMovedDataChallan()
+        getTableValues()
+      }
+    }, [type])
     return (
       <>
         <div>
@@ -367,7 +375,7 @@ const Page = () => {
                   </div>
                 </div>
                 <div className='flex justify-center items-center my-3 gap-3'>
-                  <Custombutton name={'Back'} color={'black'} onclick={() => {setShowPopup(true) }} />
+                  <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
                   <Custombutton name={'Save'} color={'yellow'} onclick={createDeliveryNote} />
                 </div>
 

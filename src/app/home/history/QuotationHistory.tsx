@@ -32,7 +32,8 @@ const QuotationHistory = () => {
     const [selectOption, setSelectOption] = useState<any>('')
     const [loader, setLoader] = useState<boolean>(false);
     const [movePop, setMovePop] = useState<boolean>(false);
-    const [selectedId, setSelectedId] = useState<any>()
+    const [selectedId, setSelectedId] = useState<any>();
+
     const handleChange = (value: any) => {
         console.log(value)
         setSelectOption(value)
@@ -73,13 +74,44 @@ const QuotationHistory = () => {
             </div>
         )
     }
+    const Filter = () => {
+        const [toggleDrop, settoggleDrop] = useState<boolean>(false);
+        const handleToggle = () => {
+            settoggleDrop(!toggleDrop)
+        }
+        return (
+            <div className=' bg-[#FFF] relative'>
+                <div className='flex items-center gap-2 text-[14px] px-2 py-[2px] border-[#222222] border rounded-full cursor-pointer ' onClick={handleToggle}>
+                    <div className='w-7 h-7 rounded-full bg-[#F4AA08] flex justify-center items-center'>
+                        <img className='w-5 h-5' src="/images/filter-white.svg" alt="filter" />
+                    </div>
+                    <p>Filter</p>
+                </div>
+                {
+                    toggleDrop &&
+                    <div className='absolute !bottom-10 left-[900px]  w-full bg-white shadow-xl rounded-[8px] p-[10px]'>
+                        <div className='flex justify-between items-center'>
+                        <div className='flex gap-1 items-center'>
+                            <img src="/images/filter.svg" alt="" className='w-5 h-5' />
+                            <p>Filter</p>
+                        </div> 
+                        <p>Filter Applied</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        )
+    }
 
     useEffect(() => {
         getQuotationHistory()
     }, [])
 
     return (
-        <>
+        <div className='relative'>
+            {/* <div className='absolute right-6 -top-12'>
+                <Filter/>
+            </div> */}
             {
                 (history?.length > 0) ?
                     history?.map((data: any, index: any) => (
@@ -258,7 +290,7 @@ const QuotationHistory = () => {
                     </Sidebar>
                 </>
             }
-        </>
+        </div>
     )
 }
 

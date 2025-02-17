@@ -268,6 +268,13 @@ const Page = () => {
     useEffect(() => {
       getDocumentNo()
     }, [])
+
+    useEffect(() => {
+      if (docNo) {
+        getTableValues()
+      }
+    }, [docNo])
+
     useEffect(() => {
       if (moveDoc) {
         getTableValues();
@@ -275,9 +282,11 @@ const Page = () => {
     }, [moveDoc]);
 
     useEffect(() => {
-      getMovedDataInvoice()
-      getTableValues()
-    }, [type === "moveData"])
+      if (type) {
+        getMovedDataInvoice()
+        getTableValues()
+      }
+    }, [type])
 
     return (
       <div>
@@ -502,7 +511,7 @@ const Page = () => {
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
-                <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true)}} />
+                <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
                 <Custombutton name={'Save'} color={'yellow'} onclick={createInvoice} />
               </div>
 
