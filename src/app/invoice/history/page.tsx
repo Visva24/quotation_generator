@@ -2,7 +2,7 @@
 import Custombutton from '@/app/component/Custombutton';
 import Loader from '@/app/component/Loader';
 import Table from '@/app/component/Table';
-import { getMethod } from '@/utils/api';
+import { getMethod, postMethod } from '@/utils/api';
 import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
 import Image from 'next/image';
@@ -34,7 +34,13 @@ const Page = () => {
     setSelectOption(value)
   }
   const getInvoiceHistory = async () => {
-    const response: Response = await getMethod(`/sales-invoice/get-sales-invoice-form-history`)
+   let payload={
+            filter_data:{
+                date:null
+            }
+        }
+         
+      const response: Response = await postMethod(`/sales-invoice/get-sales-invoice-form-history`,payload)
     console.log(response?.data)
     setHistory(response?.data)
   }

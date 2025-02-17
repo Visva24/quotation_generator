@@ -1,7 +1,7 @@
 import Custombutton from '@/app/component/Custombutton';
 import Loader from '@/app/component/Loader';
 import Table from '@/app/component/Table';
-import { getMethod } from '@/utils/api';
+import { getMethod, postMethod } from '@/utils/api';
 import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
 import Image from 'next/image';
@@ -25,7 +25,12 @@ const ChallanHistory = () => {
   const [viewData, setViewData] = useState<any>();
   const [loader, setLoader] = useState<boolean>(false);
   const getQuotationHistory = async () => {
-    const response: Response = await getMethod(`/delivery-challan/get-delivery-challan-form-history`)
+     let payload={
+          filter_data:{
+              date:null
+          }
+      }
+        const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`,payload)
     console.log(response?.data)
     setHistory(response?.data)
   }
