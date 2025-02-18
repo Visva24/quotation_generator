@@ -63,7 +63,7 @@ const Page = () => {
 
   const downLoadPdf = async (id: number) => {
     setLoader(true)
-    const response: Response = await getMethod(`/quotation/download-quotation-template?id=${id}`)
+    const response: Response = await getMethod(`/quotation/download-quotation-template?id=${id}&user_id=${user_id}`)
     if (response.status === "success") {
       setTimeout(() => { downloadPDF(response.data), setLoader(false) })
     }

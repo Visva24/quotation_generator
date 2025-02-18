@@ -349,6 +349,7 @@ const Page = () => {
     }, [docNo])
 
     // useEffect(() => {
+    //   console.log(JSON.stringify(tableValues?.length))
     //   if (tableValues && tableValues?.length > 0) {
     //     console.log("first")
     //     resetTempData()

@@ -4,15 +4,14 @@ import Table from '@/app/component/Table';
 import { getMethod, postMethod } from '@/utils/api';
 import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
+import moment from 'moment';
 import Image from 'next/image';
 import { parseCookies } from 'nookies';
+import { Calendar } from 'primereact/calendar';
 import { Sidebar } from 'primereact/sidebar';
 import React, { useEffect, useState } from 'react'
 
 const ChallanHistory = () => {
-  const cookies = parseCookies();
-  const user_name = cookies.user_name
-  const short_name = cookies.avatar_value
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -24,7 +23,7 @@ const ChallanHistory = () => {
   const [sideBar, setSideBar] = useState<any>();
   const [viewData, setViewData] = useState<any>();
   const [loader, setLoader] = useState<boolean>(false);
-  const getQuotationHistory = async () => {
+  const getChallanHistory = async () => {
      let payload={
           filter_data:{
               date:null
@@ -62,11 +61,82 @@ const ChallanHistory = () => {
     )
   }
 
+  const Filter = () => {
+    const [toggleDrop, setToggleDrop] = useState<boolean>(false);
+    const [isFilterApplied ,setIsFilterApplied] = useState<any>();
+    const [filterDate, setFilterDate] = useState<any>({
+        filter_date: ""
+    })
+
+    const handleFilterChange = (key: string, value: any) => {
+        setFilterDate({ ...filterDate, [key]: value })
+    }
+
+    const handleToggle = () => {
+        setToggleDrop(!toggleDrop);
+    };
+
+    const handleApplyFilter = async () => {
+        let payload = {
+            filter_data: {
+                date: moment(filterDate?.filter_date).format('YYYY/MM/DD') || null,
+            }
+        }
+        const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`, payload)
+        setHistory(response?.data)
+        setIsFilterApplied(true)
+    }
+    const handleClearFilter = async () => {
+        setFilterDate({ filter_date: null });
+        setIsFilterApplied(false);
+        getChallanHistory();
+    }
+
+    return (
+        <div className="relative">
+            <div
+                className="inline-flex items-center gap-2 text-[14px] px-2 py-[2px] border-[#222222] border rounded-full cursor-pointer bg-white"
+                onClick={handleToggle}
+            >
+                <div className="w-7 h-7 rounded-full bg-[#F4AA08] flex justify-center items-center">
+                    <img className="w-5 h-5" src="/images/filter-white.svg" alt="filter" />
+                </div>
+                <p>Filter</p>
+            </div>
+            {toggleDrop && (
+                <div
+                    className="absolute right-[0px] top-full mt-2 w-[300px] bg-white shadow-xl rounded-lg p-3"
+                >
+                    <div className="flex justify-between items-center">
+                        <div className="flex gap-1 items-center">
+                            <img src="/images/filter.svg" alt="filter" className="w-5 h-5" />
+                            <p>Filter</p>
+                        </div>
+                        {/* {isFilterApplied && <p className="text-gray-600">Filter Applied</p>} */}
+                        <div className='w-6 h-6 rounded-full border flex items-center justify-center'>
+                            <i className='pi pi-times text-[12px] text-[#000]' onClick={()=>setToggleDrop(false)}></i>
+                        </div>
+                    </div>
+                    <hr className='my-2' />
+                    <div className='flex justify-between items-center'>
+                        <Calendar className='border h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
+                        <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
+                        <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
   useEffect(() => {
-    getQuotationHistory()
+    getChallanHistory()
   }, [])
   return (
     <>
+     <div className='flex justify-end mb-3 mr-6'>
+        <Filter />
+       </div>
       {
         (history?.length > 0) ?
           history?.map((data: any, index: any) => (

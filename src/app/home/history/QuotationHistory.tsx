@@ -1,15 +1,19 @@
 import Custombutton from '@/app/component/Custombutton';
+import FilterX from '@/app/component/FilterX';
+import Filter from '@/app/component/FilterX';
 import Loader from '@/app/component/Loader';
 import MoveForward from '@/app/component/MoveForward';
 import Table from '@/app/component/Table';
 import { getMethod, postMethod } from '@/utils/api';
 import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
+import moment from 'moment';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { parseCookies } from 'nookies';
+import { Calendar } from 'primereact/calendar';
 import { Sidebar } from 'primereact/sidebar';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 const QuotationHistory = () => {
     const router = useRouter();
@@ -33,18 +37,17 @@ const QuotationHistory = () => {
     const [loader, setLoader] = useState<boolean>(false);
     const [movePop, setMovePop] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<any>();
-
     const handleChange = (value: any) => {
         console.log(value)
         setSelectOption(value)
     }
     const getQuotationHistory = async () => {
-        let payload={
-            filter_data:{
-                date:null
+        let payload = {
+            filter_data: {
+                date: null
             }
         }
-        const response: Response = await postMethod(`/quotation/get-quotation-form-history`,payload)
+        const response: Response = await postMethod(`/quotation/get-quotation-form-history`, payload)
 
         console.log(response?.data)
         setHistory(response?.data)
@@ -62,7 +65,7 @@ const QuotationHistory = () => {
 
     const downLoadPdf = async (id: number) => {
         setLoader(true)
-        const response: Response = await getMethod(`/quotation/download-quotation-template?id=${id}`)
+        const response: Response = await getMethod(`/quotation/download-quotation-template?id=${id}&user_id=${user_id}`)
         if (response.status === "success") {
             setTimeout(() => { downloadPDF(response.data), setLoader(false) })
         }
@@ -80,44 +83,86 @@ const QuotationHistory = () => {
             </div>
         )
     }
+
     const Filter = () => {
-        const [toggleDrop, settoggleDrop] = useState<boolean>(false);
-        const handleToggle = () => {
-            settoggleDrop(!toggleDrop)
+        const [toggleDrop, setToggleDrop] = useState<boolean>(false);
+        const [isFilterApplied ,setIsFilterApplied] = useState<any>();
+        const [filterDate, setFilterDate] = useState<any>({
+            filter_date: ""
+        })
+
+        const handleFilterChange = (key: string, value: any) => {
+            setFilterDate({ ...filterDate, [key]: value })
         }
+
+        const handleToggle = () => {
+            setToggleDrop(!toggleDrop);
+        };
+
+        const handleApplyFilter = async () => {
+            let payload = {
+                filter_data: {
+                    date: moment(filterDate?.filter_date).format('YYYY/MM/DD') || null,
+                }
+            }
+            const response: Response = await postMethod(`/quotation/get-quotation-form-history`, payload)
+            setHistory(response?.data)
+            setIsFilterApplied(true)
+        }
+        const handleClearFilter = async () => {
+            setFilterDate({ filter_date: null });
+            setIsFilterApplied(false);
+            getQuotationHistory();
+        }
+
         return (
-            <div className=' bg-[#FFF] relative'>
-                <div className='flex items-center gap-2 text-[14px] px-2 py-[2px] border-[#222222] border rounded-full cursor-pointer ' onClick={handleToggle}>
-                    <div className='w-7 h-7 rounded-full bg-[#F4AA08] flex justify-center items-center'>
-                        <img className='w-5 h-5' src="/images/filter-white.svg" alt="filter" />
+            <div className="relative">
+                <div
+                    className="inline-flex items-center gap-2 text-[14px] px-2 py-[2px] border-[#222222] border rounded-full cursor-pointer bg-white"
+                    onClick={handleToggle}
+                >
+                    <div className="w-7 h-7 rounded-full bg-[#F4AA08] flex justify-center items-center">
+                        <img className="w-5 h-5" src="/images/filter-white.svg" alt="filter" />
                     </div>
                     <p>Filter</p>
                 </div>
-                {
-                    toggleDrop &&
-                    <div className='absolute !bottom-10 left-[900px]  w-full bg-white shadow-xl rounded-[8px] p-[10px]'>
+                {toggleDrop && (
+                    <div
+                        className="absolute right-[0px] top-full mt-2 w-[300px] bg-white shadow-xl rounded-lg p-3"
+                    >
+                        <div className="flex justify-between items-center">
+                            <div className="flex gap-1 items-center">
+                                <img src="/images/filter.svg" alt="filter" className="w-5 h-5" />
+                                <p>Filter</p>
+                            </div>
+                            {/* {isFilterApplied && <p className="text-gray-600">Filter Applied</p>} */}
+                            <div className='w-6 h-6 rounded-full border flex items-center justify-center'>
+                                <i className='pi pi-times text-[12px] text-[#000]' onClick={()=>setToggleDrop(false)}></i>
+                            </div>
+                        </div>
+                        <hr className='my-2' />
                         <div className='flex justify-between items-center'>
-                        <div className='flex gap-1 items-center'>
-                            <img src="/images/filter.svg" alt="" className='w-5 h-5' />
-                            <p>Filter</p>
-                        </div> 
-                        <p>Filter Applied</p>
+                            <Calendar className='border h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
+                            <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
+                            <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
                         </div>
                     </div>
-                }
+                )}
             </div>
-        )
-    }
+        );
+    };
+
+
 
     useEffect(() => {
         getQuotationHistory()
     }, [])
 
     return (
-        <div className='relative'>
-            {/* <div className='absolute right-6 -top-12'>
-                <Filter/>
-            </div> */}
+        <div className=''>
+            <div className='flex justify-end mb-3 mr-6'>
+                <Filter />
+            </div>
             {
                 (history?.length > 0) ?
                     history?.map((data: any, index: any) => (
