@@ -23,7 +23,7 @@ const Page = () => {
   const [sideBar, setSideBar] = useState<any>();
   const [viewData, setViewData] = useState<any>();
   const [loader, setLoader] = useState<boolean>(false);
-  const getQuotationHistory = async () => {
+  const getChallanHistory = async () => {
     let payload={
       filter_data:{
           date:null
@@ -62,7 +62,7 @@ const Page = () => {
   }
 
   useEffect(() => {
-    getQuotationHistory()
+    getChallanHistory()
   }, [])
   return (
     <>

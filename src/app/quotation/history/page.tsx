@@ -2,7 +2,6 @@
 import Custombutton from '@/app/component/Custombutton'
 import Loader from '@/app/component/Loader'
 import MoveForward from '@/app/component/MoveForward'
-import Popup from '@/app/component/Popup'
 import Table from '@/app/component/Table'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
@@ -18,6 +17,13 @@ const Page = () => {
   const cookies = parseCookies()
   const user_id = cookies.user_id
   console.log(user_id, "user_id")
+  const [history, setHistory] = useState<any>();
+  const [sideBar, setSideBar] = useState<any>();
+  const [viewData, setViewData] = useState<any>();
+  const [selectOption, setSelectOption] = useState<any>('')
+  const [loader, setLoader] = useState<boolean>(false);
+  const [movePop, setMovePop] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<any>();
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -25,17 +31,10 @@ const Page = () => {
     { label: "Quantity", key: "quantity", align: "center", width: "80px" },
     { label: "Units", key: "units", align: "center", width: "80px" },
     { label: "Price", key: "price", align: "center", width: "100px" },
-    { label: "Tax(%)", key: "tax", align: "center", width: "100px" },
+    { label: viewData?.currency =="SAR" ? "VAT(%)" : "TAX(%)" , key: "tax", align: "center", width: "100px" },
     { label: "Discount(%)", key: "discount", align: "center", width: "100px" },
     { label: "Total", key: "amount", align: "center", width: "100px" },
   ];
-  const [history, setHistory] = useState<any>();
-  const [sideBar, setSideBar] = useState<any>();
-  const [viewData, setViewData] = useState<any>();
-  const [selectOption, setSelectOption] = useState<any>('')
-  const [loader, setLoader] = useState<boolean>(false);
-  const [movePop, setMovePop] = useState<boolean>(false);
-  const [selectedId, setSelectedId] = useState<any>()
   const handleChange = (value: any) => {
     console.log(value)
     setSelectOption(value)
@@ -254,7 +253,7 @@ const Page = () => {
                   <div className='flex flex-col gap-1'>
                     <p className=' text-[12px]'>Sub Total:{viewData?.sub_total}</p>
                     <p>DIS:{viewData?.total_discount}</p>
-                    <p>TAX:{viewData?.total_tax}</p>
+                    <p> {viewData?.currency =="SAR" ? "VAT" : "TAX"}:{viewData?.total_tax}</p>
                     <p>Total:{viewData?.grand_total}</p>
                   </div>
                 </div>

@@ -21,6 +21,7 @@ const SignUpPage = () => {
             phone_number: "",
             user_password: "",
             confirm_pass: "",
+            pass_key:""
         }
     );
     const handleChange = (key: string, value: any) => {
@@ -44,7 +45,8 @@ const SignUpPage = () => {
             user_name: credential.user_name,
             user_email: credential.user_email,
             user_password: credential.user_password,
-            phone_number: credential.phone_number
+            phone_number: credential.phone_number,
+            pass_key:credential.pass_key
         }
         const response: Response = await postMethod("/authentication/sign-up", payload)
         console.log(response)
@@ -63,10 +65,10 @@ const SignUpPage = () => {
             <div className="h-screen w-screen grid grid-cols-12 text-[#fff]">
                 <div className="col-span-7 bg-[#000] ">
                     <div className="flex h-full items-center justify-center">
-                        <Image src="/images/loginImg.png" alt={""} height={400} width={400} className="shadow-2xl  shadow-[#901129]" />
+                        <Image src="/images/loginImg.png" alt={""} height={400} width={400} className="shadow-2xl ml-36  shadow-[#901129]" />
                     </div>
                 </div>
-                <div className="col-span-5 bg-[#000] overflow-y-auto">
+                <div className="col-span-5 bg-[#000] overflow-y-auto scroll-bar">
                     <div className="mt-10 flex justify-center items-center">
                         <div className="flex flex-col gap-4">
                             <div>
@@ -75,9 +77,9 @@ const SignUpPage = () => {
                             </div>
                             <div className="flex flex-col gap-4">
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
-                                    <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+                                <i className="pi pi-user text-[#F4AA08] pl-1"></i>
                                     <input
-                                        type="email"
+                                        type="text"
                                         placeholder="Enter Name"
                                         className="  text-black w-full py-3 bg-white  focus:outline-none"
                                         value={credential.user_name}
@@ -85,7 +87,7 @@ const SignUpPage = () => {
                                     />
                                 </div>
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
-                                    <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+                                <i className="pi pi-envelope text-[#F4AA08] pl-1"></i>
                                     <input
                                         type="email"
                                         placeholder="Enter Email"
@@ -95,7 +97,7 @@ const SignUpPage = () => {
                                     />
                                 </div>
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
-                                    <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+                                <i className="pi pi-phone text-[#F4AA08] pl-1"></i>
                                     <input
                                         type="number"
                                         placeholder="Enter Mobile"
@@ -113,7 +115,17 @@ const SignUpPage = () => {
                                     />
                                 </div>
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
-                                    <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
+                                <i className="pi pi-key text-[#F4AA08] pl-1"></i>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Pass Key"
+                                        className="  text-black w-full py-3 bg-white  focus:outline-none"
+                                        value={credential.user_name}
+                                        onChange={(e) => { handleChange("user_name", e.target.value) }}
+                                    />
+                                </div>
+                                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
+                                    <i className="pi pi-lock text-[#F4AA08] pl-1"></i>
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Enter Password"
@@ -124,7 +136,7 @@ const SignUpPage = () => {
                                     <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
                                 </div>
                                 <div className={`flex p-1 gap-2  items-center rounded-lg w-[330px]  bg-white ${error == "red" ? "border-[2px] border-red-400" : error == "green" ? "border-[2px] border-green-400" : "border-none"}`}>
-                                    <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
+                                    <i className="pi pi-lock text-[#F4AA08] pl-1"></i>
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Confrim Password"
@@ -134,14 +146,8 @@ const SignUpPage = () => {
                                     />
                                     <span className="pr-4" onClick={() => { setShowPassword(!showPassword) }}><i className={`text-[black] cursor-pointer pi ${showPassword ? "pi-eye" : "pi-eye-slash"}`}></i></span>
                                 </div>
-                                
-
                             </div>
-                            {/* <div className="flex gap-1 items-center px-6">
-                                <hr className=" w-full border-t-1 border-[#fff]" />
-                                or
-                                <hr className=" w-full  border-t-1 border-[#fff]" />
-                            </div> */}
+                           
                             <button className="w-full bg-yellow-500 px-4 py-3 rounded-lg text-black font-semibold hover:bg-yellow-600" onClick={handleSignIn}  >
                                 Sign Up
                             </button>

@@ -8,7 +8,7 @@ import moment from 'moment'
 import Table from '../component/Table'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import {  useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import Popup from '../component/Popup';
 import SavePopup from '../component/SavePopup';
@@ -17,7 +17,6 @@ import { AutoComplete } from 'primereact/autocomplete';
 const Page = () => {
   const Quotation = () => {
     const router = useRouter();
-    const pathName = usePathname();
     const searchParams = useSearchParams();
     const type: string = searchParams.get("type") ?? "";
     console.log(type)
@@ -199,7 +198,8 @@ const Page = () => {
 
     const getTableValues = async () => {
       const docNumber = type === "revised" ? revisedDoc : docNo;
-      const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNumber}`)
+      const currency =  formdata.currency ? formdata.currency : null;
+      const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNumber}&currency=${currency}`)
       console.log(response.data)
       setTableValues(response?.data)
     }
@@ -252,6 +252,7 @@ const Page = () => {
         address: formdata.address || null,
         remark_brand: formdata.remark_brand || null,
         delivery: formdata.delivery || null,
+        payment_terms:formdata.pay_terms || null,
         created_user_id: user_id || null,
         total_discount: 0,
         total_tax: 0
@@ -347,14 +348,6 @@ const Page = () => {
         getTableValues()
       }
     }, [docNo])
-
-    // useEffect(() => {
-    //   console.log(JSON.stringify(tableValues?.length))
-    //   if (tableValues && tableValues?.length > 0) {
-    //     console.log("first")
-    //     resetTempData()
-    //   }
-    // }, [tableValues])
 
     useEffect(() => {
       if (type) { getRevisedData() }

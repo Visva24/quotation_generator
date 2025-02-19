@@ -33,7 +33,7 @@ export default function LoginPage() {
       setTimeout(async () => {
         setSavePop(false)
         router.push("/home")
-      }, 3000)
+      }, 2000)
 
       storeUserDataInCookies(response.data)
       console.log(response.data)
@@ -41,7 +41,7 @@ export default function LoginPage() {
     } else {
       toast.error('Wrong Credential', {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
@@ -57,7 +57,7 @@ export default function LoginPage() {
       <div className="h-screen w-screen grid grid-cols-12 text-[#fff]">
         <div className="col-span-7 bg-[#000] ">
           <div className="flex h-full items-center justify-center">
-            <Image src="/images/loginImg.png" alt={""} height={380} width={430} className="shadow-2xl  shadow-[#901129]" />
+            <Image src="/images/loginImg.png" alt={""} height={380} width={430} className="shadow-2xl ml-36  shadow-[#901129]" />
           </div>
         </div>
         <div className="col-span-5 bg-[#000] overflow-y-auto">
@@ -68,8 +68,8 @@ export default function LoginPage() {
                 <p>Today will be great</p>
               </div>
               <div className="flex flex-col gap-4">
-                <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
-                  <Image src="/images/mail.png" alt="Email Icon" width={30} height={30} />
+                <div className="flex p-1 gap-3 items-center rounded-lg w-[330px]  bg-white">
+                  <i className="pi pi-envelope text-[#F4AA08] pl-1"></i>
                   <input
                     type="email"
                     placeholder="Email"
@@ -79,7 +79,7 @@ export default function LoginPage() {
                   />
                 </div>
                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
-                  <Image src="/images/lock.png" alt="Password Icon" width={30} height={30} />
+                  <i className="pi pi-lock text-[#F4AA08] pl-1"></i>
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
