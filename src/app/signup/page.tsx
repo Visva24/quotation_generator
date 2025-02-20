@@ -14,6 +14,7 @@ const SignUpPage = () => {
     const [savePop, setSavePop] = useState<boolean>(false);
     const [pop, setPop] = useState<boolean>(false)
     const [error, setError] = useState<string>("initial");
+    const [passKeyPop ,setPassKeyPop] = useState<boolean>(false)
     const [credential, setCredential] = useState<any>(
         {
             user_name: "",
@@ -56,6 +57,8 @@ const SignUpPage = () => {
                 setPop(false)
                 router.push("/log-in")
             }, 3000)
+        }else{
+            setPassKeyPop(true)
         }
     }
 
@@ -120,8 +123,8 @@ const SignUpPage = () => {
                                         type="text"
                                         placeholder="Enter Pass Key"
                                         className="  text-black w-full py-3 bg-white  focus:outline-none"
-                                        value={credential.user_name}
-                                        onChange={(e) => { handleChange("user_name", e.target.value) }}
+                                        value={credential.pass_key}
+                                        onChange={(e) => { handleChange("pass_key", e.target.value) }}
                                     />
                                 </div>
                                 <div className="flex p-1 gap-2 items-center rounded-lg w-[330px]  bg-white">
@@ -176,7 +179,19 @@ const SignUpPage = () => {
                             <p className='flex justify-center'>Passwords do not match. Please re-check and enter the correct password.</p>
                             <div className='flex gap-4 justify-center items-center'>
                                 <Custombutton name={'OK'} color={'black'} onclick={() => { setSavePop(false) }} />
-
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+             {
+                passKeyPop &&
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-8 rounded-[12px] shadow-lg w-[450px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
+                        <div className='w-full flex flex-col gap-3'>
+                            <p className='flex justify-center'>Please fill the missing fields and enter the valid pass key for sign up!!!</p>
+                            <div className='flex gap-4 justify-center items-center'>
+                                <Custombutton name={'OK'} color={'black'} onclick={() => { setPassKeyPop(false) }} />
                             </div>
                         </div>
                     </div>
