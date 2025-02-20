@@ -109,7 +109,7 @@ const InvoiceHistory = () => {
             </div>
             {toggleDrop && (
                 <div
-                    className="absolute right-[0px] top-full mt-2 w-[300px] bg-white shadow-xl rounded-lg p-3"
+                    className="absolute right-[0px] top-full mt-2 w-[325px] bg-white shadow-xl rounded-lg p-3"
                 >
                     <div className="flex justify-between items-center">
                         <div className="flex gap-1 items-center">
@@ -123,10 +123,15 @@ const InvoiceHistory = () => {
                     </div>
                     <hr className='my-2' />
                     <div className='flex justify-between items-center'>
-                        <Calendar className='border h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
-                        <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
-                        <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
-                    </div>
+                            <div className='flex items-center  border rounded-[24px] px-2'>
+                            <Calendar className='border-none ml-1 mt-1 h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
+                            <i className='pi pi-calendar  text-[#F4AA08]'></i>
+                            </div>
+                           <div className='flex items-center justify-center gap-2'>
+                           <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
+                           <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
+                           </div>
+                        </div>
                 </div>
             )}
         </div>
@@ -137,8 +142,8 @@ const InvoiceHistory = () => {
     getInvoiceHistory()
   }, [])
   return (
-    <div>
-       <div className='flex justify-end mb-3 mr-6'>
+    <div className='relative'>
+       <div className='absolute right-4 -top-12'>
            <Filter />
         </div>
       {
@@ -157,7 +162,7 @@ const InvoiceHistory = () => {
                   </div>
                 </div>
                 <div className=''>
-                  <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                  <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
                 </div>
               </div>
               <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
@@ -173,8 +178,8 @@ const InvoiceHistory = () => {
                     </div>
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <p className='font-semibold'>Customer</p>
-                    <p>{data?.customer_name}</p>
+                    <p className='font-semibold self-end'>Customer</p>
+                    <p className='self-end'>{data?.customer_name}</p>
                   </div>
                 </div>
               </div>

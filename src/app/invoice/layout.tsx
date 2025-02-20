@@ -67,7 +67,7 @@ const LayoutInvoice: React.FC<LayoutProps> = ({ children }) => {
             <Header/>
             <div className='pl-2 pt-1'>
                 <Breadcrumbs breadcrumb={breadcrumb} onNavigate={onNavigationChange} />
-                <div className='bg-[#DFDFDF] px-2.5 py-4 rounded-[8px] mx-2.5 my-3'>
+                <div className='bg-[#DFDFDF] px-2.5 py-4 rounded-[8px] mx-2.5 mt-1 mb-2'>
                     <RestrictNavigateTabs tabHead={[{ title: "Home", route: "/invoice", icon: "home" }, { title: "History", route: "/invoice/history", icon: "history" }]} onNavigate={onNavigationChange} />
                 </div>
             </div>

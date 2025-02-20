@@ -7,7 +7,7 @@ import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import moment from 'moment'
 import Table from '../component/Table'
-import { forbidden, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
@@ -117,7 +117,8 @@ const Page = () => {
     }
     const getTableValues = async () => {
       const document_no = type == "moveData" ? moveDoc : docNo;
-      const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${document_no}`)
+      const currency =  formdata.currency ? formdata.currency : null;
+      const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${document_no}&currency=${currency}`)
       console.log(response.data)
       setTableValues(response?.data)
     }
@@ -444,8 +445,8 @@ const Page = () => {
                       value={tableData.unit}
                     />
                   </div>
-                </div>
-                <div className='grid grid-cols-2  gap-4 m-4'>
+                
+                
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Price <span className='text-red-500'>*</span></label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2 w-full'
@@ -466,7 +467,7 @@ const Page = () => {
                       value={tableData.discount}
                     />
                   </div>
-                </div>
+                  </div>
                 <div className='flex justify-end items-center my-3 px-2'>
                   <div className='flex gap-5 items-center'>
                     <Custombutton name={'Add'} color={'yellow'} onclick={handleAdd} />

@@ -108,7 +108,7 @@ const Page = () => {
                     <Image src={'/images/move-forward.svg'} alt={''} height={28} width={28} />
                   </div>
                   <div className='flex flex-col gap-3'>
-                    <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                    <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
                     <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
                   </div>
                 </div>
@@ -126,8 +126,8 @@ const Page = () => {
                     </div>
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <p className='font-semibold'>Customer</p>
-                    <p>{data?.customer_name}</p>
+                    <p className='font-semibold self-end'>Customer</p>
+                    <p className='self-end'>{data?.customer_name}</p>
                   </div>
                 </div>
               </div>

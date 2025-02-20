@@ -1,4 +1,5 @@
-import { parseCookies } from 'nookies';
+import { parseCookies } from "nookies";
+
 
 export const postMethod = async (url: string, payload?: any): Promise<Response | any> => {
   const environment = process.env.NODE_ENV;
@@ -7,8 +8,7 @@ export const postMethod = async (url: string, payload?: any): Promise<Response |
     : `${process.env.NEXT_PUBLIC_PRODUCTION_URL}${url}`;
 
   const cookies = parseCookies();
-  const token = cookies?.token || '';
-
+  const token = cookies?.access_token || '';
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -49,7 +49,7 @@ export const getMethod = async (url: string): Promise<Response | any> => {
     : `${process.env.NEXT_PUBLIC_PRODUCTION_URL}${url}`;
 
   const cookies = parseCookies(); // Use the imported function
-  const token = cookies?.token || '';
+  const token = cookies?.access_token || '';
 
   try {
     const response = await fetch(apiUrl, {
@@ -74,7 +74,7 @@ export const getMethod = async (url: string): Promise<Response | any> => {
 
 export const deleteMethod = async (url: string): Promise<Response | any> => {
   const cookies = parseCookies()
-  const token = cookies?.token || '';
+  const token = cookies?.access_token || '';
   const environment = process.env.NODE_ENV;
   const apiUrl = environment === 'development'
     ? `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}${url}`

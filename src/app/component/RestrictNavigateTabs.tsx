@@ -24,7 +24,7 @@ const RestrictNavigateTabs: React.FC<RestrictNavigateTabsProps> = ({ tabHead, on
     };
 
     return (
-        <div className="px-3 py-1.5 bg-[#fff] inline text-[14px] rounded-[8px]">
+        <div className="px-3 py-2 bg-[#fff] inline text-[14px] rounded-[8px]">
             {tabHead.map((header, index) => (
                 <button
                     key={index}

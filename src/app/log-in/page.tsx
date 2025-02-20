@@ -54,14 +54,14 @@ export default function LoginPage() {
   }
   return (
     <>
-      <div className="h-screen w-screen grid grid-cols-12 text-[#fff]">
-        <div className="col-span-7 bg-[#000] ">
+      <div className="h-screen w-screen grid grid-cols-12 text-[#fff] overflow-hidden">
+        <div className="col-span-7 w-full bg-[#000] ">
           <div className="flex h-full items-center justify-center">
             <Image src="/images/loginImg.png" alt={""} height={380} width={430} className="shadow-2xl ml-36  shadow-[#901129]" />
           </div>
         </div>
-        <div className="col-span-5 bg-[#000] overflow-y-auto">
-          <div className="mt-10 flex justify-center items-center">
+        <div className="col-span-5 w-full items-center bg-[#000] overflow-y-scroll scroll-bar">
+          <div className="  h-full flex justify-center items-center">
             <div className="flex flex-col gap-4">
               <div>
                 <h2 className="text-[34px] font-bold">Welcome!</h2>

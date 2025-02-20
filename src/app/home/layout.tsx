@@ -25,7 +25,7 @@ const LayoutHome: React.FC<LayoutProps> = ({ children }) => {
             <Header/>
             <div className='pl-2 pt-1'>
                 <Breadcrumbs breadcrumb={breadcrumb} onNavigate={onChange} />
-                <div className='bg-[#DFDFDF] px-2.5 py-4 rounded-[8px] mx-2.5 my-3'>
+                <div className='bg-[#DFDFDF] px-2.5 py-4 rounded-[8px] mx-2.5 mt-1 mb-2'>
                     <Tabs tabHead={[{ title: "Home", route: "/home", icon: "home" }, { title: "History", route: "/home/history", icon: "history" }]} />
                 </div>
             </div>

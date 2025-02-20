@@ -95,7 +95,7 @@ const Page = () => {
                   </div>
                 </div>
                 <div className=''>
-                  <Custombutton name={'View Detail'} color={'blue'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                  <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
                 </div>
               </div>
               <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
@@ -111,8 +111,8 @@ const Page = () => {
                     </div>
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <p className='font-semibold'>Customer</p>
-                    <p>{data?.customer_name}</p>
+                    <p className='font-semibold self-end'>Customer</p>
+                    <p className='self-end'>{data?.customer_name}</p>
                   </div>
                 </div>
               </div>
