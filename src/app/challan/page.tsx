@@ -287,7 +287,9 @@ const Page = () => {
                       type='number'
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                       onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                      onChange={(e) => { handleChange("contact_no", e.target.value) }}
+                      onChange={(e) => { const value = e.target.value;
+                        if (/^\d{0,10}$/.test(value)) { 
+                            handleChange("contact_no", value);}}}
                       value={formdata.contact_no ?? ""}
                     />
                   </div>
@@ -402,7 +404,7 @@ const Page = () => {
                     <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '> DELIVERY NOTE</p>
                   </div>
                   <div className='pl-10 mb-4'>
-                    <div className='grid grid-cols-3 text-[12px] px-4 my-4 '>
+                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4 '>
                       <div className='flex flex-col !break-all'>
                         <p>Customer:</p>
                         <p className='text-[#929292] '>{formdata.customer}</p>
@@ -417,33 +419,33 @@ const Page = () => {
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
-                      <div className='!break-all'>
+                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
+                      <div className=''>
                         <p>Contact Person:</p>
-                        <p className='text-[#929292] break-word'>{formdata.contact_person}</p>
+                        <p className='text-[#929292] !break-all'>{formdata.contact_person}</p>
                       </div>
                       <div>
                         <p>E-mail:</p>
-                        <p className='text-[#929292] break-word'>{formdata.email}</p>
+                        <p className='text-[#929292] !break-all'>{formdata.email}</p>
                       </div>
                       <div>
                         <p>Contact No.:</p>
-                        <p className='text-[#929292] break-word'>{formdata.contact_no}</p>
+                        <p className='text-[#929292] !break-all'>{formdata.contact_no}</p>
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
+                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
                       <div>
                         <p>Contact Reference:</p>
-                        <p className='text-[#929292] break-word'>{formdata.customer_reference}</p>
+                        <p className='text-[#929292] !break-all'>{formdata.customer_reference}</p>
                       </div>
                       <div>
                         <p> Reference Date:</p>
-                        <p className='text-[#929292] break-word'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
+                        <p className='text-[#929292] !break-all'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
                       </div>
                       <div>
                         <p>Remarks:</p>
-                        <p className='text-[#929292] break-word'>{formdata.remark_brand}</p>
+                        <p className='text-[#929292] !break-all'>{formdata.remark_brand}</p>
                       </div>
 
                     </div>
@@ -451,7 +453,7 @@ const Page = () => {
                     <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
                       <div>
                         <p>Address:</p>
-                        <p className='text-[#929292] break-word'>{formdata.address}</p>
+                        <p className='text-[#929292] !break-all'>{formdata.address}</p>
                       </div>
                     </div>
                     <hr className='mx-4' />

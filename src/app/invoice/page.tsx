@@ -30,6 +30,7 @@ const Page = () => {
     const [updateId, setUpdateId] = useState<any>();
     const [moveDoc, setMoveDoc] = useState<any>();
     const [error, setError] = useState<boolean>(false);
+    const [errorone, setErrorOne] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [formdata, setFormdata] = useState<any>(
       {
@@ -125,6 +126,10 @@ const Page = () => {
     const handleAdd = async () => {
       if (!tableData.description || !tableData.quantity || !tableData.price) {
         setError(true)
+        return
+      }
+      if(!formdata.currency){
+        setErrorOne(true)
         return
       }
       await createInvoiceList();
@@ -289,6 +294,8 @@ const Page = () => {
       }
     }, [type])
 
+    useEffect(()=>{getTableValues()},[formdata.currency])
+
     return (
       <div>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
@@ -345,7 +352,9 @@ const Page = () => {
                     type='number'
                     onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                     onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                    onChange={(e) => { handleChange("contact_no", e.target.value) }}
+                    onChange={(e) => { const value = e.target.value;
+                      if (/^\d{0,10}$/.test(value)) { 
+                          handleChange("contact_no", value);}}}
                     value={formdata.contact_no ?? ""}
                   />
                 </div>
@@ -539,7 +548,7 @@ const Page = () => {
                   <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '>SALES INVOICE</p>
                 </div>
                 <div className='pl-10 mb-4'>
-                  <div className='grid grid-cols-3 text-[12px] px-4 my-4 '>
+                  <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4 '>
                     <div className='flex flex-col !break-all'>
                       <p>Customer:</p>
                       <p className='text-[#929292] '>{formdata.customer}</p>
@@ -554,52 +563,52 @@ const Page = () => {
                     </div>
                   </div>
                   <hr className='mx-4' />
-                  <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
+                  <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
                     <div className='!break-all'>
                       <p>Contact Person:</p>
-                      <p className='text-[#929292] break-word'>{formdata.contact_person}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.contact_person}</p>
                     </div>
                     <div>
                       <p>E-mail:</p>
-                      <p className='text-[#929292] break-word'>{formdata.email}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.email}</p>
                     </div>
                     <div>
                       <p>Contact No.:</p>
-                      <p className='text-[#929292] break-word'>{formdata.contact_no}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.contact_no}</p>
                     </div>
                   </div>
                   <hr className='mx-4' />
-                  <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
+                  <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
                     <div>
                       <p>Address:</p>
-                      <p className='text-[#929292] break-word'>{formdata.address}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.address}</p>
                     </div>
                     <div>
                       <p>Payment Method:</p>
-                      <p className='text-[#929292] break-word'>{formdata.payment_method}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.payment_method}</p>
                     </div>
                     <div>
                       <p> Currency:</p>
-                      <p className='text-[#929292] break-word'>{formdata.currency}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.currency}</p>
                     </div>
                   </div>
                   <hr className='mx-4' />
-                  <div className='grid grid-cols-4 gap-6 text-[12px] px-4 my-4'>
+                  <div className='grid grid-cols-4 gap-2 text-[12px] px-4 my-4'>
                     <div>
                       <p>Contact Reference:</p>
-                      <p className='text-[#929292] break-word'>{formdata.customer_reference}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.customer_reference}</p>
                     </div>
                     <div>
                       <p>Reference Date:</p>
-                      <p className='text-[#929292] break-word'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
                     </div>
                     <div>
                       <p>DN Number:</p>
-                      <p className='text-[#929292] break-word'>{formdata.dn_no}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.dn_no}</p>
                     </div>
                     <div>
                       <p>Validity:</p>
-                      <p className='text-[#929292] break-word'>{formdata.validity}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.validity}</p>
                     </div>
                   </div>
                   <hr className='mx-4' />
@@ -648,6 +657,22 @@ const Page = () => {
                 </div>
                 <div className='w-full rounded-b-[8px]'>
                   <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setError(false) }}>Back</p>
+                </div>
+              </div>
+            </div>
+          </>
+        }
+          {
+          errorone &&
+          <>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
+                <div className='flex flex-col gap-4 justify-center items-center p-8'>
+                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
+                  <p>Fill the currency before add!!!</p>
+                </div>
+                <div className='w-full rounded-b-[8px]'>
+                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setErrorOne(false) }}>Back</p>
                 </div>
               </div>
             </div>

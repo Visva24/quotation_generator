@@ -213,7 +213,7 @@ const InvoiceHistory = () => {
                     <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '> SALES INVOICE</p>
                   </div>
                   <div className='pl-10 mb-4'>
-                    <div className='grid grid-cols-3 text-[12px] px-4 my-4 '>
+                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4 '>
                       <div className='flex flex-col !break-all'>
                         <p>Customer:</p>
                         <p className='text-[#929292] '>{viewData?.customer_name}</p>
@@ -228,53 +228,53 @@ const InvoiceHistory = () => {
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
+                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
                       <div className='!break-all'>
                         <p>Contact Person:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.contact_person}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.contact_person}</p>
                       </div>
                       <div>
                         <p>E-mail:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.email}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.email}</p>
                       </div>
                       <div>
                         <p>Contact No.:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.contact_number}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.contact_number}</p>
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
+                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
                       <div>
                         <p>Address:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.address}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.address}</p>
                       </div>
                       <div>
                         <p>Payment Method:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.payment_mode}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.payment_mode}</p>
                       </div>
                       <div>
                         <p> Currency:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.currency}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.currency}</p>
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-4 text-[12px] px-4 my-4'>
+                    <div className='grid grid-cols-4 gap-1 text-[12px] px-4 my-4'>
                       <div>
                         <p>Contact Reference:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.customer_reference}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.customer_reference}</p>
                       </div>
                       <div>
                         <p>Reference Date:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.reference_date}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.reference_date}</p>
                       </div>
                       <div>
                         <p>DN Number:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.dn_number}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.dn_number}</p>
                       </div>
 
                       <div>
                         <p>Validity:</p>
-                        <p className='text-[#929292] break-word'>{viewData?.quotation_validity}</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.quotation_validity}</p>
                       </div>
                     </div>
                     <hr className='mx-4' />

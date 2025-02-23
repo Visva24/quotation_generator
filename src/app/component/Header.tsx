@@ -23,8 +23,8 @@ const Header = () => {
         <>
             <header className="h-[90px] bg-[#222222] flex items-center">
                 <div className='flex justify-between w-full items-center'>
-                    <div className="flex items-center ">
-                        <Image src="/images/Logo.svg" alt="Logo" width={100} height={120} />
+                    <div className="flex items-center gap-3 ">
+                        <Image src="/images/Logo.svg" alt="Logo" className='ml-2' width={60} height={160} />
                         <h1 className="text-white font-semibold text-lg">
                             NEW SHADOW TRADING AND CLASSY EVENTS W.L.L
                         </h1>
