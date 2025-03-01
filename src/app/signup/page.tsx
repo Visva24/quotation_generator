@@ -65,14 +65,14 @@ const SignUpPage = () => {
 
     return (
         <>
-            <div className="h-screen w-screen grid grid-cols-2 text-[#fff] overflow-y-auto">
-                <div className="w-full bg-[#000] ">
-                    <div className="flex h-full items-center justify-center">
+            <div className="h-screen w-screen flex bg-[#000]  text-[#fff] overflow-y-auto">
+                <div className="w-[65%] mr-48 bg-[#000] ">
+                    <div className="flex h-full items-center justify-end">
                         <Image src="/images/loginImg.png" alt={""} height={400} width={400} className="shadow-2xl ml-36  shadow-[#901129]" />
                     </div>
                 </div>
-                <div className="w-full bg-[#000] overflow-y-auto scroll-bar">
-                    <div className="h-screen mt-20 flex justify-center items-center">
+                <div className="w-[35%] bg-[#000]   overflow-y-auto scroll-bar">
+                    <div className="h-full mt-20 flex  items-center">
                         <div className="flex flex-col gap-4">
                             <div>
                                 <h2 className="text-[34px] font-bold">Sign Up!</h2>

@@ -82,7 +82,8 @@ const Page = () => {
                   </div>
                 </div>
                 <div className=''>
-                  <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                  {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} /> */}
+                  <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }} >View Detail</button>
                 </div>
               </div>
               <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>

@@ -515,7 +515,7 @@ const Page = () => {
                     />
                   </div>
                 </div>
-                <div className='grid grid-cols-3  gap-4 m-4'>
+                <div className='grid grid-cols-3  gap-4 mt-2 px-2'>
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Price  <span className='text-red-500'>*</span></label>
                     <input className='border h-9 rounded-[6px] w-full focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'

@@ -143,8 +143,9 @@ const QuotationHistory = () => {
                         <hr className='my-2' />
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center  border rounded-[24px] px-2'>
-                            <Calendar className='border-none ml-1 mt-1 h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
                             <i className='pi pi-calendar  text-[#F4AA08]'></i>
+                            <Calendar className='border-none ml-1 mt-1 h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
+                           
                             </div>
                            <div className='flex items-center justify-center gap-2'>
                            <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
@@ -188,8 +189,10 @@ const QuotationHistory = () => {
                                         <Image src={'/images/move-forward.svg'} alt={''} height={28} width={28} />
                                     </div>
                                     <div className='flex flex-col gap-3'>
-                                        <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
-                                        <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} />
+                                        {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
+                                        <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} /> */}
+                                        <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }}>View Detail</button>
+                                        <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black'  onClick={() => { reviseData(data?.id) }}>Revise</button>
                                     </div>
                                 </div>
                             </div>
