@@ -8,12 +8,14 @@ import Custombutton from '../component/Custombutton'
 import Image from 'next/image'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
+import SavePopup from '../component/SavePopup'
 
 const Profile = () => {
     const cookies = parseCookies();
     const [avatar, setAvatar] = useState<any>();
     const [userName, setUserName] = useState<any>();
     const [userSign, setUserSign] = useState<any>();
+    const [uploaded , setUploaded] = useState<boolean>();
     const [uploadSign, setUploadSign] = useState<any>({
         signature: ""
     })
@@ -70,6 +72,10 @@ const Profile = () => {
         const response: Response = await postMethod("/quotation/upload-user-details", payLoad)
         if(response.status == "success"){
             getUploadSignature()
+            setUploaded(true)
+            setTimeout(async () => {
+              setUploaded(false)
+            }, 2000)
         }
        
     }
@@ -168,6 +174,10 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+            {
+                uploaded && 
+                <SavePopup message={"Signature Uploaded"} />
+            }
         </>
     )
 }
