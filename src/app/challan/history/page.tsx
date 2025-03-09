@@ -6,12 +6,14 @@ import { getMethod, postMethod } from '@/utils/api';
 import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { parseCookies } from 'nookies';
 import { Sidebar } from 'primereact/sidebar';
 import React, { useEffect, useState } from 'react'
 
 const Page = () => {
   const cookies = parseCookies();
+  const router = useRouter();
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -32,6 +34,10 @@ const Page = () => {
     const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`,payload)
     console.log(response?.data)
     setHistory(response?.data)
+  }
+
+  const editChallan = (id: number | string) => {
+    router.push(`/challan?type=revised&id=${id}`)
   }
 
   const getViewData = async (id: number) => {
@@ -81,9 +87,10 @@ const Page = () => {
                     <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
                   </div>
                 </div>
-                <div className=''>
+                <div className='flex flex-col gap-1'>
                   {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} /> */}
                   <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }} >View Detail</button>
+                  <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black' onClick={() => { editChallan(data?.id) }} >Edit</button>
                 </div>
               </div>
               <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>

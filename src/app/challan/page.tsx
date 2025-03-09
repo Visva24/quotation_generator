@@ -9,7 +9,7 @@ import moment from 'moment'
 import Table from '../component/Table'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
-import { getMethod, postMethod } from '@/utils/api'
+import { getMethod, patchMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import SavePopup from '../component/SavePopup'
 import Popup from '../component/Popup'
@@ -31,6 +31,8 @@ const Page = () => {
     const [savePop, setSavePop] = useState<boolean>();
     const [error, setError] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState<boolean>(false);
+    const [editTabledata , setEditTableData]  = useState<any>();
+    const [editDocno , setEditDocno] = useState<any>();
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -91,8 +93,8 @@ const Page = () => {
     };
 
     const getTableValues = async () => {
-      console.log(moveDoc, "doc")
-      const document_no = type == "moveData" ? moveDoc : docNo;
+      console.log(editDocno,type,"editDocno");
+      const document_no = type == "moveData" ? moveDoc: type == "revised" ? editDocno : docNo;
       const response: Response = await getMethod(`/delivery-challan/get-all-challan-list?doc_number=${document_no}`)
       console.log(response.data)
       setTableValues(response?.data)
@@ -116,6 +118,46 @@ const Page = () => {
       const response: Response = await getMethod(`/delivery-challan/delete-challan-list?record_id=${id}`)
       getTableValues()
     };
+
+    const getEditValues = async() => {
+      const response:Response = await getMethod (`/delivery-challan/get-delivery-challan-form-data?challan_id=${data_id}&type=revision`)
+      const editData = response?.data;
+      const format_date = new Date(editData?.doc_date);
+      const refFormat_date = new Date(editData?.reference_date)
+      console.log(editData,"editData");
+      setFormdata({
+        customer: editData?.customer_name || "",
+        document_no: editData?.doc_number || "",
+        customer_reference: editData?.customer_reference || "",
+        contact_person: editData?.contact_person || "",
+        contact_no: editData?.contact_number || "",
+        document_date:format_date || "",
+        ref_date: refFormat_date || "",
+        email: editData?.email || "",
+        address: editData?.address || "",
+        remark_brand: editData?.remark_brand || "",
+      })
+      setEditDocno(editData?.doc_number)
+    }
+
+    const createEdit = async() => {
+      const user_id = cookies.user_id
+      const payload = {
+        customer_name: formdata.customer || null,
+        customer_reference_id: "",
+        doc_number: docNo ? docNo : null,
+        doc_date: formdata.document_date || null,
+        contact_person: formdata.contact_person || null,
+        email: formdata.email || null,
+        contact_number: formdata.contact_no || null,
+        customer_reference: formdata.customer_reference || null,
+        address: formdata.address || null,
+        remark_brand: formdata.remark_brand || null,
+        reference_date: formdata.ref_date || null,
+        created_user_id: user_id || null,
+      }
+      const response:Response = await postMethod(`/delivery-challan/update-delivery-challan-form/${data_id}`,payload)
+    }
 
 
     const createDeliveryNote = async () => {
@@ -225,9 +267,11 @@ const Page = () => {
     }, [docNo])
 
     useEffect(() => {
-      if (type) {
+      if (type === "moveData") {
         getMovedDataChallan()
         getTableValues()
+      }else {
+        getEditValues()
       }
     }, [type])
     return (
@@ -253,7 +297,7 @@ const Page = () => {
                       className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("document_no", e.target.value) }}
-                      value={docNo ?? ""}
+                      value={editDocno ? editDocno : docNo ?? ""}
                       disabled
                     />
                   </div>
@@ -378,12 +422,12 @@ const Page = () => {
                 </div>
                 <div className='flex justify-center items-center my-3 gap-3'>
                   <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
-                  <Custombutton name={'Save'} color={'yellow'} onclick={createDeliveryNote} />
+                  <Custombutton name={type === "revised" ? 'Update' : 'Save'} color={'yellow'} onclick={createDeliveryNote} />
                 </div>
 
               </div>
             </div>
-            <div className='col-span-6  '>
+            <div className='col-span-6  overflow-y-auto '>
               <div className='flex justify-between items-center'>
                 <p className='text-[18px] font-medium mb-2'> Delivery Note Preview:</p>
                 {/* <Custombutton name={'Download'} color={'blue'} /> */}
