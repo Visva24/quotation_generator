@@ -32,6 +32,7 @@ const Page = () => {
     const [error, setError] = useState<boolean>(false);
     const [errorone, setErrorOne] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState<boolean>(false);
+    const [editDocno, setEditDocno] = useState<any>();
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -46,7 +47,7 @@ const Page = () => {
         address: "",
         validity: "",
         remark_brand: "",
-        dn_no: "",
+        dn_number: "",
         ref_date: "",
         delivery: "",
         sales_emp: "",
@@ -117,8 +118,8 @@ const Page = () => {
       setTableData({ ...tableData, [key]: value })
     }
     const getTableValues = async () => {
-      const document_no = type == "moveData" ? moveDoc : docNo;
-      const currency =  formdata.currency ? formdata.currency : null;
+      const document_no = type == "moveData" ? moveDoc : type == "revised" ? editDocno : docNo;
+      const currency = formdata.currency ? formdata.currency : null;
       const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${document_no}&currency=${currency}`)
       console.log(response.data)
       setTableValues(response?.data)
@@ -126,10 +127,6 @@ const Page = () => {
     const handleAdd = async () => {
       if (!tableData.description || !tableData.quantity || !tableData.price) {
         setError(true)
-        return
-      }
-      if(!formdata.currency){
-        setErrorOne(true)
         return
       }
       await createInvoiceList();
@@ -169,7 +166,7 @@ const Page = () => {
 
     const createInvoiceList = async () => {
       const payload = {
-        doc_number: docNo,
+        doc_number: editDocno ? editDocno : docNo,
         invoice_list: [
           {
             item_number: tableData.item_number || null,
@@ -200,7 +197,7 @@ const Page = () => {
     }
 
     const createInvoice = async () => {
-      if (!formdata.customer || !formdata.document_date || !formdata.validity || !formdata.currency || !formdata.payment_method || !formdata.sales_emp) {
+      if (!formdata.customer || !formdata.document_date ||  !formdata.sales_emp) {
         setError(true)
         return;
       }
@@ -221,7 +218,7 @@ const Page = () => {
         remark_brand: formdata.remark_brand || null,
         delivery: formdata.delivery || null,
         created_user_id: user_id || null,
-        dn_number: formdata.dn_no || null,
+        dn_number: formdata.dn_number || null,
         reference_date: formdata.ref_date || null,
         sales_employee: formdata.sales_emp || null,
         payment_terms: formdata.pay_terms || null
@@ -232,6 +229,66 @@ const Page = () => {
         setSavePop(true)
         setTimeout(() => { setSavePop(false), router.push("/invoice/history") }, 2000)
       }
+    }
+
+    const createEdit = async() => {
+      if (!formdata.customer || !formdata.document_date || !formdata.sales_emp) {
+        setError(true)
+        return;
+      }
+      const user_id = cookies.user_id
+      const payload = {
+        id:data_id,
+        customer_name: formdata.customer || null,
+        customer_reference_id: "",
+        doc_number: editDocno ? editDocno : null,
+        doc_date: formdata.document_date || null,
+        contact_person: formdata.contact_person || null,
+        email: formdata.email || null,
+        contact_number: formdata.contact_no || null,
+        customer_reference: formdata.customer_reference || null,
+        payment_mode: formdata.payment_method || null,
+        currency: formdata.currency || null,
+        quotation_validity: formdata.validity || null,
+        address: formdata.address || null,
+        remark_brand: formdata.remark_brand || null,
+        delivery: formdata.delivery || null,
+        created_user_id: user_id || null,
+        dn_number: formdata.dn_number || null,
+        reference_date: formdata.ref_date || null,
+        sales_employee: formdata.sales_emp || null,
+        payment_terms: formdata.pay_terms || null
+      }
+      const response: Response = await postMethod("/sales-invoice/update-sales-invoice-form", payload)
+      if (response.status == "success") {
+        console.log(response.message)
+        setSavePop(true)
+        setTimeout(() => { setSavePop(false), router.push("/invoice/history") }, 2000)
+      }
+    }
+
+    const getEditInvoice = async () => {
+      const response = await getMethod(`/sales-invoice/get-sales-invoice-form-data?Invoice_id=${data_id}&type=revision`)
+      const editData = response?.data;
+      const format_date = new Date(editData?.doc_date);
+      setFormdata({
+        customer: editData?.customer_name || "",
+        customer_reference: editData?.customer_reference || "",
+        contact_person: editData?.contact_person || "",
+        contact_no: editData?.contact_number || "",
+        document_date: format_date || "",
+        currency: editData?.currency || "",
+        payment_method: editData?.payment_mode || "",
+        email: editData?.email || "",
+        address: editData?.address || "",
+        validity: editData?.quotation_validity || "",
+        remark_brand: editData?.remark_brand || "",
+        delivery: editData?.delivery || "",                                                         
+        sales_emp:editData?.sales_employee || "",
+        pay_terms:editData?.payment_terms || "",
+        dn_number:editData?.dn_number || ""
+      })
+      setEditDocno(editData?.doc_number)
     }
 
     const getMovedDataInvoice = async () => {
@@ -288,13 +345,18 @@ const Page = () => {
     }, [moveDoc]);
 
     useEffect(() => {
-      if (type) {
+      if (type === "moveData") {
         getMovedDataInvoice()
         getTableValues()
+      } else if (type === "revised") {
+        getEditInvoice()
       }
     }, [type])
+    useEffect(() => {
+      getTableValues()
+    }, [editDocno])
 
-    useEffect(()=>{getTableValues()},[formdata.currency])
+    useEffect(() => { getTableValues() }, [formdata.currency])
 
     return (
       <div>
@@ -318,7 +380,7 @@ const Page = () => {
                     className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("document_no", e.target.value) }}
-                    value={docNo ?? ""}
+                    value={editDocno ? editDocno : docNo ?? ""}
                     disabled
                   />
                 </div>
@@ -352,9 +414,12 @@ const Page = () => {
                     type='number'
                     onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                     onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                    onChange={(e) => { const value = e.target.value;
-                      if (/^\d{0,10}$/.test(value)) { 
-                          handleChange("contact_no", value);}}}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d{0,10}$/.test(value)) {
+                        handleChange("contact_no", value);
+                      }
+                    }}
                     value={formdata.contact_no ?? ""}
                   />
                 </div>
@@ -367,7 +432,7 @@ const Page = () => {
                   />
                 </div>
 
-                <div className='flex flex-col gap-1 '>
+                {/* <div className='flex flex-col gap-1 '>
                   <label htmlFor="">Payment Method <span className='text-red-500'>*</span></label>
                   <Dropdown className='border h-9 rounded-[6px] custom-dropdown'
                     options={paymentDropdown}
@@ -382,7 +447,7 @@ const Page = () => {
                     onChange={(e) => { handleChange("currency", e.target.value) }}
                     value={formdata.currency ?? ""}
                   />
-                </div>
+                </div> */}
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Customer Reference</label>
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
@@ -391,26 +456,26 @@ const Page = () => {
                     value={formdata.customer_reference ?? ""}
                   />
                 </div>
-                <div className='flex flex-col gap-1'>
+                {/* <div className='flex flex-col gap-1'>
                   <label htmlFor="">Reference Date</label>
                   <Calendar className='border h-9 rounded-[6px]' value={formdata.ref_date || null} onChange={(e) => handleChange("ref_date", e.value as Date)} />
-                </div>
+                </div> */}
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">DN Number</label>
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
-                    onChange={(e) => { handleChange("dn_no", e.target.value) }}
-                    value={formdata.dn_no ?? ""}
+                    onChange={(e) => { handleChange("dn_number", e.target.value) }}
+                    value={formdata.dn_number ?? ""}
                   />
                 </div>
-                <div className='flex flex-col gap-1'>
+                {/* <div className='flex flex-col gap-1'>
                   <label htmlFor="">Validity <span className='text-red-500'>*</span></label>
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("validity", e.target.value) }}
                     value={formdata.validity ?? ""}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
             <div>
@@ -422,7 +487,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("item_number", e.target.value) }}
-                      value={tableData.item_number}
+                      value={tableData.item_number ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -430,7 +495,7 @@ const Page = () => {
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("description", e.target.value) }}
-                      value={tableData.description}
+                      value={tableData.description ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -440,7 +505,7 @@ const Page = () => {
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                       onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("quantity", e.target.value) }}
-                      value={tableData.quantity}
+                      value={tableData.quantity ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -451,11 +516,11 @@ const Page = () => {
                       optionValue='value'
                       type='text'
                       onChange={(e) => { handleChange("unit", e.target.value) }}
-                      value={tableData.unit}
+                      value={tableData.unit ?? ""}
                     />
                   </div>
-                
-                
+
+
                   <div className='flex flex-col gap-1'>
                     <label htmlFor="">Price <span className='text-red-500'>*</span></label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2 w-full'
@@ -463,7 +528,7 @@ const Page = () => {
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                       onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("price", e.target.value) }}
-                      value={tableData.price}
+                      value={tableData.price ?? ""}
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
@@ -473,10 +538,10 @@ const Page = () => {
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                       onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("discount", e.target.value) }}
-                      value={tableData.discount}
+                      value={tableData.discount ?? ""}
                     />
                   </div>
-                  </div>
+                </div>
                 <div className='flex justify-end items-center my-3 px-2'>
                   <div className='flex gap-5 items-center'>
                     <Custombutton name={'Add'} color={'yellow'} onclick={handleAdd} />
@@ -522,7 +587,7 @@ const Page = () => {
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
                 <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
-                <Custombutton name={'Save'} color={'yellow'} onclick={createInvoice} />
+                <Custombutton name={type === "revised" ? 'Update' : 'Save'} color={'yellow'} onclick={type === "revised" ? createEdit : createInvoice} />
               </div>
 
             </div>
@@ -584,39 +649,18 @@ const Page = () => {
                       <p className='text-[#929292] !break-all'>{formdata.address}</p>
                     </div>
                     <div>
-                      <p>Payment Method:</p>
-                      <p className='text-[#929292] !break-all'>{formdata.payment_method}</p>
-                    </div>
-                    <div>
-                      <p> Currency:</p>
-                      <p className='text-[#929292] !break-all'>{formdata.currency}</p>
-                    </div>
-                  </div>
-                  <hr className='mx-4' />
-                  <div className='grid grid-cols-4 gap-2 text-[12px] px-4 my-4'>
-                    <div>
-                      <p>Contact Reference:</p>
+                      <p>Customer Reference:</p>
                       <p className='text-[#929292] !break-all'>{formdata.customer_reference}</p>
-                    </div>
-                    <div>
-                      <p>Reference Date:</p>
-                      <p className='text-[#929292] !break-all'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
                     </div>
                     <div>
                       <p>DN Number:</p>
                       <p className='text-[#929292] !break-all'>{formdata.dn_no}</p>
                     </div>
-                    <div>
-                      <p>Validity:</p>
-                      <p className='text-[#929292] !break-all'>{formdata.validity}</p>
-                    </div>
                   </div>
                   <hr className='mx-4' />
                 </div>
               </div>
-
-
-              <div className='mx-3'>
+              <div className='mx-3 mt-4'>
                 <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow} />
               </div>
               <div className='mt-3 flex justify-between mx-4 text-[12px]'>
@@ -662,7 +706,7 @@ const Page = () => {
             </div>
           </>
         }
-          {
+        {
           errorone &&
           <>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

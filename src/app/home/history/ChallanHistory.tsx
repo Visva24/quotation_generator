@@ -6,12 +6,13 @@ import { Response } from '@/utils/common';
 import { downloadPDF } from '@/utils/download';
 import moment from 'moment';
 import Image from 'next/image';
-import { parseCookies } from 'nookies';
+import { useRouter } from 'next/navigation';
 import { Calendar } from 'primereact/calendar';
 import { Sidebar } from 'primereact/sidebar';
 import React, { useEffect, useState } from 'react'
 
 const ChallanHistory = () => {
+  const router = useRouter();
   const columns: any = [
     { label: "S.No.", key: "serial_no", align: "center", width: "60px" },
     { label: "Item No.", key: "item_number", align: "center", width: "100px" },
@@ -24,14 +25,18 @@ const ChallanHistory = () => {
   const [viewData, setViewData] = useState<any>();
   const [loader, setLoader] = useState<boolean>(false);
   const getChallanHistory = async () => {
-     let payload={
-          filter_data:{
-              date:null
-          }
+    let payload = {
+      filter_data: {
+        date: null
       }
-        const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`,payload)
+    }
+    const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`, payload)
     console.log(response?.data)
     setHistory(response?.data)
+  }
+
+  const editChallan = (id: number | string) => {
+    router.push(`/challan?type=revised&id=${id}`)
   }
 
   const getViewData = async (id: number) => {
@@ -63,86 +68,86 @@ const ChallanHistory = () => {
 
   const Filter = () => {
     const [toggleDrop, setToggleDrop] = useState<boolean>(false);
-    const [isFilterApplied ,setIsFilterApplied] = useState<any>();
+    const [isFilterApplied, setIsFilterApplied] = useState<any>();
     const [filterDate, setFilterDate] = useState<any>({
-        filter_date: ""
+      filter_date: ""
     })
 
     const handleFilterChange = (key: string, value: any) => {
-        setFilterDate({ ...filterDate, [key]: value })
+      setFilterDate({ ...filterDate, [key]: value })
     }
 
     const handleToggle = () => {
-        setToggleDrop(!toggleDrop);
+      setToggleDrop(!toggleDrop);
     };
 
     const handleApplyFilter = async () => {
-        let payload = {
-            filter_data: {
-                date: moment(filterDate?.filter_date).format('YYYY/MM/DD') || null,
-            }
+      let payload = {
+        filter_data: {
+          date: moment(filterDate?.filter_date).format('YYYY/MM/DD') || null,
         }
-        const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`, payload)
-        setHistory(response?.data)
-        setIsFilterApplied(true)
+      }
+      const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`, payload)
+      setHistory(response?.data)
+      setIsFilterApplied(true)
     }
     const handleClearFilter = async () => {
-        setFilterDate({ filter_date: null });
-        setIsFilterApplied(false);
-        getChallanHistory();
+      setFilterDate({ filter_date: null });
+      setIsFilterApplied(false);
+      getChallanHistory();
     }
 
     return (
-        <div className="relative">
-            <div
-                className="inline-flex items-center gap-2 text-[14px] px-2 py-[2px] border-[#222222] border rounded-full cursor-pointer bg-white"
-                onClick={handleToggle}
-            >
-                <div className="w-7 h-7 rounded-full bg-[#F4AA08] flex justify-center items-center">
-                    <img className="w-5 h-5" src="/images/filter-white.svg" alt="filter" />
-                </div>
-                <p>Filter</p>
-            </div>
-            {toggleDrop && (
-                <div
-                    className="absolute right-[0px] top-full mt-2 w-[325px] bg-white shadow-xl rounded-lg p-3"
-                >
-                    <div className="flex justify-between items-center">
-                        <div className="flex gap-1 items-center">
-                            <img src="/images/filter.svg" alt="filter" className="w-5 h-5" />
-                            <p>Filter</p>
-                        </div>
-                        {/* {isFilterApplied && <p className="text-gray-600">Filter Applied</p>} */}
-                        <div className='w-6 h-6 rounded-full border flex items-center justify-center'>
-                            <i className='pi pi-times text-[12px] text-[#000]' onClick={()=>setToggleDrop(false)}></i>
-                        </div>
-                    </div>
-                    <hr className='my-2' />
-                    <div className='flex justify-between items-center'>
-                            <div className='flex items-center  border rounded-[24px] px-2'>
-                            <i className='pi pi-calendar  text-[#F4AA08]'></i>
-                            <Calendar className='border-none ml-1 mt-1 h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
-                           
-                            </div>
-                           <div className='flex items-center justify-center gap-2'>
-                           <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
-                           <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
-                           </div>
-                        </div>
-                </div>
-            )}
+      <div className="relative">
+        <div
+          className="inline-flex items-center gap-2 text-[14px] px-2 py-[2px] border-[#222222] border rounded-full cursor-pointer bg-white"
+          onClick={handleToggle}
+        >
+          <div className="w-7 h-7 rounded-full bg-[#F4AA08] flex justify-center items-center">
+            <img className="w-5 h-5" src="/images/filter-white.svg" alt="filter" />
+          </div>
+          <p>Filter</p>
         </div>
+        {toggleDrop && (
+          <div
+            className="absolute right-[0px] top-full mt-2 w-[325px] bg-white shadow-xl rounded-lg p-3"
+          >
+            <div className="flex justify-between items-center">
+              <div className="flex gap-1 items-center">
+                <img src="/images/filter.svg" alt="filter" className="w-5 h-5" />
+                <p>Filter</p>
+              </div>
+              {/* {isFilterApplied && <p className="text-gray-600">Filter Applied</p>} */}
+              <div className='w-6 h-6 rounded-full border flex items-center justify-center'>
+                <i className='pi pi-times text-[12px] text-[#000]' onClick={() => setToggleDrop(false)}></i>
+              </div>
+            </div>
+            <hr className='my-2' />
+            <div className='flex justify-between items-center'>
+              <div className='flex items-center  border rounded-[24px] px-2'>
+                <i className='pi pi-calendar  text-[#F4AA08]'></i>
+                <Calendar className='border-none ml-1 mt-1 h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
+
+              </div>
+              <div className='flex items-center justify-center gap-2'>
+                <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
+                <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     );
-};
+  };
 
   useEffect(() => {
     getChallanHistory()
   }, [])
   return (
     <div className='relative'>
-     <div className='absolute right-4 -top-12'>
+      <div className='absolute right-4 -top-12'>
         <Filter />
-       </div>
+      </div>
       {
         (history?.length > 0) ?
           history?.map((data: any, index: any) => (
@@ -158,9 +163,10 @@ const ChallanHistory = () => {
                     <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
                   </div>
                 </div>
-                <div className=''>
+                <div className='flex flex-col gap-3'>
                   {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} /> */}
                   <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }} >View Detail</button>
+                  <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black' onClick={() => { editChallan(data?.id) }} >Edit</button>
                 </div>
               </div>
               <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
@@ -252,22 +258,20 @@ const ChallanHistory = () => {
                         <p className='text-[#929292] !break-all'>{viewData?.reference_date}</p>
                       </div>
                       <div>
-                        <p>Remarks:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.remark_brand}</p>
-                      </div>
-                    </div>
-                    <hr className='mx-4' />
-                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
-                      <div>
                         <p>Address:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.address}</p>
                       </div>
+
                     </div>
                     <hr className='mx-4' />
                   </div>
                 </div>
                 <div className='mx-3'>
                   <Table columns={columns} rows={viewData?.delivery_items} />
+                </div>
+                <div className='mt-3 mx-3 flex items-center gap-1'>
+                  <p>Remarks:</p>
+                  <p className='text-[#929292] !break-all'>{viewData?.remark_brand}</p>
                 </div>
               </div>
               {

@@ -31,8 +31,7 @@ const Page = () => {
     const [savePop, setSavePop] = useState<boolean>();
     const [error, setError] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState<boolean>(false);
-    const [editTabledata , setEditTableData]  = useState<any>();
-    const [editDocno , setEditDocno] = useState<any>();
+    const [editDocno, setEditDocno] = useState<any>();
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -93,8 +92,8 @@ const Page = () => {
     };
 
     const getTableValues = async () => {
-      console.log(editDocno,type,"editDocno");
-      const document_no = type == "moveData" ? moveDoc: type == "revised" ? editDocno : docNo;
+      console.log(editDocno, type, "editDocno");
+      const document_no = type == "moveData" ? moveDoc : type == "revised" ? editDocno : docNo;
       const response: Response = await getMethod(`/delivery-challan/get-all-challan-list?doc_number=${document_no}`)
       console.log(response.data)
       setTableValues(response?.data)
@@ -119,19 +118,19 @@ const Page = () => {
       getTableValues()
     };
 
-    const getEditValues = async() => {
-      const response:Response = await getMethod (`/delivery-challan/get-delivery-challan-form-data?challan_id=${data_id}&type=revision`)
+    const getEditValues = async () => {
+      const response: Response = await getMethod(`/delivery-challan/get-delivery-challan-form-data?challan_id=${data_id}&type=revision`)
       const editData = response?.data;
       const format_date = new Date(editData?.doc_date);
       const refFormat_date = new Date(editData?.reference_date)
-      console.log(editData,"editData");
+      console.log(editData, "editData");
       setFormdata({
         customer: editData?.customer_name || "",
         document_no: editData?.doc_number || "",
         customer_reference: editData?.customer_reference || "",
         contact_person: editData?.contact_person || "",
         contact_no: editData?.contact_number || "",
-        document_date:format_date || "",
+        document_date: format_date || "",
         ref_date: refFormat_date || "",
         email: editData?.email || "",
         address: editData?.address || "",
@@ -140,12 +139,13 @@ const Page = () => {
       setEditDocno(editData?.doc_number)
     }
 
-    const createEdit = async() => {
+    const createEdit = async () => {
       const user_id = cookies.user_id
       const payload = {
+        id: data_id,
         customer_name: formdata.customer || null,
         customer_reference_id: "",
-        doc_number: docNo ? docNo : null,
+        doc_number: editDocno ? editDocno : null,
         doc_date: formdata.document_date || null,
         contact_person: formdata.contact_person || null,
         email: formdata.email || null,
@@ -156,7 +156,11 @@ const Page = () => {
         reference_date: formdata.ref_date || null,
         created_user_id: user_id || null,
       }
-      const response:Response = await postMethod(`/delivery-challan/update-delivery-challan-form/${data_id}`,payload)
+      const response: Response = await postMethod(`/delivery-challan/update-delivery-challan-form`, payload)
+      if (response.status == "success") {
+        setSavePop(true)
+        setTimeout(() => { setSavePop(false), router.push("/challan/history") }, 2000)
+      }
     }
 
 
@@ -190,7 +194,7 @@ const Page = () => {
     const createChallanList = async () => {
       console.log(updateId)
       const payload = {
-        doc_number: docNo,
+        doc_number: editDocno ? editDocno : docNo,
         challan_list: [
           {
             item_number: tableData.item_number || null,
@@ -257,6 +261,7 @@ const Page = () => {
     useEffect(() => {
       if (moveDoc) {
         getTableValues();
+        console.log("moveDoc get")
       }
     }, [moveDoc]);
 
@@ -270,10 +275,15 @@ const Page = () => {
       if (type === "moveData") {
         getMovedDataChallan()
         getTableValues()
-      }else {
+      } else if (type === "revised") {
         getEditValues()
       }
     }, [type])
+
+    useEffect(() => {
+      getTableValues()
+    }, [editDocno])
+
     return (
       <>
         <div>
@@ -331,9 +341,12 @@ const Page = () => {
                       type='number'
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                       onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                      onChange={(e) => { const value = e.target.value;
-                        if (/^\d{0,10}$/.test(value)) { 
-                            handleChange("contact_no", value);}}}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d{0,10}$/.test(value)) {
+                          handleChange("contact_no", value);
+                        }
+                      }}
                       value={formdata.contact_no ?? ""}
                     />
                   </div>
@@ -368,7 +381,7 @@ const Page = () => {
                       <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='text'
                         onChange={(e) => { handleChange("item_number", e.target.value) }}
-                        value={tableData.item_number}
+                        value={tableData.item_number ?? ""}
                       />
                     </div>
                     <div className='flex flex-col gap-1'>
@@ -376,7 +389,7 @@ const Page = () => {
                       <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='text'
                         onChange={(e) => { handleChange("description", e.target.value) }}
-                        value={tableData.description}
+                        value={tableData.description ?? ""}
                       />
                     </div>
                     <div className='flex flex-col gap-1'>
@@ -386,7 +399,7 @@ const Page = () => {
                         onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                         onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                         onChange={(e) => { handleChange("quantity", e.target.value) }}
-                        value={tableData.quantity}
+                        value={tableData.quantity ?? ""}
                       />
                     </div>
                     <div className='flex flex-col gap-1'>
@@ -397,7 +410,7 @@ const Page = () => {
                         optionValue='value'
                         type='text'
                         onChange={(e) => { handleChange("unit", e.target.value) }}
-                        value={tableData.unit}
+                        value={tableData.unit ?? ""}
                       />
                     </div>
                   </div>
@@ -422,7 +435,7 @@ const Page = () => {
                 </div>
                 <div className='flex justify-center items-center my-3 gap-3'>
                   <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
-                  <Custombutton name={type === "revised" ? 'Update' : 'Save'} color={'yellow'} onclick={createDeliveryNote} />
+                  <Custombutton name={type === "revised" ? 'Update' : 'Save'} color={'yellow'} onclick={type === "revised" ? createEdit : createDeliveryNote} />
                 </div>
 
               </div>
@@ -488,23 +501,20 @@ const Page = () => {
                         <p className='text-[#929292] !break-all'>{formdata.ref_date ? moment(formdata.ref_date).format("DD/MM/YYYY") : ""}</p>
                       </div>
                       <div>
-                        <p>Remarks:</p>
-                        <p className='text-[#929292] !break-all'>{formdata.remark_brand}</p>
-                      </div>
-
-                    </div>
-                    <hr className='mx-4' />
-                    <div className='grid grid-cols-3 text-[12px] px-4 my-4'>
-                      <div>
                         <p>Address:</p>
                         <p className='text-[#929292] !break-all'>{formdata.address}</p>
                       </div>
                     </div>
                     <hr className='mx-4' />
+
                   </div>
                 </div>
-                <div className='mx-3'>
+                <div className='mx-3 mt-4'>
                   <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow} />
+                </div>
+                <div className='mt-3 mx-3 flex items-center gap-1'>
+                  <p>Remarks:</p>
+                  <p className='text-[#929292] !break-all'>{formdata.remark_brand}</p>
                 </div>
               </div>
             </div>

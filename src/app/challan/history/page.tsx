@@ -26,12 +26,12 @@ const Page = () => {
   const [viewData, setViewData] = useState<any>();
   const [loader, setLoader] = useState<boolean>(false);
   const getChallanHistory = async () => {
-    let payload={
-      filter_data:{
-          date:null
+    let payload = {
+      filter_data: {
+        date: null
       }
-  }
-    const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`,payload)
+    }
+    const response: Response = await postMethod(`/delivery-challan/get-delivery-challan-form-history`, payload)
     console.log(response?.data)
     setHistory(response?.data)
   }
@@ -87,7 +87,7 @@ const Page = () => {
                     <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
                   </div>
                 </div>
-                <div className='flex flex-col gap-1'>
+                <div className='flex flex-col gap-3'>
                   {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} /> */}
                   <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }} >View Detail</button>
                   <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black' onClick={() => { editChallan(data?.id) }} >Edit</button>
@@ -182,13 +182,6 @@ const Page = () => {
                         <p className='text-[#929292] !break-all'>{viewData?.reference_date}</p>
                       </div>
                       <div>
-                        <p>Remarks:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.remark_brand}</p>
-                      </div>
-                    </div>
-                    <hr className='mx-4' />
-                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
-                      <div>
                         <p>Address:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.address}</p>
                       </div>
@@ -198,6 +191,10 @@ const Page = () => {
                 </div>
                 <div className='mx-3'>
                   <Table columns={columns} rows={viewData?.delivery_items} />
+                </div>
+                <div className='mt-3 mx-3 flex items-center gap-1'>
+                  <p>Remarks:</p>
+                  <p className='text-[#929292] !break-all'>{viewData?.remark_brand}</p>
                 </div>
               </div>
               {

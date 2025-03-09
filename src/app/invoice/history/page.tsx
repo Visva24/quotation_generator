@@ -27,12 +27,7 @@ const Page = () => {
   const [viewData, setViewData] = useState<any>();
   const [selectOption, setSelectOption] = useState<any>('')
   const [loader, setLoader] = useState<boolean>(false);
-  const [movePop, setMovePop] = useState<boolean>(false);
-  const [selectedId, setSelectedId] = useState<any>()
-  const handleChange = (value: any) => {
-    console.log(value)
-    setSelectOption(value)
-  }
+
   const getInvoiceHistory = async () => {
    let payload={
             filter_data:{
@@ -45,6 +40,9 @@ const Page = () => {
     setHistory(response?.data)
   }
 
+ const editInvoice = (id: number | string) => {
+    router.push(`/invoice?type=revised&id=${id}`)
+  }
   const getViewData = async (id: number) => {
     const response: Response = await getMethod(`/sales-invoice/get-sales-invoice-form-data?Invoice_id=${id}`)
     console.log(response.data)
@@ -94,9 +92,10 @@ const Page = () => {
                     <p className='flex gap-2 items-center'><i className='pi pi-file text-[#F4AA08] text-[16px]'></i>{data?.document_number}</p>
                   </div>
                 </div>
-                <div className=''>
+                <div className='flex flex-col gap-3'>
                   {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} /> */}
                   <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }} >View Detail</button>
+                  <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black' onClick={() => { editInvoice(data?.id) }} >Edit</button>
                 </div>
               </div>
               <div className='mt-2 text-[14px] max-h-0 group-hover:max-h-[500px] overflow-hidden transition-all duration-300'>
@@ -183,32 +182,12 @@ const Page = () => {
                         <p className='text-[#929292] !break-all'>{viewData?.address}</p>
                       </div>
                       <div>
-                        <p>Payment Method:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.payment_mode}</p>
-                      </div>
-                      <div>
-                        <p> Currency:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.currency}</p>
-                      </div>
-                    </div>
-                    <hr className='mx-4' />
-                    <div className='grid grid-cols-4 gap-1 text-[12px] px-4 my-4'>
-                      <div>
-                        <p>Contact Reference:</p>
+                        <p>Customer Reference:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.customer_reference}</p>
-                      </div>
-                      <div>
-                        <p>Reference Date:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.reference_date}</p>
                       </div>
                       <div>
                         <p>DN Number:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.dn_number}</p>
-                      </div>
-
-                      <div>
-                        <p>Validity:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.quotation_validity}</p>
                       </div>
                     </div>
                     <hr className='mx-4' />
