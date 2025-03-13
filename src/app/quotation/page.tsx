@@ -167,6 +167,11 @@ const Page = () => {
       { label: "Kilograms", value: "kg" },
       { label: "Liters", value: "L" },
       { label: "Meters", value: "m" },
+      { label: "Packets", value: "pkt" },
+      { label: "Sets", value: "set" },
+      { label: "Pieces", value: "pcs" },
+      { label: "Rolls", value: "roll" },
+      { label: "Length", value: "length" }, 
     ];
 
     const handleRemoveRow = async (id: string | number) => {
