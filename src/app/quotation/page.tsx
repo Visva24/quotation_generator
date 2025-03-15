@@ -8,7 +8,7 @@ import moment from 'moment'
 import Table from '../component/Table'
 import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
-import {  useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { parseCookies } from 'nookies'
 import Popup from '../component/Popup';
 import SavePopup from '../component/SavePopup';
@@ -95,12 +95,12 @@ const Page = () => {
     }
 
     const handleAdd = async () => {
-      
+
       if (!tableData.description || !tableData.quantity || !tableData.price) {
         setError(true)
         return
       }
-      if(!formdata.currency){
+      if (!formdata.currency) {
         setErrorOne(true)
         return
       }
@@ -171,7 +171,7 @@ const Page = () => {
       { label: "Sets", value: "set" },
       { label: "Pieces", value: "pcs" },
       { label: "Rolls", value: "roll" },
-      { label: "Length", value: "length" }, 
+      { label: "Length", value: "length" },
     ];
 
     const handleRemoveRow = async (id: string | number) => {
@@ -209,7 +209,7 @@ const Page = () => {
 
     const getTableValues = async () => {
       const docNumber = type === "revised" ? revisedDoc : docNo;
-      const currency =  formdata.currency ? formdata.currency : null;
+      const currency = formdata.currency ? formdata.currency : null;
       const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNumber}&currency=${currency}`)
       console.log(response.data)
       setTableValues(response?.data)
@@ -263,7 +263,7 @@ const Page = () => {
         address: formdata.address || null,
         remark_brand: formdata.remark_brand || null,
         delivery: formdata.delivery || null,
-        payment_terms:formdata.pay_terms || null,
+        payment_terms: formdata.pay_terms || null,
         created_user_id: user_id || null,
         total_discount: 0,
         total_tax: 0
@@ -370,9 +370,9 @@ const Page = () => {
       }
     }, [revisedDoc]);
 
-    useEffect(()=>{
+    useEffect(() => {
       getTableValues()
-    },[formdata.currency])
+    }, [formdata.currency])
     return (
       <>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
@@ -430,10 +430,21 @@ const Page = () => {
                     type='number'
                     onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                     onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                    onChange={(e) => { const value = e.target.value;
+                    onChange={(e) => {
+                      const value = e.target.value;
                       if (/^\d{0,10}$/.test(value)) {
-                          handleChange("contact_no", value) }}}
+                        handleChange("contact_no", value)
+                      }
+                    }}
                     value={formdata.contact_no ?? ""}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor="">Address</label>
+                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
+                    type='text'
+                    onChange={(e) => { handleChange("address", e.target.value) }}
+                    value={formdata.address ?? ""}
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
@@ -468,14 +479,7 @@ const Page = () => {
                     value={formdata.validity ?? ""}
                   />
                 </div>
-                <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Address</label>
-                  <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
-                    type='text'
-                    onChange={(e) => { handleChange("address", e.target.value) }}
-                    value={formdata.address ?? ""}
-                  />
-                </div>
+
               </div>
             </div>
             <div>
@@ -645,9 +649,13 @@ const Page = () => {
                     </div>
                   </div>
                   <hr className='mx-4' />
-                  <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
+                  <div className='grid grid-cols-4 gap-x-3 text-[12px] px-4 my-4'>
                     <div>
-                      <p>Contact Reference:</p>
+                      <p>Address:</p>
+                      <p className='text-[#929292]  !break-all'>{formdata.address}</p>
+                    </div>
+                    <div>
+                      <p>Customer Reference:</p>
                       <p className='text-[#929292]  !break-all'>{formdata.customer_reference}</p>
                     </div>
                     <div>
@@ -658,32 +666,17 @@ const Page = () => {
                       <p> Currency:</p>
                       <p className='text-[#929292]  !break-all'>{formdata.currency}</p>
                     </div>
-                  </div>
-                  <hr className='mx-4' />
-                  <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
-                    <div>
-                      <p>Address:</p>
-                      <p className='text-[#929292]  !break-all'>{formdata.address}</p>
-                    </div>
-                    <div>
-                      <p>Validity:</p>
-                      <p className='text-[#929292]  !break-all'>{formdata.validity}</p>
-                    </div>
-                    <div>
-                      <p>Payment Terms:</p>
-                      <p className='text-[#929292]  !break-all'>{formdata.pay_terms}</p>
-                    </div>
+
                   </div>
                   <hr className='mx-4' />
                 </div>
               </div>
-
-
               <div className='mx-3'>
                 <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow} />
               </div>
               <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                 <div className='flex flex-col gap-2'>
+                  <p>Validity: <span>{formdata.validity}</span></p>
                   <p>Remark: <span>{formdata.remark_brand}</span></p>
                   <p>Delivery: <span>{formdata.delivery}</span></p>
                   <p>Amount in Words: <span>{tableValues?.amount_in_words}</span></p>
@@ -726,7 +719,7 @@ const Page = () => {
             </div>
           </>
         }
-         {
+        {
           errorone &&
           <>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

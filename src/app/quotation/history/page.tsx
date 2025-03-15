@@ -31,7 +31,7 @@ const Page = () => {
     { label: "Quantity", key: "quantity", align: "center", width: "80px" },
     { label: "Units", key: "units", align: "center", width: "80px" },
     { label: "Price", key: "price", align: "center", width: "100px" },
-    { label: viewData?.currency =="SAR" ? "VAT(%)" : "TAX(%)" , key: "tax", align: "center", width: "100px" },
+    { label: viewData?.currency == "SAR" ? "VAT(%)" : "TAX(%)", key: "tax", align: "center", width: "100px" },
     { label: "Discount(%)", key: "discount", align: "center", width: "100px" },
     { label: "Total", key: "amount", align: "center", width: "100px" },
   ];
@@ -40,12 +40,12 @@ const Page = () => {
     setSelectOption(value)
   }
   const getQuotationHistory = async () => {
-    let payload={
-      filter_data:{
-          date:null
+    let payload = {
+      filter_data: {
+        date: null
       }
-  }
-    const response: Response = await postMethod(`/quotation/get-quotation-form-history`,payload)
+    }
+    const response: Response = await postMethod(`/quotation/get-quotation-form-history`, payload)
     console.log(response?.data)
     setHistory(response?.data)
   }
@@ -108,9 +108,9 @@ const Page = () => {
                     <Image src={'/images/move-forward.svg'} alt={''} height={28} width={28} />
                   </div>
                   <div className='flex flex-col gap-3'>
-                    
+
                     <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }}>View Detail</button>
-                    <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black'  onClick={() => { reviseData(data?.id) }}>Revise</button>
+                    <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black' onClick={() => { reviseData(data?.id) }}>Revise</button>
                     {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
                     <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} /> */}
                   </div>
@@ -212,9 +212,13 @@ const Page = () => {
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
+                    <div className='grid grid-cols-4 gap-x-3 text-[12px] px-4 my-4'>
                       <div>
-                        <p>Contact Reference:</p>
+                        <p>Address:</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.address}</p>
+                      </div>
+                      <div>
+                        <p>Customer Reference:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.customer_reference}</p>
                       </div>
                       <div>
@@ -228,18 +232,8 @@ const Page = () => {
                     </div>
                     <hr className='mx-4' />
                     <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
-                      <div>
-                        <p>Address:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.address}</p>
-                      </div>
-                      <div>
-                        <p>Validity:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.quotation_validity}</p>
-                      </div>
-                      <div>
-                        <p>Payment Terms:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.payment_terms}</p>
-                      </div>
+
+
                     </div>
                     <hr className='mx-4' />
                   </div>
@@ -249,6 +243,7 @@ const Page = () => {
                 </div>
                 <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                   <div className='flex flex-col gap-2'>
+                    <p>Validity: <span>{viewData?.quotation_validity}</span></p>
                     <p>Remark: <span>{viewData?.remark_brand}</span></p>
                     <p>Delivery: <span>{viewData?.delivery}</span></p>
                     <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>
@@ -256,7 +251,7 @@ const Page = () => {
                   <div className='flex flex-col gap-1'>
                     <p className=' text-[12px]'>Sub Total:{viewData?.sub_total}</p>
                     <p>DIS:{viewData?.total_discount}</p>
-                    <p> {viewData?.currency =="SAR" ? "VAT" : "TAX"}:{viewData?.total_tax}</p>
+                    <p> {viewData?.currency == "SAR" ? "VAT" : "TAX"}:{viewData?.total_tax}</p>
                     <p>Total:{viewData?.grand_total}</p>
                   </div>
                 </div>
@@ -269,7 +264,7 @@ const Page = () => {
           </Sidebar>
         </>
       }
-      
+
     </>
   )
 }

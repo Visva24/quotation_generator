@@ -86,7 +86,7 @@ const QuotationHistory = () => {
 
     const Filter = () => {
         const [toggleDrop, setToggleDrop] = useState<boolean>(false);
-        const [isFilterApplied ,setIsFilterApplied] = useState<any>();
+        const [isFilterApplied, setIsFilterApplied] = useState<any>();
         const [filterDate, setFilterDate] = useState<any>({
             filter_date: ""
         })
@@ -137,20 +137,20 @@ const QuotationHistory = () => {
                             </div>
                             {/* {isFilterApplied && <p className="text-gray-600">Filter Applied</p>} */}
                             <div className='w-6 h-6 rounded-full border flex items-center justify-center'>
-                                <i className='pi pi-times text-[12px] text-[#000]' onClick={()=>setToggleDrop(false)}></i>
+                                <i className='pi pi-times text-[12px] text-[#000]' onClick={() => setToggleDrop(false)}></i>
                             </div>
                         </div>
                         <hr className='my-2' />
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center  border rounded-[24px] px-2'>
-                            <i className='pi pi-calendar  text-[#F4AA08]'></i>
-                            <Calendar className='border-none ml-1 mt-1 h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
-                           
+                                <i className='pi pi-calendar  text-[#F4AA08]'></i>
+                                <Calendar className='border-none ml-1 mt-1 h-9 rounded-[6px] w-[100px] ' value={filterDate.filter_date || ""} onChange={(e) => handleFilterChange("filter_date", e.value as Date)} />
+
                             </div>
-                           <div className='flex items-center justify-center gap-2'>
-                           <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
-                           <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
-                           </div>
+                            <div className='flex items-center justify-center gap-2'>
+                                <Custombutton name={'Apply'} color={'yellow'} onclick={handleApplyFilter} />
+                                <Custombutton name={'Clear'} color={'black'} onclick={handleClearFilter} />
+                            </div>
                         </div>
                     </div>
                 )}
@@ -192,7 +192,7 @@ const QuotationHistory = () => {
                                         {/* <Custombutton name={'View Detail'} color={'yellow'} onclick={() => { getViewData(data?.id), setSideBar(true) }} />
                                         <Custombutton name={'Revise'} color={'black'} onclick={() => { reviseData(data?.id) }} /> */}
                                         <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-yellow-500' onClick={() => { getViewData(data?.id), setSideBar(true) }}>View Detail</button>
-                                        <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black'  onClick={() => { reviseData(data?.id) }}>Revise</button>
+                                        <button className='flex justify-center items-center px-[15px] py-1 text-[14px] rounded-[14px] text-[White] bg-black' onClick={() => { reviseData(data?.id) }}>Revise</button>
                                     </div>
                                 </div>
                             </div>
@@ -292,9 +292,13 @@ const QuotationHistory = () => {
                                             </div>
                                         </div>
                                         <hr className='mx-4' />
-                                        <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
+                                        <div className='grid grid-cols-4 gap-x-3 text-[12px] px-4 my-4'>
                                             <div>
-                                                <p>Contact Reference:</p>
+                                                <p>Address:</p>
+                                                <p className='text-[#929292] !break-all'>{viewData?.address}</p>
+                                            </div>
+                                            <div>
+                                                <p>Customer Reference:</p>
                                                 <p className='text-[#929292] !break-all'>{viewData?.customer_reference}</p>
                                             </div>
                                             <div>
@@ -307,21 +311,6 @@ const QuotationHistory = () => {
                                             </div>
                                         </div>
                                         <hr className='mx-4' />
-                                        <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
-                                            <div>
-                                                <p>Address:</p>
-                                                <p className='text-[#929292] !break-all'>{viewData?.address}</p>
-                                            </div>
-                                            <div>
-                                                <p>Validity:</p>
-                                                <p className='text-[#929292] !break-all'>{viewData?.quotation_validity}</p>
-                                            </div>
-                                            <div>
-                                                <p>Payment Terms:</p>
-                                                <p className='text-[#929292] !break-all'>{viewData?.payment_terms}</p>
-                                            </div>
-                                        </div>
-                                        <hr className='mx-4' />
                                     </div>
                                 </div>
                                 <div className='mx-3'>
@@ -329,6 +318,7 @@ const QuotationHistory = () => {
                                 </div>
                                 <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                                     <div className='flex flex-col gap-2'>
+                                        <p>Validity: <span>{viewData?.quotation_validity}</span></p>
                                         <p>Remark: <span>{viewData?.remark_brand}</span></p>
                                         <p>Delivery: <span>{viewData?.delivery}</span></p>
                                         <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>

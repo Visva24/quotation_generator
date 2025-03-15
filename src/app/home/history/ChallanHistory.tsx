@@ -250,7 +250,7 @@ const ChallanHistory = () => {
                     <hr className='mx-4' />
                     <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
                       <div>
-                        <p>Contact Reference:</p>
+                        <p>Customer Reference:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.customer_reference}</p>
                       </div>
                       <div>
