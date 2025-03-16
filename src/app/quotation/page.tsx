@@ -354,25 +354,37 @@ const Page = () => {
       suggestions()
     }, [])
 
-    useEffect(() => {
-      if (docNo) {
-        getTableValues()
-      }
-    }, [docNo])
+    // useEffect(() => {
+    //   if (docNo) {
+    //     getTableValues()
+    //   }
+    // }, [docNo])
+
+    // useEffect(() => {
+    //   if (type) { getRevisedData() }
+    // }, [type])
+
+    // useEffect(() => {
+    //   if (revisedDoc) {
+    //     getTableValues();
+    //   }
+    // }, [revisedDoc]);
+
+    // useEffect(() => {
+    //   getTableValues()
+    // }, [formdata.currency])
 
     useEffect(() => {
-      if (type) { getRevisedData() }
-    }, [type])
-
-    useEffect(() => {
-      if (revisedDoc) {
+      if (docNo || revisedDoc || formdata.currency) {
         getTableValues();
       }
-    }, [revisedDoc]);
-
+    }, [docNo, revisedDoc, formdata.currency]);
+    
     useEffect(() => {
-      getTableValues()
-    }, [formdata.currency])
+      if (type) {
+        getRevisedData();
+      }
+    }, [type]);
     return (
       <>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
@@ -396,7 +408,7 @@ const Page = () => {
                     className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                     type='text'
                     onChange={(e) => { handleChange("document_no", e.target.value) }}
-                    value={type == "revised" ? revisedDoc || "" : docNo || ""}
+                    value={revisedDoc ? revisedDoc || "" : docNo || ""}
                     disabled
                   />
                 </div>
@@ -626,7 +638,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col  !break-all'>
                       <p>Document No:</p>
-                      <p className='text-[#929292]'>{docNo ? docNo : formdata.document_no || ""}  </p>
+                      <p className='text-[#929292]'>{revisedDoc ? revisedDoc : docNo }  </p>
                     </div>
                     <div className='flex flex-col !break-all'>
                       <p>Document Date:</p>
@@ -671,7 +683,7 @@ const Page = () => {
                   <hr className='mx-4' />
                 </div>
               </div>
-              <div className='mx-3'>
+              <div className='mx-3 mt-5'>
                 <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow} />
               </div>
               <div className='mt-3 flex justify-between mx-4 text-[12px]'>

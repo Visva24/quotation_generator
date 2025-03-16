@@ -263,31 +263,46 @@ const Page = () => {
       getDocumentNo()
     }, [])
 
-    useEffect(() => {
-      if (moveDoc) {
-        getTableValues();
-        console.log("moveDoc get")
-      }
-    }, [moveDoc]);
+    // useEffect(() => {
+    //   if (moveDoc) {
+    //     getTableValues();
+    //     console.log("moveDoc get")
+    //   }
+    // }, [moveDoc]);
+
+    // useEffect(() => {
+    //   if (docNo) {
+    //     getTableValues()
+    //   }
+    // }, [docNo])
+
+    // useEffect(() => {
+    //   if (type === "moveData") {
+    //     getMovedDataChallan()
+    //     getTableValues()
+    //   } else if (type === "revised") {
+    //     getEditValues()
+    //   }
+    // }, [type])
+
+    // useEffect(() => {
+    //   getTableValues()
+    // }, [editDocno])
 
     useEffect(() => {
-      if (docNo) {
-        getTableValues()
+      if (moveDoc || docNo || type === "moveData" || editDocno) {
+        getTableValues();
+        console.log("getTableValues triggered");
       }
-    }, [docNo])
+    }, [moveDoc, docNo, type, editDocno]);
 
     useEffect(() => {
       if (type === "moveData") {
-        getMovedDataChallan()
-        getTableValues()
+        getMovedDataChallan();
       } else if (type === "revised") {
-        getEditValues()
+        getEditValues();
       }
-    }, [type])
-
-    useEffect(() => {
-      getTableValues()
-    }, [editDocno])
+    }, [type]);
 
     return (
       <>
@@ -473,7 +488,7 @@ const Page = () => {
                       </div>
                       <div className='flex flex-col  !break-all'>
                         <p>Document No:</p>
-                        <p className='text-[#929292]'>{formdata.document_no || docNo}  </p>
+                        <p className='text-[#929292]'>{editDocno ? editDocno : docNo}  </p>
                       </div>
                       <div className='flex flex-col !break-all'>
                         <p>Document Date:</p>
@@ -514,7 +529,7 @@ const Page = () => {
 
                   </div>
                 </div>
-                <div className='mx-3 mt-4'>
+                <div className='mx-3 mt-5'>
                   <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow} />
                 </div>
                 <div className='mt-3 mx-3 flex items-center gap-1'>

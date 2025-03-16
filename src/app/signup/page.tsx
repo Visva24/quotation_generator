@@ -68,7 +68,7 @@ const SignUpPage = () => {
             <div className="h-screen w-screen flex bg-[#000]  text-[#fff] overflow-y-auto">
                 <div className="w-[65%] mr-48 bg-[#000] ">
                     <div className="flex h-full items-center justify-end">
-                        <Image src="/images/loginImg.png" alt={""} height={400} width={400} className="shadow-2xl ml-36  shadow-[#901129]" />
+                        <Image src="/images/loginImg.svg" alt={""} height={400} width={400} className="shadow-2xl ml-36  shadow-[#f3f0f17f]" />
                     </div>
                 </div>
                 <div className="w-[35%] bg-[#000]   overflow-y-auto scroll-bar">

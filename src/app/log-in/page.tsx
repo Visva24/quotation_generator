@@ -57,7 +57,7 @@ export default function LoginPage() {
       <div className="h-screen w-screen flex bg-[#000]    text-[#fff] overflow-hidden">
         <div className="w-[70%] bg-[#000] ">
           <div className="flex h-full items-center justify-end mr-48">
-            <Image src="/images/loginImg.png" alt={""} height={380} width={430} className="shadow-2xl ml-36  shadow-[#901129]" />
+            <Image src="/images/loginImg.svg" alt={""} height={380} width={430} className="shadow-2xl ml-36  shadow-[#f3f0f17f]" />
           </div>
         </div>
         <div className="w-[30%] items-center bg-[#000] overflow-y-scroll scroll-bar">

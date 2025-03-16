@@ -337,31 +337,50 @@ const Page = () => {
       getDocumentNo()
     }, [])
 
-    useEffect(() => {
-      if (docNo) {
-        getTableValues()
-      }
-    }, [docNo])
+    // useEffect(() => {
+    //   if (docNo) {
+    //     getTableValues()
+    //   }
+    // }, [docNo])
+
+    // useEffect(() => {
+    //   if (moveDoc) {
+    //     getTableValues();
+    //   }
+    // }, [moveDoc]);
+
+    // useEffect(() => {
+    //   if (type === "moveData") {
+    //     getMovedDataInvoice()
+    //     getTableValues()
+    //   } else if (type === "revised") {
+    //     getEditInvoice()
+    //   }
+    // }, [type])
+    // useEffect(() => {
+    //   getTableValues()
+    // }, [editDocno])
+
+    // useEffect(() => { getTableValues() }, [formdata.currency])
 
     useEffect(() => {
-      if (moveDoc) {
+      if (docNo || moveDoc || editDocno || formdata.currency) {
+        // console.log(docNo,":::::doc updated get trggered")
+        // console.log(editDocno,":::::editDocno updated get trggered")
+        // console.log(moveDoc,":::::moveDoc updated get trggered")
+        // console.log(formdata.currency,":::::formdata.currency updated get trggered")
         getTableValues();
       }
-    }, [moveDoc]);
-
+    }, [docNo, moveDoc, editDocno, formdata.currency]);
+    
     useEffect(() => {
       if (type === "moveData") {
-        getMovedDataInvoice()
-        getTableValues()
+        getMovedDataInvoice();
+        getTableValues();
       } else if (type === "revised") {
-        getEditInvoice()
+        getEditInvoice();
       }
-    }, [type])
-    useEffect(() => {
-      getTableValues()
-    }, [editDocno])
-
-    useEffect(() => { getTableValues() }, [formdata.currency])
+    }, [type]);
 
     return (
       <div>
@@ -625,7 +644,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col  !break-all'>
                       <p>Document No:</p>
-                      <p className='text-[#929292]'>{formdata.document_no || docNo}  </p>
+                      <p className='text-[#929292]'>{editDocno ? editDocno : docNo}  </p>
                     </div>
                     <div className='flex flex-col !break-all'>
                       <p>Document Date:</p>
