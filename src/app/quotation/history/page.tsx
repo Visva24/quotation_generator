@@ -182,7 +182,7 @@ const Page = () => {
                     <p className='h-5 border-[#F4AA08] border-[2px]'></p><p className='  '> QUOTATION</p>
                   </div>
                   <div className='pl-10 mb-4'>
-                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4 '>
+                    <div className='grid grid-cols-3 gap-x-3 text-[12px] px-4 my-4 '>
                       <div className='flex flex-col !break-all'>
                         <p>Customer:</p>
                         <p className='text-[#929292] '>{viewData?.customer_name}</p>
@@ -197,7 +197,7 @@ const Page = () => {
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
+                    <div className='grid grid-cols-3 gap-x-3 text-[12px] px-4 my-4'>
                       <div className='!break-all'>
                         <p>Contact Person:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.contact_person}</p>
@@ -212,7 +212,7 @@ const Page = () => {
                       </div>
                     </div>
                     <hr className='mx-4' />
-                    <div className='grid grid-cols-4 gap-x-3 text-[12px] px-4 my-4'>
+                    <div className='grid grid-cols-3 gap-x-3 text-[12px] px-4 my-4'>
                       <div>
                         <p>Address:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.address}</p>
@@ -222,13 +222,13 @@ const Page = () => {
                         <p className='text-[#929292] !break-all'>{viewData?.customer_reference}</p>
                       </div>
                       <div>
-                        <p>Payment Method:</p>
-                        <p className='text-[#929292] !break-all'>{viewData?.payment_mode}</p>
+                        <p>Payment Terms:</p>
+                        <p className='text-[#929292] !break-all'>{viewData?.payment_terms}</p>
                       </div>
-                      <div>
+                      {/* <div>
                         <p> Currency:</p>
                         <p className='text-[#929292] !break-all'>{viewData?.currency}</p>
-                      </div>
+                      </div> */}
                     </div>
                     <hr className='mx-4' />
                     <div className='grid grid-cols-3 gap-1 text-[12px] px-4 my-4'>
@@ -244,13 +244,13 @@ const Page = () => {
                 <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                   <div className='flex flex-col gap-2'>
                     <p>Validity: <span>{viewData?.quotation_validity}</span></p>
-                    <p>Remark: <span>{viewData?.remark_brand}</span></p>
+                    <p>Remarks: <span>{viewData?.remark_brand}</span></p>
                     <p>Delivery: <span>{viewData?.delivery}</span></p>
                     <p>Amount in Words: <span>{viewData?.amount_in_words}</span></p>
                   </div>
                   <div className='flex flex-col gap-1'>
                     <p className=' text-[12px]'>Sub Total:{viewData?.sub_total}</p>
-                    <p>DIS:{viewData?.total_discount}</p>
+                    <p>Overall Discount:{viewData?.total_discount}</p>
                     <p> {viewData?.currency == "SAR" ? "VAT" : "TAX"}:{viewData?.total_tax}</p>
                     <p>Total:{viewData?.grand_total}</p>
                   </div>

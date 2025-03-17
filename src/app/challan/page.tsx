@@ -68,7 +68,7 @@ const Page = () => {
     const units = [
       { label: "Numbers", value: "nos" },
       { label: "Kilograms", value: "kg" },
-      { label: "Liters", value: "L" },
+      { label: "Carton", value: "ctn" },
       { label: "Meters", value: "m" },
       { label: "Packets", value: "pkt" },
       { label: "Sets", value: "set" },
@@ -440,11 +440,11 @@ const Page = () => {
                     </div>
                   </div>
                 </div>
-                <p className='text-[18px] ml-2 mt-5 mb-2 font-medium'>Extras</p>
+                {/* <p className='text-[18px] ml-2 mt-5 mb-2 font-medium'>Extras</p>
                 <div className='border mx-2 rounded-[8px] p-2'>
                   <div className='grid grid-cols-2 px-2 gap-4'>
                     <div className='flex flex-col gap-1'>
-                      <label htmlFor="">Remark Brand</label>
+                      <label htmlFor="">Remarks</label>
                       <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                         type='text'
                         onChange={(e) => { handleChange("remark_brand", e.target.value) }}
@@ -452,7 +452,7 @@ const Page = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className='flex justify-center items-center my-3 gap-3'>
                   <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
                   <Custombutton name={type === "revised" ? 'Update' : 'Save'} color={'yellow'} onclick={type === "revised" ? createEdit : createDeliveryNote} />
@@ -531,10 +531,6 @@ const Page = () => {
                 </div>
                 <div className='mx-3 mt-5'>
                   <Table columns={columns} rows={tableValues?.list} onRemoveRow={handleRemoveRow} onEditRow={handleEditRow} />
-                </div>
-                <div className='mt-3 mx-3 flex items-center gap-1'>
-                  <p>Remarks:</p>
-                  <p className='text-[#929292] !break-all'>{formdata.remark_brand}</p>
                 </div>
               </div>
             </div>

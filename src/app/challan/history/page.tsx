@@ -192,10 +192,6 @@ const Page = () => {
                 <div className='mx-3'>
                   <Table columns={columns} rows={viewData?.delivery_items} />
                 </div>
-                <div className='mt-3 mx-3 flex items-center gap-1'>
-                  <p>Remarks:</p>
-                  <p className='text-[#929292] !break-all'>{viewData?.remark_brand}</p>
-                </div>
               </div>
               {
                 loader &&

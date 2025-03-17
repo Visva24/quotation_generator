@@ -51,7 +51,8 @@ const Page = () => {
         ref_date: "",
         delivery: "",
         sales_emp: "",
-        pay_terms: ""
+        pay_terms: "",
+        over_all_discount: ""
       }
     )
     const [tableData, setTableData] = useState<any>({
@@ -109,7 +110,7 @@ const Page = () => {
     const units = [
       { label: "Numbers", value: "nos" },
       { label: "Kilograms", value: "kg" },
-      { label: "Liters", value: "L" },
+      { label: "Carton", value: "ctn" },
       { label: "Meters", value: "m" },
       { label: "Packets", value: "pkt" },
       { label: "Sets", value: "set" },
@@ -262,7 +263,8 @@ const Page = () => {
         dn_number: formdata.dn_number || null,
         reference_date: formdata.ref_date || null,
         sales_employee: formdata.sales_emp || null,
-        payment_terms: formdata.pay_terms || null
+        payment_terms: formdata.pay_terms || null,
+        total_discount: formdata.over_all_discount || null
       }
       const response: Response = await postMethod("/sales-invoice/update-sales-invoice-form", payload)
       if (response.status == "success") {
@@ -291,7 +293,8 @@ const Page = () => {
         delivery: editData?.delivery || "",                                                         
         sales_emp:editData?.sales_employee || "",
         pay_terms:editData?.payment_terms || "",
-        dn_number:editData?.dn_number || ""
+        dn_number:editData?.dn_number || "",
+        over_all_discount:editData?.total_discount || ""
       })
       setEditDocno(editData?.doc_number)
     }
@@ -300,25 +303,25 @@ const Page = () => {
       const response: Response = await getMethod(`/sales-invoice/move-forward-sales-invoice?quotation_id=${data_id}&current_user_id=${current_user_id}`)
       console.log(response?.data)
       const data = response?.data[0]
-      setMoveDoc(data.doc_number)
+      setMoveDoc(data?.doc_number)
       getTableValues()
-      console.log(data.doc_number)
-      const format_doc_date = data.doc_date ? new Date(data.doc_date) : null;
+      console.log(data?.doc_number)
+      const format_doc_date = data?.doc_date ? new Date(data?.doc_date) : null;
       if (response.status === "success") {
         setFormdata({
-          customer: data.customer_name || "",
-          document_no: data.doc_number || "",
-          customer_reference: data.customer_reference || "",
-          contact_person: data.contact_person || "",
-          contact_no: data.contact_number || "",
+          customer: data?.customer_name || "",
+          document_no: data?.doc_number || "",
+          customer_reference: data?.customer_reference || "",
+          contact_person: data?.contact_person || "",
+          contact_no: data?.contact_number || "",
           document_date: format_doc_date || "",
-          currency: data.currency || "",
-          payment_method: data.payment_mode || "",
-          email: data.email || "",
-          address: data.address || "",
-          validity: data.quotation_validity || "",
-          remark_brand: data.remark_brand || "",
-          delivery: data.delivery || "",
+          currency: data?.currency || "",
+          payment_method: data?.payment_mode || "",
+          email: data?.email || "",
+          address: data?.address || "",
+          validity: data?.quotation_validity || "",
+          remark_brand: data?.remark_brand || "",
+          delivery: data?.delivery || "",
         })
       }
 
@@ -592,7 +595,7 @@ const Page = () => {
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Remark</label>
+                    <label htmlFor="">Remarks</label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("remark_brand", e.target.value) }}
@@ -607,6 +610,16 @@ const Page = () => {
                       value={formdata.delivery ?? ""}
                     />
                   </div>
+                  {/* <div className='flex flex-col gap-1'>
+                    <label htmlFor="">Overall Discount</label>
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
+                      type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                      onChange={(e) => { handleChange("over_all_discount", e.target.value) }}
+                      value={formdata.over_all_discount ?? ""}
+                    />
+                  </div> */}
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
@@ -678,7 +691,7 @@ const Page = () => {
                     </div>
                     <div>
                       <p>DN Number:</p>
-                      <p className='text-[#929292] !break-all'>{formdata.dn_no}</p>
+                      <p className='text-[#929292] !break-all'>{formdata.dn_number}</p>
                     </div>
                   </div>
                   <hr className='mx-4' />
@@ -691,13 +704,13 @@ const Page = () => {
                 <div className='flex flex-col gap-2'>
                   <p>Sales Employee: <span>{formdata.sales_emp}</span></p>
                   <p>Payment Terms: <span>{formdata.pay_terms}</span></p>
-                  <p>Remark: <span>{formdata.remark_brand}</span></p>
+                  <p>Remarks: <span>{formdata.remark_brand}</span></p>
                   <p>Delivery: <span>{formdata.delivery}</span></p>
                   <p>Amount in Words: <span>{tableValues?.amount_in_words}</span></p>
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total}</p>
-                  <p>DIS:{tableValues?.total_discount}</p>
+                  <p>Overall Discount:{tableValues?.total_discount}</p>
                   <p>Total:{tableValues?.grand_total}</p>
                 </div>
               </div>

@@ -165,7 +165,7 @@ const Page = () => {
     const units = [
       { label: "Numbers", value: "nos" },
       { label: "Kilograms", value: "kg" },
-      { label: "Liters", value: "L" },
+      { label: "Carton", value: "ctn" },
       { label: "Meters", value: "m" },
       { label: "Packets", value: "pkt" },
       { label: "Sets", value: "set" },
@@ -578,7 +578,7 @@ const Page = () => {
               <div className='border mx-2 rounded-[8px] p-2'>
                 <div className='grid grid-cols-2 px-2 gap-4'>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Remark</label>
+                    <label htmlFor="">Remarks</label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='text'
                       onChange={(e) => { handleChange("remark_brand", e.target.value) }}
@@ -661,7 +661,7 @@ const Page = () => {
                     </div>
                   </div>
                   <hr className='mx-4' />
-                  <div className='grid grid-cols-4 gap-x-3 text-[12px] px-4 my-4'>
+                  <div className='grid grid-cols-3 gap-x-3 text-[12px] px-4 my-4'>
                     <div>
                       <p>Address:</p>
                       <p className='text-[#929292]  !break-all'>{formdata.address}</p>
@@ -671,13 +671,13 @@ const Page = () => {
                       <p className='text-[#929292]  !break-all'>{formdata.customer_reference}</p>
                     </div>
                     <div>
-                      <p>Payment Method:</p>
-                      <p className='text-[#929292]  !break-all'>{formdata.payment_method}</p>
+                      <p>Payment Terms:</p>
+                      <p className='text-[#929292]  !break-all'>{formdata.pay_terms}</p>
                     </div>
-                    <div>
+                    {/* <div>
                       <p> Currency:</p>
                       <p className='text-[#929292]  !break-all'>{formdata.currency}</p>
-                    </div>
+                    </div> */}
 
                   </div>
                   <hr className='mx-4' />
@@ -689,13 +689,13 @@ const Page = () => {
               <div className='mt-3 flex justify-between mx-4 text-[12px]'>
                 <div className='flex flex-col gap-2'>
                   <p>Validity: <span>{formdata.validity}</span></p>
-                  <p>Remark: <span>{formdata.remark_brand}</span></p>
+                  <p>Remarks: <span>{formdata.remark_brand}</span></p>
                   <p>Delivery: <span>{formdata.delivery}</span></p>
                   <p>Amount in Words: <span>{tableValues?.amount_in_words}</span></p>
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total || 0}</p>
-                  <p>DIS:{tableValues?.total_discount || 0}</p>
+                  <p>Overall Discount:{tableValues?.total_discount || 0}</p>
                   <p>{formdata.currency == "SAR" ? "VAT" : "TAX"}:{tableValues?.total_tax || 0}</p>
                   <p>Total:{tableValues?.grand_total || 0}</p>
                 </div>
