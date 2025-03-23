@@ -126,7 +126,8 @@ const Page = () => {
     const getTableValues = async () => {
       const document_no = type == "moveData" ? moveDoc : type == "revised" ? editDocno : docNo;
       const currency = formdata.currency ? formdata.currency : null;
-      const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${document_no}&currency=${currency}`)
+      const total_discount = formdata.over_all_discount ? formdata.over_all_discount : 0;
+      const response: Response = await getMethod(`/sales-invoice/get-all-sales-invoice-list?doc_number=${document_no}&currency=${currency}&total_discount=${total_discount}`)
       console.log(response.data)
       setTableValues(response?.data)
     }
@@ -217,7 +218,7 @@ const Page = () => {
         email: formdata.email || null,
         contact_number: formdata.contact_no || null,
         customer_reference: formdata.customer_reference || null,
-        payment_mode: formdata.payment_method || null,
+        // payment_mode: formdata.payment_method || null,
         currency: formdata.currency || null,
         quotation_validity: formdata.validity || null,
         address: formdata.address || null,
@@ -227,7 +228,8 @@ const Page = () => {
         dn_number: formdata.dn_number || null,
         reference_date: formdata.ref_date || null,
         sales_employee: formdata.sales_emp || null,
-        payment_terms: formdata.pay_terms || null
+        payment_terms: formdata.pay_terms || null,
+        total_discount:  formdata.over_all_discount ?  formdata.over_all_discount : 0 || null
       }
       const response: Response = await postMethod("/sales-invoice/create-sales-invoice-form", payload)
       if (response.status == "success") {
@@ -253,7 +255,7 @@ const Page = () => {
         email: formdata.email || null,
         contact_number: formdata.contact_no || null,
         customer_reference: formdata.customer_reference || null,
-        payment_mode: formdata.payment_method || null,
+        // payment_mode: formdata.payment_method || null,
         currency: formdata.currency || null,
         quotation_validity: formdata.validity || null,
         address: formdata.address || null,
@@ -264,7 +266,7 @@ const Page = () => {
         reference_date: formdata.ref_date || null,
         sales_employee: formdata.sales_emp || null,
         payment_terms: formdata.pay_terms || null,
-        total_discount: formdata.over_all_discount || null
+        total_discount: formdata.over_all_discount ?  formdata.over_all_discount : 0 || null
       }
       const response: Response = await postMethod("/sales-invoice/update-sales-invoice-form", payload)
       if (response.status == "success") {
@@ -285,7 +287,7 @@ const Page = () => {
         contact_no: editData?.contact_number || "",
         document_date: format_date || "",
         currency: editData?.currency || "",
-        payment_method: editData?.payment_mode || "",
+        // payment_method: editData?.payment_mode || "",
         email: editData?.email || "",
         address: editData?.address || "",
         validity: editData?.quotation_validity || "",
@@ -322,6 +324,7 @@ const Page = () => {
           validity: data?.quotation_validity || "",
           remark_brand: data?.remark_brand || "",
           delivery: data?.delivery || "",
+          over_all_discount: data?.total_discount || "",
         })
       }
 
@@ -367,14 +370,10 @@ const Page = () => {
     // useEffect(() => { getTableValues() }, [formdata.currency])
 
     useEffect(() => {
-      if (docNo || moveDoc || editDocno || formdata.currency) {
-        // console.log(docNo,":::::doc updated get trggered")
-        // console.log(editDocno,":::::editDocno updated get trggered")
-        // console.log(moveDoc,":::::moveDoc updated get trggered")
-        // console.log(formdata.currency,":::::formdata.currency updated get trggered")
+      if (docNo || moveDoc || editDocno || formdata.currency || formdata.over_all_discount) {
         getTableValues();
       }
-    }, [docNo, moveDoc, editDocno, formdata.currency]);
+    }, [docNo, moveDoc, editDocno, formdata.currency ,formdata.over_all_discount]);
     
     useEffect(() => {
       if (type === "moveData") {
@@ -384,7 +383,6 @@ const Page = () => {
         getEditInvoice();
       }
     }, [type]);
-
     return (
       <div>
         <div className='grid grid-cols-12 mx-2.5 min-h-screen'>
@@ -466,15 +464,8 @@ const Page = () => {
                     onChange={(e) => { handleChange("payment_method", e.target.value) }}
                     value={formdata.payment_method ?? ""}
                   />
-                </div>
-                <div className='flex flex-col gap-1'>
-                  <label htmlFor="">Currency <span className='text-red-500'>*</span></label>
-                  <Dropdown className='border h-9 rounded-[6px]'
-                    options={currency}
-                    onChange={(e) => { handleChange("currency", e.target.value) }}
-                    value={formdata.currency ?? ""}
-                  />
                 </div> */}
+               
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Customer Reference</label>
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
@@ -493,6 +484,14 @@ const Page = () => {
                     type='text'
                     onChange={(e) => { handleChange("dn_number", e.target.value) }}
                     value={formdata.dn_number ?? ""}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor="">Currency <span className='text-red-500'>*</span></label>
+                  <Dropdown className='border h-9 rounded-[6px]'
+                    options={currency}
+                    onChange={(e) => { handleChange("currency", e.target.value) }}
+                    value={formdata.currency ?? ""}
                   />
                 </div>
                 {/* <div className='flex flex-col gap-1'>
@@ -610,7 +609,7 @@ const Page = () => {
                       value={formdata.delivery ?? ""}
                     />
                   </div>
-                  {/* <div className='flex flex-col gap-1'>
+                  <div className='flex flex-col gap-1'>
                     <label htmlFor="">Overall Discount</label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='number'
@@ -619,7 +618,7 @@ const Page = () => {
                       onChange={(e) => { handleChange("over_all_discount", e.target.value) }}
                       value={formdata.over_all_discount ?? ""}
                     />
-                  </div> */}
+                  </div>
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
@@ -710,7 +709,7 @@ const Page = () => {
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total}</p>
-                  <p>Overall Discount:{tableValues?.total_discount}</p>
+                  <p>Overall Discount:{ formdata.over_all_discount ? formdata.over_all_discount  :  tableValues?.total_discount || 0}</p>
                   <p>Total:{tableValues?.grand_total}</p>
                 </div>
               </div>

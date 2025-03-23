@@ -48,7 +48,8 @@ const Page = () => {
         validity: "",
         remark_brand: "",
         delivery: "",
-        pay_terms: ""
+        pay_terms: "",
+        overall_discount: ""
       }
     )
     const [tableData, setTableData] = useState<any>({
@@ -210,7 +211,8 @@ const Page = () => {
     const getTableValues = async () => {
       const docNumber = type === "revised" ? revisedDoc : docNo;
       const currency = formdata.currency ? formdata.currency : null;
-      const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNumber}&currency=${currency}`)
+      const total_discount = formdata.overall_discount ? formdata.overall_discount : 0;
+      const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNumber}&currency=${currency}&total_discount=${total_discount}`)
       console.log(response.data)
       setTableValues(response?.data)
     }
@@ -236,6 +238,7 @@ const Page = () => {
           validity: data.quotation_validity || "",
           remark_brand: data.remark_brand || "",
           delivery: data.delivery || "",
+          overall_discount: data.total_discount || "",
         });
         await getReviseDocNo()
       }
@@ -265,7 +268,7 @@ const Page = () => {
         delivery: formdata.delivery || null,
         payment_terms: formdata.pay_terms || null,
         created_user_id: user_id || null,
-        total_discount: 0,
+        total_discount: formdata.overall_discount ? formdata.overall_discount : 0,
         total_tax: 0
       }
       const response: Response = await postMethod("/quotation/create-quotation-form", payload)
@@ -318,7 +321,7 @@ const Page = () => {
         delivery: formdata.delivery || null,
         payment_terms: formdata.pay_terms || null,
         created_user_id: user_id || null,
-        total_discount: 0,
+        total_discount: formdata.overall_discount ? formdata.overall_discount : 0,
         total_tax: 0
       }
       const response: Response = await postMethod(`/quotation/update-quotation-form?id=${data_id}`, payload)
@@ -375,11 +378,11 @@ const Page = () => {
     // }, [formdata.currency])
 
     useEffect(() => {
-      if (docNo || revisedDoc || formdata.currency) {
+      if (docNo || revisedDoc || formdata.currency || formdata.overall_discount) {
         getTableValues();
       }
-    }, [docNo, revisedDoc, formdata.currency]);
-    
+    }, [docNo, revisedDoc, formdata.currency,formdata.overall_discount]);
+
     useEffect(() => {
       if (type) {
         getRevisedData();
@@ -601,6 +604,16 @@ const Page = () => {
                       value={formdata.pay_terms ?? ""}
                     />
                   </div>
+                  <div className='flex flex-col gap-1'>
+                    <label htmlFor="">Overall Discount %</label>
+                    <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
+                      type='number'
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
+                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                      onChange={(e) => { handleChange("overall_discount", e.target.value) }}
+                      value={formdata.overall_discount ?? ""}
+                      />
+                  </div>
                 </div>
               </div>
               <div className='flex justify-center items-center my-3 gap-3'>
@@ -638,7 +651,7 @@ const Page = () => {
                     </div>
                     <div className='flex flex-col  !break-all'>
                       <p>Document No:</p>
-                      <p className='text-[#929292]'>{revisedDoc ? revisedDoc : docNo }  </p>
+                      <p className='text-[#929292]'>{revisedDoc ? revisedDoc : docNo}  </p>
                     </div>
                     <div className='flex flex-col !break-all'>
                       <p>Document Date:</p>
@@ -695,7 +708,7 @@ const Page = () => {
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total || 0}</p>
-                  <p>Overall Discount:{tableValues?.total_discount || 0}</p>
+                  <p>Overall Discount:{formdata.overall_discount ? formdata.overall_discount : tableValues?.total_discount || 0}</p>
                   <p>{formdata.currency == "SAR" ? "VAT" : "TAX"}:{tableValues?.total_tax || 0}</p>
                   <p>Total:{tableValues?.grand_total || 0}</p>
                 </div>
