@@ -13,13 +13,13 @@ import { parseCookies } from 'nookies'
 import Popup from '../component/Popup';
 import SavePopup from '../component/SavePopup';
 import { AutoComplete } from 'primereact/autocomplete';
+import ErrorPopups from '../component/ErrorPopups';
 
 const Page = () => {
   const Quotation = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const type: string = searchParams.get("type") ?? "";
-    console.log(type)
     const data_id = searchParams.get("id");
     const cookies = parseCookies()
     const [tableValues, setTableValues] = useState<any>()
@@ -30,6 +30,7 @@ const Page = () => {
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [savePop, setSavePop] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
+    const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
     const [errorone, setErrorOne] = useState<boolean>(false);
     const [suggestDrop, setSuggestDrop] = useState<{ customer_name: string; id: number }[]>([]);
     const [suggestion, setSuggestion] = useState<{ customer_name: string; id: number }[]>([]);
@@ -63,7 +64,6 @@ const Page = () => {
     });
 
     const handleChange = (key: string, value: any) => {
-      console.log(value, "value")
       setFormdata({ ...formdata, [key]: value })
       setTableData({ ...tableData, [key]: value })
     }
@@ -75,7 +75,6 @@ const Page = () => {
 
     const autofillData = async (id: number) => {
       const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${id}`)
-      console.log(response?.data)
       const autoFillData = response?.data;
       const format_date = new Date(autoFillData.doc_date)
       if (response.status === "success") {
@@ -176,7 +175,6 @@ const Page = () => {
     ];
 
     const handleRemoveRow = async (id: string | number) => {
-      console.log(id)
       const response: Response = await getMethod(`/quotation/delete-quotation-list?record_id=${id}`)
       getTableValues()
     };
@@ -184,7 +182,6 @@ const Page = () => {
     const handleEditRow = (id: string | number) => {
       const selectedRow = tableValues.list.find((row: any) => row.id === id);
       setUpdateId(id)
-      console.log(id, selectedRow)
       setTableData({
         item_number: selectedRow?.item_number || "",
         description: selectedRow?.description || "",
@@ -199,13 +196,11 @@ const Page = () => {
 
     const getDocumentNo = async () => {
       const response: Response = await getMethod("/quotation/generate-dynamic-doc-number?doc_type=quotation")
-      console.log(response.data)
       setDocNo(response?.data)
     }
     const getReviseDocNo = async () => {
       const response: Response = await getMethod(`/quotation/generate-revision-doc-number?record_id=${data_id}`)
       await setRevisedDoc(response.data)
-      console.log(response.data)
     }
 
     const getTableValues = async () => {
@@ -213,14 +208,13 @@ const Page = () => {
       const currency = formdata.currency ? formdata.currency : null;
       const total_discount = formdata.overall_discount ? formdata.overall_discount : 0;
       const response: Response = await getMethod(`/quotation/get-all-quotation-list?doc_number=${docNumber}&currency=${currency}&total_discount=${total_discount}`)
-      console.log(response.data)
+     
       setTableValues(response?.data)
     }
 
     const getRevisedData = async () => {
       const response: Response = await getMethod(`/quotation/get-quotation-form-data?quotation_id=${data_id}&type=${type}`)
       const data = response.data;
-      console.log(data)
       const format_date = new Date(data.doc_date)
       if (response.status === "success") {
         setRevisedData(data)
@@ -239,16 +233,20 @@ const Page = () => {
           remark_brand: data.remark_brand || "",
           delivery: data.delivery || "",
           overall_discount: data.total_discount || "",
+          pay_terms:data.payment_terms || ""
         });
         await getReviseDocNo()
       }
 
     }
-
+    const isEmpty = tableValues?.list?.length === 0;
     const createQuototion = async () => {
       if (!formdata.customer || !formdata.document_date || !formdata.validity || !formdata.currency || !formdata.payment_method) {
         setError(true)
         return;
+      } if (isEmpty) {
+        setIsEmptyError(true)
+        return
       }
       const user_id = cookies.user_id
       const payload = {
@@ -294,15 +292,20 @@ const Page = () => {
         ],
         record_id: updateId ? updateId : null
       }
-      console.log(payload);
       const response: Response = await postMethod("/quotation/save-or-update-quotation-list", payload)
-      console.log(response?.data)
       if (response.status == "success") {
         setUpdateId(null)
       }
     }
 
     const createReviseData = async () => {
+      if (!formdata.customer || !formdata.document_date || !formdata.validity || !formdata.currency || !formdata.payment_method) {
+        setError(true)
+        return;
+      }if (isEmpty) {
+        setIsEmptyError(true)
+        return
+      }
       const user_id = cookies.user_id
       const payload = {
         customer_name: formdata.customer || null,
@@ -332,7 +335,6 @@ const Page = () => {
 
     const suggestions = async () => {
       const response: Response = await getMethod("/quotation/get-customer-dropdown")
-      console.log(response?.data)
       setSuggestDrop(response?.data)
     }
     const searchCustomer = (event: { query: string }) => {
@@ -357,31 +359,11 @@ const Page = () => {
       suggestions()
     }, [])
 
-    // useEffect(() => {
-    //   if (docNo) {
-    //     getTableValues()
-    //   }
-    // }, [docNo])
-
-    // useEffect(() => {
-    //   if (type) { getRevisedData() }
-    // }, [type])
-
-    // useEffect(() => {
-    //   if (revisedDoc) {
-    //     getTableValues();
-    //   }
-    // }, [revisedDoc]);
-
-    // useEffect(() => {
-    //   getTableValues()
-    // }, [formdata.currency])
-
     useEffect(() => {
-      if (docNo || revisedDoc || formdata.currency || formdata.overall_discount) {
+      if (docNo || revisedDoc || formdata.currency || formdata.overall_discount||type === "revised") {
         getTableValues();
       }
-    }, [docNo, revisedDoc, formdata.currency,formdata.overall_discount]);
+    }, [docNo, revisedDoc, formdata.currency, formdata.overall_discount,type]);
 
     useEffect(() => {
       if (type) {
@@ -397,11 +379,6 @@ const Page = () => {
               <div className='grid grid-cols-2 px-2 gap-4'>
                 <div className='flex flex-col gap-1  w-full'>
                   <label htmlFor="">Customer <span className='text-red-500'>*</span></label>
-                  {/* <input className='border h-9 rounded-[6px] px-2  focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08]'
-                    type='text'
-                    onChange={(e) => { handleChange('customer', e.target.value) }}
-                    value={formdata.customer}
-                  /> */}
                   <AutoComplete className='border h-9 w-full rounded-[6px]' value={formdata.customer} suggestions={suggestion} completeMethod={searchCustomer} field="customer_name" onChange={(e) => { handleChange('customer', e.target.value) }} onSelect={(e) => handleSelect(e.value)} />
                 </div>
 
@@ -605,14 +582,15 @@ const Page = () => {
                     />
                   </div>
                   <div className='flex flex-col gap-1'>
-                    <label htmlFor="">Overall Discount %</label>
+                    <label htmlFor="">Overall Discount</label>
                     <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
                       type='number'
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                       onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("overall_discount", e.target.value) }}
-                      value={formdata.overall_discount ?? ""}
-                      />
+                      value={isEmpty ?  0 : formdata.overall_discount ?? ""}
+                      disabled={isEmpty}
+                    />
                   </div>
                 </div>
               </div>
@@ -626,8 +604,6 @@ const Page = () => {
           <div className='col-span-6 '>
             <div className=' flex justify-start items-center'>
               <p className='text-[18px] font-medium mb-2'> Quotation Preview:</p>
-              {/* <Custombutton name={'Download'} color={'blue'} /> */}
-              {/* <Custombutton name={''} color={'black'}/> */}
             </div>
             <div className='relative flex flex-col text-[14px] border rounded-[8px] pb-40 '>
               <div className='absolute top-0 left-0'> <Image src={'/images/shadow-trading-left-vector.svg'} alt={''} width={40} height={100} /></div>
@@ -708,7 +684,7 @@ const Page = () => {
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total || 0}</p>
-                  <p>Overall Discount:{formdata.overall_discount ? formdata.overall_discount : tableValues?.total_discount || 0}</p>
+                  <p>Overall Discount:{formdata.overall_discount ? formdata.overall_discount : isEmpty ? 0 : tableValues?.total_discount || 0}</p>
                   <p>{formdata.currency == "SAR" ? "VAT" : "TAX"}:{tableValues?.total_tax || 0}</p>
                   <p>Total:{tableValues?.grand_total || 0}</p>
                 </div>
@@ -730,35 +706,15 @@ const Page = () => {
         }
         {
           error &&
-          <>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
-                <div className='flex flex-col gap-4 justify-center items-center p-8'>
-                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
-                  <p>Fill the Mandatory Fields!!!</p>
-                </div>
-                <div className='w-full rounded-b-[8px]'>
-                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setError(false) }}>Back</p>
-                </div>
-              </div>
-            </div>
-          </>
+          <ErrorPopups errMessage={"Please fill all the mandatory fields !!!"} hidePopup={() => setError(false)} />
+        }
+        {
+          isEmptyError &&
+          <ErrorPopups errMessage={"Add atleast one row in the table to save the quotation !!!"} hidePopup={() => setIsEmptyError(false)} />
         }
         {
           errorone &&
-          <>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
-                <div className='flex flex-col gap-4 justify-center items-center p-8'>
-                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
-                  <p>Fill the currency before add!!!</p>
-                </div>
-                <div className='w-full rounded-b-[8px]'>
-                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setErrorOne(false) }}>Back</p>
-                </div>
-              </div>
-            </div>
-          </>
+          <ErrorPopups errMessage={"Before add the row you should select the currency !!!"} hidePopup={() => setErrorOne(false)} />
         }
       </>
     )

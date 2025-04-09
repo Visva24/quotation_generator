@@ -13,6 +13,7 @@ import { getMethod, patchMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import SavePopup from '../component/SavePopup'
 import Popup from '../component/Popup'
+import ErrorPopups from '../component/ErrorPopups'
 
 const Page = () => {
   const Delivery = () => {
@@ -21,8 +22,6 @@ const Page = () => {
     const type: string = searchParams.get("type") ?? "";
     const data_id = searchParams.get("id")
     const current_user_id = searchParams.get("current_user_id")
-    console.log(current_user_id, "current_user_id")
-    console.log(type, data_id)
     const cookies = parseCookies();
     const [docNo, setDocNo] = useState<any>();
     const [moveDoc, setMoveDoc] = useState<any>();
@@ -32,6 +31,7 @@ const Page = () => {
     const [error, setError] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [editDocno, setEditDocno] = useState<any>();
+    const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
     const [formdata, setFormdata] = useState<any>(
       {
         customer: "",
@@ -74,7 +74,7 @@ const Page = () => {
       { label: "Sets", value: "set" },
       { label: "Pieces", value: "pcs" },
       { label: "Rolls", value: "roll" },
-      { label: "Length", value: "length" }, 
+      { label: "Length", value: "length" },
     ];
 
     const handleChange = (key: string, value: any) => {
@@ -145,6 +145,14 @@ const Page = () => {
     }
 
     const createEdit = async () => {
+      if (!formdata.customer || !formdata.document_date || !formdata.ref_date) {
+        setError(true)
+        return;
+      }
+      if (isEmpty) {
+        setIsEmptyError(true)
+        return
+      }
       const user_id = cookies.user_id
       const payload = {
         id: data_id,
@@ -173,6 +181,10 @@ const Page = () => {
       if (!formdata.customer || !formdata.document_date || !formdata.ref_date) {
         setError(true)
         return;
+      }
+      if (isEmpty) {
+        setIsEmptyError(true)
+        return
       }
       const user_id = cookies.user_id
       const payload = {
@@ -259,35 +271,11 @@ const Page = () => {
       router.push("/home")
     }
 
+    const isEmpty = tableValues?.list?.length === 0;
+
     useEffect(() => {
       getDocumentNo()
     }, [])
-
-    // useEffect(() => {
-    //   if (moveDoc) {
-    //     getTableValues();
-    //     console.log("moveDoc get")
-    //   }
-    // }, [moveDoc]);
-
-    // useEffect(() => {
-    //   if (docNo) {
-    //     getTableValues()
-    //   }
-    // }, [docNo])
-
-    // useEffect(() => {
-    //   if (type === "moveData") {
-    //     getMovedDataChallan()
-    //     getTableValues()
-    //   } else if (type === "revised") {
-    //     getEditValues()
-    //   }
-    // }, [type])
-
-    // useEffect(() => {
-    //   getTableValues()
-    // }, [editDocno])
 
     useEffect(() => {
       if (moveDoc || docNo || type === "moveData" || editDocno) {
@@ -440,19 +428,6 @@ const Page = () => {
                     </div>
                   </div>
                 </div>
-                {/* <p className='text-[18px] ml-2 mt-5 mb-2 font-medium'>Extras</p>
-                <div className='border mx-2 rounded-[8px] p-2'>
-                  <div className='grid grid-cols-2 px-2 gap-4'>
-                    <div className='flex flex-col gap-1'>
-                      <label htmlFor="">Remarks</label>
-                      <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
-                        type='text'
-                        onChange={(e) => { handleChange("remark_brand", e.target.value) }}
-                        value={formdata.remark_brand}
-                      />
-                    </div>
-                  </div>
-                </div> */}
                 <div className='flex justify-center items-center my-3 gap-3'>
                   <Custombutton name={'Back'} color={'black'} onclick={() => { setShowPopup(true) }} />
                   <Custombutton name={type === "revised" ? 'Update' : 'Save'} color={'yellow'} onclick={type === "revised" ? createEdit : createDeliveryNote} />
@@ -463,8 +438,6 @@ const Page = () => {
             <div className='col-span-6  overflow-y-auto '>
               <div className='flex justify-between items-center'>
                 <p className='text-[18px] font-medium mb-2'> Delivery Note Preview:</p>
-                {/* <Custombutton name={'Download'} color={'blue'} /> */}
-                {/* <Custombutton name={''} color={'black'}/> */}
               </div>
               <div className='relative flex flex-col text-[14px] border rounded-[8px] pb-40 '>
                 <div className='absolute top-0 left-0'> <Image src={'/images/shadow-trading-left-vector.svg'} alt={''} width={40} height={100} /></div>
@@ -542,25 +515,15 @@ const Page = () => {
         }
         {
           showPopup &&
-          <>
-            <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={() => { setShowPopup(false) }} handleRedirect={handleYes} />
-          </>
+          <Popup message={'Are you sure you want to navigate to a different page? Any unsaved changes in your form will be discarded.'} handleCancel={() => { setShowPopup(false) }} handleRedirect={handleYes} />
         }
         {
           error &&
-          <>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
-                <div className='flex flex-col gap-4 justify-center items-center p-8'>
-                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
-                  <p>Fill the Mandatory Fields!!!</p>
-                </div>
-                <div className='w-full rounded-b-[8px]'>
-                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setError(false) }}>Back</p>
-                </div>
-              </div>
-            </div>
-          </>
+          <ErrorPopups errMessage={'Fill the Mandotary fields'} hidePopup={() => setError(false)} />
+        }
+        {
+          isEmptyError &&
+          <ErrorPopups errMessage='Add atleast one row in the table to save the quotation !!!' hidePopup={() => { setIsEmptyError(false) }} />
         }
       </>
     )

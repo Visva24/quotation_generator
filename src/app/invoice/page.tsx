@@ -13,6 +13,7 @@ import { getMethod, postMethod } from '@/utils/api'
 import { Response } from '@/utils/common'
 import SavePopup from '../component/SavePopup'
 import Popup from '../component/Popup'
+import ErrorPopups from '../component/ErrorPopups'
 
 
 
@@ -32,6 +33,7 @@ const Page = () => {
     const [error, setError] = useState<boolean>(false);
     const [errorone, setErrorOne] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState<boolean>(false);
+    const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
     const [editDocno, setEditDocno] = useState<any>();
     const [formdata, setFormdata] = useState<any>(
       {
@@ -116,7 +118,7 @@ const Page = () => {
       { label: "Sets", value: "set" },
       { label: "Pieces", value: "pcs" },
       { label: "Rolls", value: "roll" },
-      { label: "Length", value: "length" },  
+      { label: "Length", value: "length" },
     ];
 
     const handleChange = (key: string, value: any) => {
@@ -204,9 +206,13 @@ const Page = () => {
     }
 
     const createInvoice = async () => {
-      if (!formdata.customer || !formdata.document_date ||  !formdata.sales_emp) {
+      if (!formdata.customer || !formdata.document_date || !formdata.sales_emp) {
         setError(true)
         return;
+      }
+      if (isEmpty) {
+        setIsEmptyError(true)
+        return
       }
       const user_id = cookies.user_id
       const payload = {
@@ -229,24 +235,26 @@ const Page = () => {
         reference_date: formdata.ref_date || null,
         sales_employee: formdata.sales_emp || null,
         payment_terms: formdata.pay_terms || null,
-        total_discount:  formdata.over_all_discount ?  formdata.over_all_discount : 0 || null
+        total_discount: formdata.over_all_discount ? formdata.over_all_discount : 0 || null
       }
       const response: Response = await postMethod("/sales-invoice/create-sales-invoice-form", payload)
       if (response.status == "success") {
-        console.log(response.message)
         setSavePop(true)
         setTimeout(() => { setSavePop(false), router.push("/invoice/history") }, 2000)
       }
     }
 
-    const createEdit = async() => {
+    const createEdit = async () => {
       if (!formdata.customer || !formdata.document_date || !formdata.sales_emp) {
         setError(true)
         return;
+      }if (isEmpty) {
+        setIsEmptyError(true)
+        return
       }
       const user_id = cookies.user_id
       const payload = {
-        id:data_id,
+        id: data_id,
         customer_name: formdata.customer || null,
         customer_reference_id: "",
         doc_number: editDocno ? editDocno : null,
@@ -266,11 +274,10 @@ const Page = () => {
         reference_date: formdata.ref_date || null,
         sales_employee: formdata.sales_emp || null,
         payment_terms: formdata.pay_terms || null,
-        total_discount: formdata.over_all_discount ?  formdata.over_all_discount : 0 || null
+        total_discount: formdata.over_all_discount ? formdata.over_all_discount : 0 || null
       }
       const response: Response = await postMethod("/sales-invoice/update-sales-invoice-form", payload)
       if (response.status == "success") {
-        console.log(response.message)
         setSavePop(true)
         setTimeout(() => { setSavePop(false), router.push("/invoice/history") }, 2000)
       }
@@ -292,22 +299,20 @@ const Page = () => {
         address: editData?.address || "",
         validity: editData?.quotation_validity || "",
         remark_brand: editData?.remark_brand || "",
-        delivery: editData?.delivery || "",                                                         
-        sales_emp:editData?.sales_employee || "",
-        pay_terms:editData?.payment_terms || "",
-        dn_number:editData?.dn_number || "",
-        over_all_discount:editData?.total_discount || ""
+        delivery: editData?.delivery || "",
+        sales_emp: editData?.sales_employee || "",
+        pay_terms: editData?.payment_terms || "",
+        dn_number: editData?.dn_number || "",
+        over_all_discount: editData?.total_discount || ""
       })
       setEditDocno(editData?.doc_number)
     }
 
     const getMovedDataInvoice = async () => {
       const response: Response = await getMethod(`/sales-invoice/move-forward-sales-invoice?quotation_id=${data_id}&current_user_id=${current_user_id}`)
-      console.log(response?.data)
       const data = response?.data[0]
       setMoveDoc(data?.doc_number)
       getTableValues()
-      console.log(data?.doc_number)
       const format_doc_date = data?.doc_date ? new Date(data?.doc_date) : null;
       if (response.status === "success") {
         setFormdata({
@@ -343,38 +348,13 @@ const Page = () => {
       getDocumentNo()
     }, [])
 
-    // useEffect(() => {
-    //   if (docNo) {
-    //     getTableValues()
-    //   }
-    // }, [docNo])
-
-    // useEffect(() => {
-    //   if (moveDoc) {
-    //     getTableValues();
-    //   }
-    // }, [moveDoc]);
-
-    // useEffect(() => {
-    //   if (type === "moveData") {
-    //     getMovedDataInvoice()
-    //     getTableValues()
-    //   } else if (type === "revised") {
-    //     getEditInvoice()
-    //   }
-    // }, [type])
-    // useEffect(() => {
-    //   getTableValues()
-    // }, [editDocno])
-
-    // useEffect(() => { getTableValues() }, [formdata.currency])
-
+    const isEmpty = tableValues?.list?.length === 0;
     useEffect(() => {
-      if (docNo || moveDoc || editDocno || formdata.currency || formdata.over_all_discount) {
+      if (docNo || moveDoc || editDocno || formdata.currency || formdata.over_all_discount || type ==="revised") {
         getTableValues();
       }
-    }, [docNo, moveDoc, editDocno, formdata.currency ,formdata.over_all_discount]);
-    
+    }, [docNo, moveDoc, editDocno, formdata.currency, formdata.over_all_discount, type]);
+
     useEffect(() => {
       if (type === "moveData") {
         getMovedDataInvoice();
@@ -465,7 +445,7 @@ const Page = () => {
                     value={formdata.payment_method ?? ""}
                   />
                 </div> */}
-               
+
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="">Customer Reference</label>
                   <input className='border h-9 rounded-[6px] focus:border-[#F4AA08] focus:outline focus:outline-[#F4AA08] px-2'
@@ -616,7 +596,8 @@ const Page = () => {
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling to change value
                       onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                       onChange={(e) => { handleChange("over_all_discount", e.target.value) }}
-                      value={formdata.over_all_discount ?? ""}
+                      value={isEmpty ?  0 :formdata.over_all_discount ?? ""}
+                      disabled={isEmpty}
                     />
                   </div>
                 </div>
@@ -631,8 +612,6 @@ const Page = () => {
           <div className='col-span-6  '>
             <div className='flex justify-start items-center'>
               <p className='text-[18px] font-medium mb-2'> Invoice Preview:</p>
-              {/* <Custombutton name={'Download'} color={'blue'} /> */}
-              {/* <Custombutton name={''} color={'black'}/> */}
             </div>
             <div className='relative flex flex-col text-[14px] border rounded-[8px] pb-40 '>
               <div className='absolute top-0 left-0'> <Image src={'/images/shadow-trading-left-vector.svg'} alt={''} width={40} height={100} /></div>
@@ -709,7 +688,7 @@ const Page = () => {
                 </div>
                 <div className='flex flex-col gap-1'>
                   <p className=' text-[12px]'>Sub Total:{tableValues?.sub_total}</p>
-                  <p>Overall Discount:{ formdata.over_all_discount ? formdata.over_all_discount  :  tableValues?.total_discount || 0}</p>
+                  <p>Overall Discount:{formdata.over_all_discount ? formdata.over_all_discount : isEmpty ? 0 : tableValues?.total_discount || 0}</p>
                   <p>Total:{tableValues?.grand_total}</p>
                 </div>
               </div>
@@ -728,35 +707,16 @@ const Page = () => {
         }
         {
           error &&
-          <>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
-                <div className='flex flex-col gap-4 justify-center items-center p-8'>
-                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
-                  <p>Fill the Mandatory Fields!!!</p>
-                </div>
-                <div className='w-full rounded-b-[8px]'>
-                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setError(false) }}>Back</p>
-                </div>
-              </div>
-            </div>
-          </>
+          <ErrorPopups errMessage='Please Fill the Mandatory Fields !!!' hidePopup={() => { setError(false) }} />
+
+        }
+        {
+          isEmptyError&&
+          <ErrorPopups errMessage='Add atleast one row in the table to save the quotation !!!' hidePopup={() => { setIsEmptyError(false) }} />
         }
         {
           errorone &&
-          <>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white   rounded-[8px] shadow-lg min-w-[250px]  transform transition-all duration-300 scale-95 opacity-0 animate-popup">
-                <div className='flex flex-col gap-4 justify-center items-center p-8'>
-                  <Image src={'/images/fill-mandatory.svg'} alt={''} height={160} width={180} />
-                  <p>Fill the currency before add!!!</p>
-                </div>
-                <div className='w-full rounded-b-[8px]'>
-                  <p className='flex justify-center items-center text-[#F4AA08] bg-[#FFF0CF] p-3 cursor-pointer rounded-b-[8px]' onClick={() => { setErrorOne(false) }}>Back</p>
-                </div>
-              </div>
-            </div>
-          </>
+          <ErrorPopups errMessage='Before add the row you should select the currency !!!' hidePopup={() => { setErrorOne(false) }} />
         }
       </div>
     )
